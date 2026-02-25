@@ -93,26 +93,61 @@ export default function QuotationDetails() {
                         </div>
                     </div>
 
-                    {/* Tabla de Ítems */}
+                    {/* --- TABLA DE ÍTEMS ACTUALIZADA --- */}
                     <div className="overflow-x-auto mb-8">
                         <table className="w-full text-left">
                             <thead className="border-b-2 border-gray-100 text-gray-400 text-xs uppercase font-bold">
                                 <tr>
-                                    <th className="px-4 py-3 text-center w-20">Cant.</th>
-                                    <th className="px-4 py-3">Descripción de Productos/Servicios</th>
-                                    <th className="px-4 py-3 text-right">P. Unitario</th>
+                                    <th className="px-4 py-3 text-center w-16">Cant.</th>
+                                    <th className="px-4 py-3">Descripción</th>
+                                    <th className="px-4 py-3 text-right">P. Lista</th>
+                                    <th className="px-4 py-3 text-center">% Desc.</th>
+                                    <th className="px-4 py-3 text-right">P. Oferta</th>
                                     <th className="px-4 py-3 text-right">Total</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
-                                {quotation.items.map((item, i) => (
-                                    <tr key={i} className="hover:bg-gray-50/50">
-                                        <td className="px-4 py-4 text-center font-medium text-gray-600">{item.quantity}</td>
-                                        <td className="px-4 py-4 text-gray-800">{item.description}</td>
-                                        <td className="px-4 py-4 text-right text-gray-600">{formatCurrency(item.unitPrice)}</td>
-                                        <td className="px-4 py-4 text-right font-bold text-gray-900">{formatCurrency(item.total)}</td>
-                                    </tr>
-                                ))}
+                                {quotation.items.map((item, i) => {
+                                    // Extraemos y calculamos los valores
+                                    const listPrice = Number(item.listPrice) || 0;
+                                    const discount = Number(item.discountPercent) || 0;
+                                    const discountedUnitPrice = listPrice * (1 - discount / 100);
+
+                                    return (
+                                        <tr key={i} className="hover:bg-gray-50/50 transition-colors">
+                                            <td className="px-4 py-4 text-center font-medium text-gray-600">
+                                                {item.quantity}
+                                            </td>
+                                            <td className="px-4 py-4 text-gray-800">
+                                                {item.description}
+                                            </td>
+                                            
+                                            {/* P. Lista (Tachado si hay descuento) */}
+                                            <td className={`px-4 py-4 text-right ${discount > 0 ? 'text-gray-400 line-through' : 'text-gray-600'}`}>
+                                                {discount > 0 ? formatCurrency(listPrice) : '-'}
+                                            </td>
+                                            
+                                            {/* % Descuento (Con un badge resaltado) */}
+                                            <td className="px-4 py-4 text-center">
+                                                {discount > 0 ? (
+                                                    <span className="bg-orange-100 text-orange-600 px-2 py-1 rounded text-xs font-bold">
+                                                        -{discount}%
+                                                    </span>
+                                                ) : '-'}
+                                            </td>
+                                            
+                                            {/* P. Oferta (Azul para resaltar) */}
+                                            <td className="px-4 py-4 text-right font-medium text-blue-700">
+                                                {formatCurrency(discountedUnitPrice)}
+                                            </td>
+                                            
+                                            {/* Total de línea (subtotalItem) */}
+                                            <td className="px-4 py-4 text-right font-bold text-gray-900">
+                                                {formatCurrency(item.subtotalItem)}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>

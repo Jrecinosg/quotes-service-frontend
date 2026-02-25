@@ -21,7 +21,8 @@ export default function QuotationForm() {
 
     // 2. Orden de columnas cambiado: Cantidad primero
     const [items, setItems] = useState([
-        { quantity: 1, description: "", unitPrice: 0, discount: 0, total: 0 }
+        // Cambiamos unitPrice por listPrice y total por subtotalItem
+        { quantity: 1, description: "", listPrice: 0, discount: 0, subtotalItem: 0 }
     ]);
 
     const [totals, setTotals] = useState({ subtotal: 0, tax: 0, total: 0 });
@@ -38,12 +39,15 @@ export default function QuotationForm() {
     // --- CÁLCULOS ---
     useEffect(() => {
         const subtotal = items.reduce((acc, item) => {
-            const discountAmount = (item.unitPrice * (item.discount / 100));
-            const priceWithDiscount = item.unitPrice - discountAmount;
-            return acc + (item.quantity * priceWithDiscount);
+            const price = Number(item.listPrice) || 0;
+            const disc = Number(item.discount) || 0;
+            const qty = Number(item.quantity) || 0;
+
+            const priceWithDiscount = price * (1 - disc / 100);
+            return acc + (qty * priceWithDiscount);
         }, 0);
 
-        const tax = subtotal * 0.12;
+        const tax = subtotal * 0.12; // IVA 12%
         const total = subtotal + tax;
         setTotals({ subtotal, tax, total });
     }, [items]);
@@ -58,9 +62,9 @@ export default function QuotationForm() {
                     const formattedItems = data.items.map(i => ({
                         quantity: Number(i.quantity),
                         description: i.description,
-                        unitPrice: Number(i.unitPrice),
+                        listPrice: Number(i.listPrice),
                         discount: Number(i.discountPercent || 0),
-                        total: Number(i.total)
+                        subtotalItem: Number(i.subtotalItem)
                     }));
                     setItems(formattedItems);
 
@@ -85,19 +89,18 @@ export default function QuotationForm() {
         const newItems = [...items];
         newItems[index][field] = value;
 
-        // Cálculo dinámico del total de la fila considerando el descuento
-        const qty = newItems[index].quantity;
-        const price = newItems[index].unitPrice;
-        const disc = newItems[index].discount;
+        const qty = Number(newItems[index].quantity) || 0;
+        const price = Number(newItems[index].listPrice) || 0;
+        const disc = Number(newItems[index].discount) || 0;
 
-        const discountAmount = (price * (disc / 100));
-        newItems[index].total = qty * (price - discountAmount);
+        const priceWithDiscount = price * (1 - disc / 100);
+        newItems[index].subtotalItem = qty * priceWithDiscount;
 
         setItems(newItems);
     };
 
     const addItem = () => {
-        setItems([...items, { quantity: 1, description: "", unitPrice: 0, discount: 0, total: 0 }]);
+        setItems([...items, { quantity: 1, description: "", listPrice: 0, discount: 0, subtotalItem: 0 }]);
     };
 
     const removeItem = (index) => {
@@ -117,9 +120,9 @@ export default function QuotationForm() {
             items: items.map(item => ({
                 quantity: item.quantity,
                 description: item.description,
-                unitPrice: item.unitPrice,
+                listPrice: item.listPrice,
                 discountPercent: item.discount,
-                total: item.total
+                subtotalItem: item.subtotalItem
             })),
             subtotal: totals.subtotal,
             tax: totals.tax,
@@ -128,13 +131,20 @@ export default function QuotationForm() {
         };
 
         try {
-            if (id) {
+            /*if (id) {
                 await quotationService.update(id, payload);
                 Swal.fire("¡Actualizado!", "La cotización ha sido modificada", "success");
             } else {
                 await quotationService.create(payload);
                 Swal.fire("¡Creado!", "Cotización guardada exitosamente", "success");
-            }
+            }*/
+            await quotationService.create(payload);
+
+            Swal.fire(
+                "¡Cotización Guardada!",
+                id ? "Se ha generado una nueva versión con un nuevo correlativo." : "Cotización creada exitosamente",
+                "success"
+            );
             navigate("/quotations");
         } catch (error) {
             console.error(error);
@@ -206,76 +216,90 @@ export default function QuotationForm() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left min-w-[800px]">
-                            <thead className="bg-orange-600 text-white"> {/* Color naranja como en tu imagen */}
+                            <thead className="bg-orange-600 text-white">
                                 <tr>
                                     <th className="px-4 py-3 w-[10%] text-center font-bold">Cantidad</th>
                                     <th className="px-4 py-3 w-[50%] font-bold text-center">Descripción</th>
                                     <th className="px-4 py-3 w-[15%] text-right font-bold">P. Unitario</th>
                                     <th className="px-4 py-3 w-[10%] text-center font-bold">% Desc.</th>
+                                    <th className="px-4 py-3 w-[10%] text-right font-bold">P. Oferta</th>
                                     <th className="px-4 py-3 w-[15%] text-right font-bold">P. Total</th>
                                     <th className="px-4 py-3 w-[5%]"></th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {items.map((item, index) => (
-                                    <tr key={index} className="hover:bg-gray-50">
-                                        {/* 1. Cantidad (Ahora va primero) */}
-                                        <td className="p-2">
-                                            <input
-                                                type="number" min="1"
-                                                className="w-full p-2 border border-gray-300 rounded text-center focus:ring-2 focus:ring-orange-500 outline-none"
-                                                value={item.quantity}
-                                                onChange={(e) => handleItemChange(index, 'quantity', Number(e.target.value))}
-                                            />
-                                        </td>
+                                {items.map((item, index) => {
+                                    // Calculamos el precio con descuento por unidad solo para mostrarlo
+                                    const listPrice = Number(item.listPrice) || 0;
+                                    const discount = Number(item.discount) || 0;
+                                    const discountedUnitPrice = listPrice * (1 - discount / 100);
 
-                                        {/* 2. Descripción */}
-                                        <td className="p-2">
-                                            <input
-                                                type="text"
-                                                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 outline-none"
-                                                placeholder="Descripción del producto..."
-                                                value={item.description}
-                                                onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-                                            />
-                                        </td>
+                                    return (
+                                        <tr key={index} className="hover:bg-gray-50">
+                                            {/* 1. Cantidad */}
+                                            <td className="p-2">
+                                                <input
+                                                    type="number" min="1"
+                                                    className="w-full p-2 border border-gray-300 rounded text-center focus:ring-2 focus:ring-orange-500 outline-none"
+                                                    value={item.quantity}
+                                                    onChange={(e) => handleItemChange(index, 'quantity', Number(e.target.value))}
+                                                />
+                                            </td>
 
-                                        {/* 3. Precio Unitario */}
-                                        <td className="p-2">
-                                            <input
-                                                type="number" min="0" step="0.01"
-                                                className="w-full p-2 border border-gray-300 rounded text-right focus:ring-2 focus:ring-orange-500 outline-none"
-                                                value={item.unitPrice}
-                                                onChange={(e) => handleItemChange(index, 'unitPrice', Number(e.target.value))}
-                                            />
-                                        </td>
+                                            {/* 2. Descripción */}
+                                            <td className="p-2">
+                                                <input
+                                                    type="text"
+                                                    className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 outline-none"
+                                                    placeholder="Descripción del producto..."
+                                                    value={item.description}
+                                                    onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+                                                />
+                                            </td>
 
-                                        <td className="p-2">
-                                            <input
-                                                type="number" min="0" max="100"
-                                                className="w-full p-2 border border-gray-300 rounded text-center focus:ring-2 focus:ring-orange-500 outline-none bg-orange-50 font-bold text-orange-700"
-                                                value={item.discount}
-                                                onChange={(e) => handleItemChange(index, 'discount', Number(e.target.value))}
-                                            />
-                                        </td>
+                                            {/* 3. Precio Lista (El precio base) */}
+                                            <td className="p-2">
+                                                <input
+                                                    type="number" min="0" step="0.01"
+                                                    className="w-full p-2 border border-gray-300 rounded text-right focus:ring-2 focus:ring-orange-500 outline-none"
+                                                    value={item.listPrice}
+                                                    onChange={(e) => handleItemChange(index, 'listPrice', Number(e.target.value))}
+                                                />
+                                            </td>
 
-                                        {/* 4. Total Calculado */}
-                                        <td className="p-2 text-right font-medium text-gray-700">
-                                            Q{item.total.toFixed(2)}
-                                        </td>
+                                            {/* 4. % Descuento */}
+                                            <td className="p-2">
+                                                <input
+                                                    type="number" min="0" max="100"
+                                                    className="w-full p-2 border border-gray-300 rounded text-center focus:ring-2 focus:ring-orange-500 outline-none bg-orange-50 font-bold text-orange-700"
+                                                    value={item.discount}
+                                                    onChange={(e) => handleItemChange(index, 'discount', Number(e.target.value))}
+                                                />
+                                            </td>
 
-                                        {/* 5. Borrar */}
-                                        <td className="p-2 text-center">
-                                            <button
-                                                type="button"
-                                                onClick={() => removeItem(index)}
-                                                className="text-red-400 hover:text-red-600 transition-colors"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                            {/* 5. NUEVO: Precio Unitario Oferta (Solo lectura) */}
+                                            <td className="p-2 text-right font-medium text-blue-700 bg-blue-50/30">
+                                                Q{discountedUnitPrice.toFixed(2)}
+                                            </td>
+
+                                            {/* 6. Total Calculado de la línea (SubtotalItem) */}
+                                            <td className="p-2 text-right font-bold text-gray-800">
+                                                Q{Number(item.subtotalItem).toFixed(2)}
+                                            </td>
+
+                                            {/* 7. Botón Borrar */}
+                                            <td className="p-2 text-center">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeItem(index)}
+                                                    className="text-red-400 hover:text-red-600 transition-colors"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>

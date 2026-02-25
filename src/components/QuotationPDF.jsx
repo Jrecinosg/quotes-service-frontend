@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica'
   },
 
-  // --- ENCABEZADO MÁS GRANDE Y ESPACIADO ---
+  // --- ENCABEZADO ---
   headerContainer: {
     flexDirection: 'row',
     marginBottom: 0,
@@ -27,14 +27,11 @@ const styles = StyleSheet.create({
     width: '30%',
     alignItems: 'flex-end'
   },
-
   rowInfo: {
     flexDirection: 'row',
     marginBottom: 6,
     alignItems: 'center'
   },
-
-  // Etiquetas más anchas y legibles
   label: {
     fontWeight: 'bold',
     width: 80,
@@ -44,8 +41,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 11,
   },
-
-  // Estilo destacado para el número de cotización
   noLabel: {
     fontWeight: 'bold',
     width: 80,
@@ -58,15 +53,13 @@ const styles = StyleSheet.create({
     color: 'red',
     fontWeight: 'bold'
   },
-
-  // Estilo para la paginación dentro del header
   pageText: {
     fontSize: 10,
     color: '#444',
     fontWeight: 'bold'
   },
 
-  // --- TABLA REESTRUCTURADA ---
+  // --- TABLA REESTRUCTURADA (4 COLUMNAS) ---
   table: {
     marginTop: 10,
     width: '100%',
@@ -74,60 +67,51 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: 'red',
+    borderBottomColor: '#F46B20',
     borderLeftWidth: 1,
-    borderLeftColor: 'red',
+    borderLeftColor: '#F46B20',
     borderRightWidth: 1,
-    borderRightColor: 'red',
+    borderRightColor: '#F46B20',
     minHeight: 22,
     wrap: false,
     alignItems: 'stretch'
   },
   tableHeader: {
-    backgroundColor: 'red',
+    backgroundColor: '#F46B20',
     color: 'white',
     fontWeight: 'bold',
     height: 25,
     borderTopWidth: 1,
-    borderTopColor: 'red',
+    borderTopColor: '#F46B20',
   },
 
-  // --- ANCHOS DE COLUMNA ---
+  // --- ANCHOS DE COLUMNA (Ajustados para 4 columnas) ---
   colCant: {
     width: '10%',
     borderRightWidth: 1,
-    borderRightColor: 'red',
+    borderRightColor: '#F46B20',
     justifyContent: 'center',
     textAlign: 'center'
   },
   colDesc: {
-    width: '45%',
+    width: '55%', // Aumentado al quitar columnas de descuento
     borderRightWidth: 1,
-    borderRightColor: 'red',
+    borderRightColor: '#F46B20',
     paddingLeft: 5,
     justifyContent: 'center'
   },
-  colDescrip: { // Estilo para el texto de descripción
+  colDescrip: {
     fontSize: 10,
   },
   colUni: {
     width: '15%',
     borderRightWidth: 1,
-    borderRightColor: 'red',
+    borderRightColor: '#F46B20',
     textAlign: 'center',
     justifyContent: 'center'
   },
-  colDesc_Porcentaje: {
-    width: '15%',
-    borderRightWidth: 1,
-    borderRightColor: 'red',
-    textAlign: 'center',
-    justifyContent: 'center',
-    //color: '#ea580c',
-    fontWeight: 'bold'
-  },
   colTot: {
-    width: '15%',
+    width: '20%', // Aumentado un poco para totales grandes
     textAlign: 'center',
     justifyContent: 'center'
   },
@@ -139,25 +123,25 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   totalLabelBox: {
-    backgroundColor: 'red',
+    backgroundColor: '#F46B20',
     width: '15%',
     padding: 5,
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderBottomWidth: 1,
-    borderColor: 'red',
+    borderColor: '#F46B20',
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'right'
   },
   totalValueBox: {
-    width: '15%',
+    width: '20%', // Ajustado para que coincida con colTot
     padding: 5,
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
     borderBottomWidth: 1,
-    borderColor: 'red',
+    borderColor: '#F46B20',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
@@ -185,7 +169,6 @@ export const QuotationDocument = ({ quotation }) => {
         {/* --- ENCABEZADO QUE SE REPITE --- */}
         <View style={styles.headerContainer} fixed>
           <View style={styles.infoSection}>
-            {/* CORRELATIVO DESTACADO */}
             <View style={[styles.rowInfo, { marginBottom: 10 }]}>
               <Text style={styles.noLabel}>No.</Text>
               <Text style={styles.noValue}>{formatQuotationId(correlativo)}</Text>
@@ -211,7 +194,6 @@ export const QuotationDocument = ({ quotation }) => {
               <Text style={styles.value}>{client?.taxId}</Text>
             </View>
 
-            {/* PAGINACIÓN INTEGRADA */}
             <View style={[styles.rowInfo, { marginTop: 4 }]}>
               <Text style={[styles.label, styles.pageText]}>Página:</Text>
               <Text
@@ -221,45 +203,47 @@ export const QuotationDocument = ({ quotation }) => {
             </View>
           </View>
 
-          {/* LOGO MÁS GRANDE */}
           <View style={styles.logoSection}>
             <Image src={logo} style={{ width: 140 }} />
           </View>
         </View>
 
-        {/* --- TABLA --- */}
+        {/* --- TABLA (SOLO 4 COLUMNAS) --- */}
         <View style={styles.table}>
           <View style={[styles.tableRow, styles.tableHeader]} fixed>
             <View style={styles.colCant}><Text>Cant.</Text></View>
             <View style={styles.colDesc}><Text>Descripción</Text></View>
             <View style={styles.colUni}><Text>P. Unitario</Text></View>
-            <View style={styles.colDesc_Porcentaje}><Text>Desc. %</Text></View>
             <View style={styles.colTot}><Text>P. Total</Text></View>
           </View>
 
-          {items.map((item, i) => (
-            <View style={styles.tableRow} key={i} wrap={false}>
-              <View style={styles.colCant}>
-                <Text>{item.quantity}</Text>
-              </View>
+          {items.map((item, i) => {
+            // Calculamos el Precio Unitario final (P. Oferta) para mostrarlo
+            const listPrice = Number(item.listPrice) || 0;
+            const discount = Number(item.discountPercent) || 0;
+            const finalUnitPrice = listPrice * (1 - discount / 100);
 
-              <View style={styles.colDesc}>
-                <Text style={styles.colDescrip}>{item.description}</Text>
-              </View>
+            return (
+              <View style={styles.tableRow} key={i} wrap={false}>
+                <View style={styles.colCant}>
+                  <Text>{item.quantity}</Text>
+                </View>
 
-              <View style={styles.colUni}>
-                <Text>{formatCurrency(item.unitPrice)}</Text>
-              </View>
+                <View style={styles.colDesc}>
+                  <Text style={styles.colDescrip}>{item.description}</Text>
+                </View>
 
-              <View style={styles.colDesc_Porcentaje}>
-                <Text>{item.discountPercent > 0 ? `${item.discountPercent}%` : '-'}</Text>
-              </View>
+                {/* Mostramos el precio con el descuento ya aplicado */}
+                <View style={styles.colUni}>
+                  <Text>{formatCurrency(finalUnitPrice)}</Text>
+                </View>
 
-              <View style={styles.colTot}>
-                <Text>{formatCurrency(item.total)}</Text>
+                <View style={styles.colTot}>
+                  <Text>{formatCurrency(item.subtotalItem)}</Text>
+                </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
 
         {/* --- CIERRE Y TOTALES --- */}
@@ -281,7 +265,7 @@ export const QuotationDocument = ({ quotation }) => {
           </View>
         </View>
 
-        {/* --- FOOTER (Sin la numeración) --- */}
+        {/* --- FOOTER --- */}
         <View style={styles.footerFixed} fixed>
           <Text style={{ borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 8 }}>
             Avenida Hincapié 3-49 zona 13 | Tel. 2234-7254
