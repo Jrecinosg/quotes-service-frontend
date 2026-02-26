@@ -1,63 +1,68 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, Save } from "lucide-react";
 import { clientService } from "../services/client.service";
 import Swal from "sweetalert2";
 
 export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }) {
-    const [formData, setFormData] = useState({
-        name: "",
-        taxId: "",
-        email: "",
-        phone: "",
-        address: "",
-        contactName: ""
-    });
+  const [formData, setFormData] = useState({
+    name: "",
+    taxId: "",
+    email: "",
+    phone: "",
+    address: "",
+    contactName: ""
+  });
 
-    useEffect(() => {
-        if (clientToEdit) {
-            setFormData({
-                name: clientToEdit.name || "",
-                taxId: clientToEdit.taxId || "",
-                email: clientToEdit.email || "",
-                phone: clientToEdit.phone || "",
-                address: clientToEdit.address || "",
-                contactName: clientToEdit.contactName || ""
-            });
-        } else {
-            setFormData({ name: "", taxId: "", email: "", phone: "", address: "", contactName: "" });
-        }
-    }, [clientToEdit, isOpen]);
+  useEffect(() => {
+    if (clientToEdit) {
+      setFormData({
+        name: clientToEdit.name || "",
+        taxId: clientToEdit.taxId || "",
+        email: clientToEdit.email || "",
+        phone: clientToEdit.phone || "",
+        address: clientToEdit.address || "",
+        contactName: clientToEdit.contactName || ""
+      });
+    } else {
+      setFormData({ name: "", taxId: "", email: "", phone: "", address: "", contactName: "" });
+    }
+  }, [clientToEdit, isOpen]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            if (clientToEdit) {
-                await clientService.update(clientToEdit.id, formData);
-                Swal.fire("¡Actualizado!", "El cliente ha sido modificado.", "success");
-            } else {
-                await clientService.create(formData);
-                Swal.fire("¡Creado!", "El cliente ha sido registrado.", "success");
-            }
-            onSuccess(); // Recargar tabla
-            onClose(); // Cerrar modal
-        } catch (error) {
-            console.error(error);
-            Swal.fire("Error", "No se pudo guardar el cliente.", "error");
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let savedClient;
 
-    if(!isOpen) return null;
+      if (clientToEdit) {
+        savedClient = await clientService.update(clientToEdit.id, formData);
+        Swal.fire("¡Actualizado!", "El cliente ha sido modificado.", "success");
+      } else {
+        savedClient = await clientService.create(formData);
+        Swal.fire("¡Creado!", "El cliente ha sido registrado.", "success");
+      }
 
-    return (
+      // Envía el cliente guardado a la función onSuccess
+      onSuccess(savedClient);
+      onClose();
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "No se pudo guardar el cliente.", "error");
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden animate-fade-in">
-        
+
         {/* Header */}
         <div className="bg-blue-600 px-6 py-4 flex justify-between items-center">
           <h2 className="text-white font-bold text-lg">
             {clientToEdit ? "Editar Cliente" : "Nuevo Cliente"}
           </h2>
-          <button onClick={onClose} className="text-blue-100 hover:text-white">
+          <button type="button" onClick={onClose} className="text-blue-100 hover:text-white">
             <X size={24} />
           </button>
         </div>
@@ -71,7 +76,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
               required
               className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
           </div>
 
@@ -83,7 +88,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
                 required
                 className="mt-1 w-full border border-gray-300 rounded-md p-2"
                 value={formData.taxId}
-                onChange={(e) => setFormData({...formData, taxId: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
               />
             </div>
             <div>
@@ -92,7 +97,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
                 type="text"
                 className="mt-1 w-full border border-gray-300 rounded-md p-2"
                 value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               />
             </div>
           </div>
@@ -103,7 +108,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
               type="email"
               className="mt-1 w-full border border-gray-300 rounded-md p-2"
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
           </div>
 
@@ -113,7 +118,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
               type="text"
               className="mt-1 w-full border border-gray-300 rounded-md p-2"
               value={formData.address}
-              onChange={(e) => setFormData({...formData, address: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
             />
           </div>
 
@@ -123,7 +128,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
               type="text"
               className="mt-1 w-full border border-gray-300 rounded-md p-2"
               value={formData.contactName}
-              onChange={(e) => setFormData({...formData, contactName: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
             />
           </div>
 
@@ -146,6 +151,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

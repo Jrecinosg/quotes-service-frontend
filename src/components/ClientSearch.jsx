@@ -8,7 +8,7 @@ export default function ClientSearch({ onSelect, selectedClient }) {
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [allClients, setAllClients] = useState([]);
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -17,8 +17,8 @@ export default function ClientSearch({ onSelect, selectedClient }) {
 
   useEffect(() => {
     if (query.length > 0) {
-      const filtered = allClients.filter(c => 
-        c.name.toLowerCase().includes(query.toLowerCase()) || 
+      const filtered = allClients.filter(c =>
+        c.name.toLowerCase().includes(query.toLowerCase()) ||
         c.taxId.includes(query)
       );
       setResults(filtered);
@@ -34,9 +34,13 @@ export default function ClientSearch({ onSelect, selectedClient }) {
     setQuery("");
   };
 
-  const handleClientCreated = () => {
+  const handleClientCreated = (newClient) => {
     clientService.getAll().then(setAllClients);
     setIsModalOpen(false);
+    if (newClient) {
+      onSelect(newClient);
+      setQuery("");
+    }
   };
 
   if (selectedClient) {
@@ -47,7 +51,7 @@ export default function ClientSearch({ onSelect, selectedClient }) {
           <p className="text-sm text-blue-700">NIT: {selectedClient.taxId}</p>
           <p className="text-xs text-blue-600">{selectedClient.address}</p>
         </div>
-        <button 
+        <button
           type="button"
           onClick={() => onSelect(null)} // Deseleccionar
           className="text-blue-400 hover:text-red-500"
@@ -84,9 +88,9 @@ export default function ClientSearch({ onSelect, selectedClient }) {
               <p className="text-xs text-gray-500">{client.taxId}</p>
             </div>
           ))}
-          
+
           {/* Botón para crear nuevo si no existe */}
-          <div 
+          <div
             onClick={() => setIsModalOpen(true)}
             className="p-3 bg-gray-50 hover:bg-gray-100 cursor-pointer text-blue-600 flex items-center gap-2 font-medium border-t border-gray-200"
           >
@@ -97,7 +101,7 @@ export default function ClientSearch({ onSelect, selectedClient }) {
       )}
 
       {/* El Modal Reutilizable Escondido */}
-      <ClientModal 
+      <ClientModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={handleClientCreated}
