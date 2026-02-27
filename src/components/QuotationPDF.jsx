@@ -251,8 +251,9 @@ export const QuotationDocument = ({ quotation }) => {
           <View style={styles.totalContainer}>
             <View style={styles.totalLabelBox}><Text>TOTAL.</Text></View>
             <View style={styles.totalValueBox}>
-              <Text style={{ fontWeight: 'bold', fontSize: 12 }}>Q</Text>
-              <Text style={{ fontWeight: 'bold', fontSize: 12 }}>{Number(total).toFixed(2)}</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 12, textAlign: 'right', width: '100%' }}>
+                {formatCurrency(total)}
+              </Text>
             </View>
           </View>
 

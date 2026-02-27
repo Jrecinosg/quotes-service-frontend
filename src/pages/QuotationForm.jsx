@@ -5,10 +5,7 @@ import { quotationService } from "../services/quotation.service";
 import { useAuth } from "../context/AuthContext";
 import ClientSearch from "../components/ClientSearch";
 import Swal from "sweetalert2";
-
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import { QuotationDocument } from '../components/QuotationPDF';
-import { FileDown } from "lucide-react";
+import { formatCurrency } from "../utils/formatters";
 
 export default function QuotationForm() {
     const navigate = useNavigate();
@@ -277,14 +274,14 @@ export default function QuotationForm() {
                                                 />
                                             </td>
 
-                                            {/* 5. NUEVO: Precio Unitario Oferta (Solo lectura) */}
+                                            {/* 5. Precio Unitario Oferta (Solo lectura) */}
                                             <td className="p-2 text-right font-medium text-blue-700 bg-blue-50/30">
-                                                Q{discountedUnitPrice.toFixed(2)}
+                                                {formatCurrency(discountedUnitPrice)}
                                             </td>
 
                                             {/* 6. Total Calculado de la línea (SubtotalItem) */}
                                             <td className="p-2 text-right font-bold text-gray-800">
-                                                Q{Number(item.subtotalItem).toFixed(2)}
+                                                {formatCurrency(item.subtotalItem)}
                                             </td>
 
                                             {/* 7. Botón Borrar */}
@@ -374,17 +371,16 @@ export default function QuotationForm() {
                         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                             <div className="flex justify-between py-2 text-gray-600">
                                 <span>Subtotal:</span>
-                                <span>Q{totals.subtotal.toFixed(2)}</span>
+                                <span>{formatCurrency(totals.subtotal)}</span>
                             </div>
                             <div className="flex justify-between py-2 text-gray-600 border-b border-gray-100">
-                                <span>IVA (12%):</span> {/* Ajusta a IVA si es Guatemala (12%) */}
-                                <span>Q{totals.tax.toFixed(2)}</span>
+                                <span>IVA (12%):</span>
+                                <span>{formatCurrency(totals.tax)}</span>
                             </div>
 
-                            {/* Estilo Total Rojo/Naranja como en imagen */}
                             <div className="flex justify-between items-center bg-orange-600 text-white p-3 rounded mt-2">
                                 <span className="font-bold text-lg">TOTAL</span>
-                                <span className="font-bold text-xl">Q {totals.total.toFixed(2)}</span>
+                                <span className="font-bold text-xl">{formatCurrency(totals.total)}</span>
                             </div>
                         </div>
 
