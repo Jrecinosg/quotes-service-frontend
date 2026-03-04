@@ -35,7 +35,7 @@ export default function QuotationForm() {
 
     // --- CÁLCULOS ---
     useEffect(() => {
-        const subtotal = items.reduce((acc, item) => {
+        const total = items.reduce((acc, item) => {
             const price = Number(item.listPrice) || 0;
             const disc = Number(item.discount) || 0;
             const qty = Number(item.quantity) || 0;
@@ -43,9 +43,8 @@ export default function QuotationForm() {
             const priceWithDiscount = price * (1 - disc / 100);
             return acc + (qty * priceWithDiscount);
         }, 0);
-
-        const tax = subtotal * 0.12; // IVA 12%
-        const total = subtotal + tax;
+        const subtotal = total / 1.12;
+        const tax = total - subtotal;
         setTotals({ subtotal, tax, total });
     }, [items]);
 
