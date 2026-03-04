@@ -169,7 +169,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
 
-  // NUEVOS ESTILOS PARA SUBTOTAL E IVA
   subLabelBox: {
     width: '15%',
     padding: 5,
@@ -178,7 +177,6 @@ const styles = StyleSheet.create({
     borderColor: '#F46B20',
     textAlign: 'right',
     fontSize: 10,
-    color: '#666',
     fontWeight: 'bold'
   },
   subValueBox: {
@@ -189,8 +187,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: '#F46B20',
     textAlign: 'right',
-    fontSize: 10,
-    color: '#666'
+    fontSize: 10
   },
 });
 
