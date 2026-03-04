@@ -29,6 +29,7 @@ export default function QuotationForm() {
         warranty: "ÚNICAMENTE EN EQUIPOS, 12 MESES SOBRE DESPERFECTOS DE FÁBRICA EN DISPOSITIVOS.",
         deliveryTime: "1-2 DÍAS HÁBILES",
         paymentMethod: "50% Anticipo - 50% Contra entrega",
+        validity: "15 días hábiles o hasta agotar existencias.",
         elaboratedBy: user?.name || "Nombre del Vendedor",
         observations: "No se cubre garantía por daños provocados por energía eléctrica si no cuenta con la protección adecuada, vandalismo, mal manejo de los equipos, o intervención de personal ajeno a Grupo AC. INCLUYE INSTALACIÓN DE EQUIPOS."
     });
@@ -68,6 +69,7 @@ export default function QuotationForm() {
                         warranty: data.warranty || "",
                         deliveryTime: data.deliveryTime || "",
                         paymentMethod: data.paymentMethod || "",
+                        validity: data.validity || "",
                         elaboratedBy: data.elaboratedBy || "",
                         observations: data.observations || ""
                     });
@@ -342,6 +344,16 @@ export default function QuotationForm() {
                                 className="w-full p-1 border-b border-gray-300 focus:border-orange-500 outline-none text-gray-600 italic"
                                 value={terms.paymentMethod}
                                 onChange={(e) => setTerms({ ...terms, paymentMethod: e.target.value })}
+                            />
+                        </div>
+
+                        {/* Campo de Validez en la Interfaz */}
+                        <div className="grid grid-cols-[120px_1fr] items-center gap-2">
+                            <label className="font-bold text-gray-800">Validez:</label>
+                            <input
+                                className="w-full p-1 border-b border-gray-300 focus:border-orange-500 outline-none text-gray-600"
+                                value={terms.validity}
+                                onChange={(e) => setTerms({ ...terms, validity: e.target.value })}
                             />
                         </div>
 

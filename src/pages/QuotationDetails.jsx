@@ -180,6 +180,7 @@ export default function QuotationDetails() {
                             </div>
                             <div className="space-y-2 text-right">
                                 <p><span className="font-bold text-gray-700">Forma de Pago:</span> <span className="text-gray-600">{quotation.paymentMethod}</span></p>
+                                <p><span className="font-bold text-gray-700">Validez:</span> <span className="text-gray-600">{quotation.validity || 'No especificada'}</span></p>
                             </div>
                         </div>
                         {quotation.observations && (

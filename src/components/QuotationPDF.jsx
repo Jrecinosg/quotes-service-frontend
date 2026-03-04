@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
 });
 
 export const QuotationDocument = ({ quotation }) => {
-  const { client, items, subtotal, tax, total, correlativo, createdAt, elaboratedBy } = quotation;
+  const { client, items, subtotal, tax, total, correlativo, createdAt, elaboratedBy, validity } = quotation;
 
   return (
     <Document>
@@ -311,6 +311,7 @@ export const QuotationDocument = ({ quotation }) => {
             <View style={styles.rowInfo}><Text style={styles.label}>Garantía:</Text><Text style={styles.valueFooter}>{quotation.warranty}</Text></View>
             <View style={styles.rowInfo}><Text style={styles.label}>Entrega:</Text><Text style={styles.valueFooter}>{quotation.deliveryTime}</Text></View>
             <View style={styles.rowInfo}><Text style={styles.label}>Forma pago:</Text><Text style={styles.valueFooter}>{quotation.paymentMethod}</Text></View>
+            <View style={styles.rowInfo}><Text style={styles.label}>Validez:</Text><Text style={styles.valueFooter}>{validity}</Text></View>
             <View style={styles.rowInfo}><Text style={styles.label}>Elaborado:</Text><Text style={styles.valueFooter}>{elaboratedBy}</Text></View>
             <Text style={{ marginTop: 10, fontSize: 9, lineHeight: 1.4 }}>{quotation.observations}</Text>
           </View>
