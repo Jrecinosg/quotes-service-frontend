@@ -139,18 +139,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'right'
   },
-  totalValueBox: {
-    width: '20%', // Ajustado para que coincida con colTot
-    padding: 5,
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#F46B20',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
 
   // --- FOOTER FIJO ---
   footerFixed: {
@@ -167,10 +155,47 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 11,
   },
+
+  totalValueBox: {
+    width: '20%',
+    padding: 5,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#F46B20',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+
+  // NUEVOS ESTILOS PARA SUBTOTAL E IVA
+  subLabelBox: {
+    width: '15%',
+    padding: 5,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderColor: '#F46B20',
+    textAlign: 'right',
+    fontSize: 10,
+    color: '#666',
+    fontWeight: 'bold'
+  },
+  subValueBox: {
+    width: '20%',
+    padding: 5,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: '#F46B20',
+    textAlign: 'right',
+    fontSize: 10,
+    color: '#666'
+  },
 });
 
 export const QuotationDocument = ({ quotation }) => {
-  const { client, items, total, correlativo, createdAt, elaboratedBy } = quotation;
+  const { client, items, subtotal, tax, total, correlativo, createdAt, elaboratedBy } = quotation;
 
   return (
     <Document>
@@ -258,6 +283,24 @@ export const QuotationDocument = ({ quotation }) => {
 
         {/* --- CIERRE Y TOTALES --- */}
         <View wrap={false} style={{ width: '100%', marginTop: 10 }}>
+
+          {/* Fila Subtotal */}
+          <View style={styles.totalContainer}>
+            <View style={styles.subLabelBox}><Text>Subtotal:</Text></View>
+            <View style={styles.subValueBox}>
+              <Text style={{ width: '100%' }}>{formatCurrency(subtotal)}</Text>
+            </View>
+          </View>
+
+          {/* Fila IVA */}
+          <View style={styles.totalContainer}>
+            <View style={styles.subLabelBox}><Text>IVA (12%):</Text></View>
+            <View style={styles.subValueBox}>
+              <Text style={{ width: '100%' }}>{formatCurrency(tax)}</Text>
+            </View>
+          </View>
+
+          {/* Fila TOTAL */}
           <View style={styles.totalContainer}>
             <View style={styles.totalLabelBox}><Text>TOTAL.</Text></View>
             <View style={styles.totalValueBox}>
