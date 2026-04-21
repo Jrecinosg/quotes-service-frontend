@@ -152,6 +152,12 @@ export default function QuotationForm() {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+            e.preventDefault();
+        }
+    };
+
     // Fecha actual para mostrar en el encabezado
     const today = new Date().toLocaleDateString();
 
@@ -167,7 +173,7 @@ export default function QuotationForm() {
                 </h1>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-6">
 
                 {/* === SECCIÓN 1: ENCABEZADO (Estructura de la Imagen 1) === */}
                 <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
@@ -203,7 +209,7 @@ export default function QuotationForm() {
 
                         {/* Derecha/Centro: Título del Proyecto y Logo */}
                         <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4">
-                            {/* Aquí iría el Logo de tu empresa si lo tuvieras configurado */}
+                            {/* Aquí iría el Logo de empresa */}
                             {/* <img src="/logo.png" className="h-16 mb-2" /> */}
 
                         </div>
