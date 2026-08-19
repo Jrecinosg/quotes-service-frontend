@@ -5,7 +5,7 @@ import { quotationService } from "../services/quotation.service";
 import { useAuth } from "../context/AuthContext";
 import ClientSearch from "../components/ClientSearch";
 import Swal from "sweetalert2";
-import { formatCurrency } from "../utils/formatters";
+import { formatCurrency, roundCurrency } from "../utils/formatters";
 
 export default function QuotationForm() {
     const navigate = useNavigate();
@@ -36,16 +36,13 @@ export default function QuotationForm() {
 
     // --- CÁLCULOS ---
     useEffect(() => {
-        const total = items.reduce((acc, item) => {
-            const price = Number(item.listPrice) || 0;
-            const disc = Number(item.discount) || 0;
-            const qty = Number(item.quantity) || 0;
-
-            const priceWithDiscount = price * (1 - disc / 100);
-            return acc + (qty * priceWithDiscount);
-        }, 0);
-        const subtotal = total / 1.12;
-        const tax = total - subtotal;
+        // Suma los subtotales de línea YA redondeados, para que el total
+        // que se muestra siempre coincida con la suma de los ítems.
+        const total = roundCurrency(
+            items.reduce((acc, item) => acc + (Number(item.subtotalItem) || 0), 0)
+        );
+        const subtotal = roundCurrency(total / 1.12);
+        const tax = roundCurrency(total - subtotal);
         setTotals({ subtotal, tax, total });
     }, [items]);
 
@@ -92,7 +89,7 @@ export default function QuotationForm() {
         const disc = Number(newItems[index].discount) || 0;
 
         const priceWithDiscount = price * (1 - disc / 100);
-        newItems[index].subtotalItem = qty * priceWithDiscount;
+        newItems[index].subtotalItem = roundCurrency(qty * priceWithDiscount);
 
         setItems(newItems);
     };

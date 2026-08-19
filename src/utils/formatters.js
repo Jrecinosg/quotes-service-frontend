@@ -7,6 +7,14 @@ export const formatQuotationId = (num) => {
 };
 
 /**
+ * Redondea a 2 decimales evitando errores de precisión de punto flotante
+ * (ej. 10.005 * 1 no debe quedar en 10.004999999999999)
+ */
+export const roundCurrency = (value) => {
+  return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+};
+
+/**
  * Formatea un número como moneda Quetzal (Q 1,250.00)
  */
 export const formatCurrency = (amount) => {
