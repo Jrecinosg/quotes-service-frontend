@@ -140,7 +140,7 @@ export default function QuotationForm() {
                 id ? "Se ha generado una nueva versión con un nuevo correlativo." : "Cotización creada exitosamente",
                 "success"
             );
-            navigate("/quotations");
+            navigate("/app/quotations");
         } catch (error) {
             console.error(error);
             Swal.fire("Error", "No se pudo guardar", "error");

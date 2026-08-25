@@ -128,7 +128,7 @@ export default function Requests() {
                 requests.map((r) => (
                   <tr key={r.id} className="hover:bg-blue-50 transition-colors">
                     <td className="px-6 py-4">
-                      <Link to={`/requests/${r.id}`} className="font-bold text-blue-600 hover:underline">
+                      <Link to={`/app/requests/${r.id}`} className="font-bold text-blue-600 hover:underline">
                         {formatRequestId(r.correlativo)}
                       </Link>
                     </td>

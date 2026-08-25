@@ -66,7 +66,7 @@ export default function Dashboard() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                     <h2 className="text-lg font-semibold text-gray-800">Últimas Cotizaciones</h2>
-                    <Link to="/quotations" className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                    <Link to="/app/quotations" className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
                         Ver todas <ArrowRight size={16} />
                     </Link>
                 </div>

@@ -16,7 +16,7 @@ export default function QuotationDetails() {
     useEffect(() => {
         quotationService.getById(id)
             .then(setQuotation)
-            .catch(() => navigate("/quotations"))
+            .catch(() => navigate("/app/quotations"))
             .finally(() => setLoading(false));
     }, [id, navigate]);
 
@@ -34,13 +34,13 @@ export default function QuotationDetails() {
 
             {/* Cabecera de Navegación */}
             <div className="flex items-center justify-between mb-6">
-                <button onClick={() => navigate("/quotations")} className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                <button onClick={() => navigate("/app/quotations")} className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <ArrowLeft size={20} /> Volver al listado
                 </button>
 
                 <div className="flex gap-3">
                     <Link
-                        to={`/quotations/edit/${id}`}
+                        to={`/app/quotations/edit/${id}`}
                         className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-all shadow-sm"
                     >
                         <Pencil size={18} /> Editar

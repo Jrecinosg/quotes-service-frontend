@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
@@ -36,17 +37,18 @@ function AdminRoute({ children }) {
 function StaffRoute({ children }) {
   const { user } = useAuth();
   if (user?.role === 'CLIENT') {
-    return <Navigate to="/requests" replace />;
+    return <Navigate to="requests" replace />;
   }
   return children;
 }
 
-// La raíz "/" depende del tipo de cuenta: colaboradores ven el Dashboard,
-// clientes van directo a sus solicitudes (no tienen Dashboard de cotizaciones).
+// El índice de "/app" depende del tipo de cuenta: colaboradores ven el
+// Dashboard, clientes van directo a sus solicitudes (no tienen Dashboard
+// de cotizaciones).
 function HomeRoute() {
   const { user } = useAuth();
   if (user?.role === 'CLIENT') {
-    return <Navigate to="/requests" replace />;
+    return <Navigate to="requests" replace />;
   }
   return <Dashboard />;
 }
@@ -55,12 +57,13 @@ export default function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* Ruta Pública */}
+        {/* Rutas Públicas */}
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/403" element={<ForbiddenPage />} />
 
         {/* Rutas Protegidas por Login */}
-        <Route path="/" element={
+        <Route path="/app" element={
           <PrivateRoute>
             <Layout />
           </PrivateRoute>
@@ -84,8 +87,8 @@ export default function App() {
           } />
 
         </Route>
-        {/* Catch-all: si escribe cualquier cosa, al dashboard */}
-        <Route path="*" element={<Navigate to="/" />} />
+        {/* Catch-all: si escribe cualquier cosa dentro de la app, al dashboard/portal */}
+        <Route path="*" element={<Navigate to="/app" />} />
       </Routes>
     </AuthProvider>
   );

@@ -73,7 +73,7 @@ export default function Quotations() {
                     <p className="text-gray-500 text-sm">Gestiona y genera tus presupuestos</p>
                 </div>
                 <Link
-                    to="/quotations/new"
+                    to="/app/quotations/new"
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm transition-all text-center justify-center"
                 >
                     <Plus size={20} />
@@ -131,14 +131,14 @@ export default function Quotations() {
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <Link
-                                                    to={`/quotations/${q.id}`}
+                                                    to={`/app/quotations/${q.id}`}
                                                     className="p-2 text-gray-400 hover:bg-white hover:text-blue-600 rounded-lg shadow-sm border border-transparent hover:border-gray-200 transition-all"
                                                     title="Ver Detalles y PDF"
                                                 >
                                                     <Eye size={18} />
                                                 </Link>
                                                 <Link
-                                                    to={`/quotations/edit/${q.id}`}
+                                                    to={`/app/quotations/edit/${q.id}`}
                                                     className="p-2 text-gray-400 hover:bg-white hover:text-blue-600 rounded-lg shadow-sm border border-transparent hover:border-gray-200 transition-all"
                                                     title="Editar"
                                                 >

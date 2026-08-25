@@ -9,12 +9,12 @@ export default function Sidebar() {
     const isClientAccount = user?.role === 'CLIENT';
 
     const menuItems = isClientAccount
-        ? [{ path: "/requests", icon: ClipboardList, label: "Mis solicitudes" }]
+        ? [{ path: "/app/requests", icon: ClipboardList, label: "Mis solicitudes" }]
         : [
-            { path: "/", icon: LayoutDashboard, label: "Dashboard" },
-            { path: "/clients", icon: Users, label: "Clientes" },
-            { path: "/quotations", icon: FileText, label: "Cotizaciones" },
-            { path: "/requests", icon: ClipboardList, label: "Solicitudes" },
+            { path: "/app", icon: LayoutDashboard, label: "Dashboard" },
+            { path: "/app/clients", icon: Users, label: "Clientes" },
+            { path: "/app/quotations", icon: FileText, label: "Cotizaciones" },
+            { path: "/app/requests", icon: ClipboardList, label: "Solicitudes" },
         ];
 
     const getInitial = (name) => name ? name.charAt(0).toUpperCase() : "?";
@@ -62,8 +62,8 @@ export default function Sidebar() {
                 {/* BOTÓN ADMIN (Condicional) */}
                 {user?.role === 'ADMIN' && (
                     <Link
-                        to="/admin"
-                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${location.pathname === '/admin'
+                        to="/app/admin"
+                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${location.pathname === '/app/admin'
                             ? "bg-purple-50 text-purple-600 font-medium"
                             : "text-gray-600 hover:bg-purple-50 hover:text-purple-700"
                             }`}
@@ -77,7 +77,7 @@ export default function Sidebar() {
             {/* Perfil del Usuario y Logout */}
             <div className="p-4 border-t border-gray-100 space-y-2">
                 {/* Info de Usuario */}
-                <Link to="/profile" className="flex items-center gap-3 px-3 py-4 mb-2 bg-gray-50 rounded-xl border border-gray-100">
+                <Link to="/app/profile" className="flex items-center gap-3 px-3 py-4 mb-2 bg-gray-50 rounded-xl border border-gray-100">
                     <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shrink-0 shadow-sm">
                         {getInitial(user?.name)}
                     </div>
