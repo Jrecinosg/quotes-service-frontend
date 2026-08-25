@@ -1,25 +1,42 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, FileText, LogOut, Settings, User } from "lucide-react";
+import { LayoutDashboard, Users, FileText, LogOut, Settings, User, ClipboardList } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import appLogo from "../assets/logo.png";
 
 export default function Sidebar() {
     const { logout, user } = useAuth();
     const location = useLocation(); // Obtener URL actual
+    const isClientAccount = user?.role === 'CLIENT';
 
-    const menuItems = [
-        { path: "/", icon: LayoutDashboard, label: "Dashboard" },
-        { path: "/clients", icon: Users, label: "Clientes" },
-        { path: "/quotations", icon: FileText, label: "Cotizaciones" },
-    ];
+    const menuItems = isClientAccount
+        ? [{ path: "/requests", icon: ClipboardList, label: "Mis solicitudes" }]
+        : [
+            { path: "/", icon: LayoutDashboard, label: "Dashboard" },
+            { path: "/clients", icon: Users, label: "Clientes" },
+            { path: "/quotations", icon: FileText, label: "Cotizaciones" },
+            { path: "/requests", icon: ClipboardList, label: "Solicitudes" },
+        ];
 
     const getInitial = (name) => name ? name.charAt(0).toUpperCase() : "?";
 
     return (
         <aside className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col shadow-sm">
             {/* Logo */}
-            <div className="h-16 flex items-center justify-center border-b border-gray-100">
-                <h1 className="text-2xl font-bold text-blue-600">Cotizador</h1>
-            </div>
+            {isClientAccount ? (
+                <div className="h-16 flex items-center justify-center gap-2 border-b border-gray-100 px-3">
+                    <img src={appLogo} alt="Grupo AC" className="h-8 w-auto" />
+                    {user?.client?.logoBase64 && (
+                        <>
+                            <span className="text-gray-300">+</span>
+                            <img src={user.client.logoBase64} alt={user.client.name} className="h-8 w-auto object-contain" />
+                        </>
+                    )}
+                </div>
+            ) : (
+                <div className="h-16 flex items-center justify-center border-b border-gray-100">
+                    <h1 className="text-2xl font-bold text-blue-600">Cotizador</h1>
+                </div>
+            )}
 
             {/* Navegación Principal */}
             <nav className="flex-1 px-4 py-6 space-y-2">

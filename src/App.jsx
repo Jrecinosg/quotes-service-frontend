@@ -7,6 +7,8 @@ import Clients from "./pages/Clients";
 import Quotations from "./pages/Quotations";
 import QuotationForm from "./pages/QuotationForm";
 import QuotationDetails from "./pages/QuotationDetails";
+import Requests from "./pages/Requests";
+import RequestDetails from "./pages/RequestDetails";
 import AdminPage from "./pages/AdminPage";
 import ForbiddenPage from "./pages/ForbiddenPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -28,6 +30,27 @@ function AdminRoute({ children }) {
   return children;
 }
 
+// Guard de equipo interno: cotizaciones/clientes/dashboard son solo para
+// colaboradores (ADMIN/USER). Una cuenta CLIENT que intente entrar se manda
+// directo a sus solicitudes, no al 403 (no es un error, es que no le aplica).
+function StaffRoute({ children }) {
+  const { user } = useAuth();
+  if (user?.role === 'CLIENT') {
+    return <Navigate to="/requests" replace />;
+  }
+  return children;
+}
+
+// La raíz "/" depende del tipo de cuenta: colaboradores ven el Dashboard,
+// clientes van directo a sus solicitudes (no tienen Dashboard de cotizaciones).
+function HomeRoute() {
+  const { user } = useAuth();
+  if (user?.role === 'CLIENT') {
+    return <Navigate to="/requests" replace />;
+  }
+  return <Dashboard />;
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -43,12 +66,14 @@ export default function App() {
           </PrivateRoute>
         }>
           {/* Páginas internas */}
-          <Route index element={<Dashboard />} />
-          <Route path="clients" element={<Clients />} />
-          <Route path="quotations" element={<Quotations />} />
-          <Route path="quotations/new" element={<QuotationForm />} />
-          <Route path="quotations/edit/:id" element={<QuotationForm />} />
-          <Route path="quotations/:id" element={<QuotationDetails />} />
+          <Route index element={<HomeRoute />} />
+          <Route path="clients" element={<StaffRoute><Clients /></StaffRoute>} />
+          <Route path="quotations" element={<StaffRoute><Quotations /></StaffRoute>} />
+          <Route path="quotations/new" element={<StaffRoute><QuotationForm /></StaffRoute>} />
+          <Route path="quotations/edit/:id" element={<StaffRoute><QuotationForm /></StaffRoute>} />
+          <Route path="quotations/:id" element={<StaffRoute><QuotationDetails /></StaffRoute>} />
+          <Route path="requests" element={<Requests />} />
+          <Route path="requests/:id" element={<RequestDetails />} />
           <Route path="profile" element={<ProfilePage />} />
 
           {/* RUTA PROTEGIDA POR ROL ADMIN */}

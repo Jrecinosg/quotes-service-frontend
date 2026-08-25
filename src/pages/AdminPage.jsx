@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { userService } from '../services/user.service';
+import { clientService } from '../services/client.service';
 import Swal from 'sweetalert2';
-import { Trash2, ShieldCheck, User as UserIcon, Mail } from 'lucide-react';
+import { Trash2, ShieldCheck, User as UserIcon, Mail, Building2 } from 'lucide-react';
 
 export default function AdminPage() {
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('USER');
+    const [clientId, setClientId] = useState('');
+    const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(false);
     const [authorizedUsers, setAuthorizedUsers] = useState([]);
     const [fetching, setFetching] = useState(true);
@@ -24,6 +27,7 @@ export default function AdminPage() {
 
     useEffect(() => {
         fetchUsers();
+        clientService.getAll().then(setClients).catch(() => {});
     }, []);
 
     const handleInvite = async (e) => {
@@ -31,7 +35,7 @@ export default function AdminPage() {
         setLoading(true);
 
         try {
-            await userService.inviteUser(email, role);
+            await userService.inviteUser(email, role, role === 'CLIENT' ? clientId : undefined);
             Swal.fire({
                 icon: 'success',
                 title: '¡Invitación enviada!',
@@ -39,6 +43,7 @@ export default function AdminPage() {
                 confirmButtonColor: '#3b82f6'
             });
             setEmail('');
+            setClientId('');
             fetchUsers();
         } catch (error) {
             Swal.fire({
@@ -100,25 +105,45 @@ export default function AdminPage() {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Rol de Usuario</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de acceso</label>
                         <select
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
                         >
-                            <option value="USER">Operador (USER)</option>
-                            <option value="ADMIN">Administrador (ADMIN)</option>
+                            <option value="USER">Colaborador — Operador (USER)</option>
+                            <option value="ADMIN">Colaborador — Administrador (ADMIN)</option>
+                            <option value="CLIENT">Cliente (portal de solicitudes)</option>
                         </select>
                     </div>
+                    {role === 'CLIENT' ? (
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Empresa cliente</label>
+                            <select
+                                value={clientId}
+                                onChange={(e) => setClientId(e.target.value)}
+                                required
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
+                            >
+                                <option value="">Selecciona una empresa...</option>
+                                {clients.map((c) => (
+                                    <option key={c.id} value={c.id}>{c.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    ) : <div />}
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`py-2 px-4 rounded-md text-white font-medium transition-all ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 shadow-sm'
+                        className={`py-2 px-4 rounded-md text-white font-medium transition-all md:col-start-3 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 shadow-sm'
                             }`}
                     >
                         {loading ? 'Procesando...' : 'Enviar Invitación'}
                     </button>
                 </form>
+                {role === 'CLIENT' && clients.length === 0 && (
+                    <p className="text-xs text-amber-600 mt-2">No hay clientes registrados todavía — crea uno primero en la sección Clientes.</p>
+                )}
             </div>
 
             {/* Tabla de Usuarios Autorizados */}
@@ -154,10 +179,18 @@ export default function AdminPage() {
                                             <span className="font-medium text-gray-700">{user.email}</span>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                                user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700'
+                                                : user.role === 'CLIENT' ? 'bg-orange-100 text-orange-700'
+                                                : 'bg-blue-100 text-blue-700'
                                                 }`}>
                                                 {user.role}
                                             </span>
+                                            {user.role === 'CLIENT' && user.client && (
+                                                <span className="ml-2 text-xs text-gray-500 inline-flex items-center gap-1">
+                                                    <Building2 size={12} /> {user.client.name}
+                                                </span>
+                                            )}
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-500">
                                             {new Date(user.invitedAt).toLocaleDateString()}

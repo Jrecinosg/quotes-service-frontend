@@ -7,9 +7,9 @@ export const userService = {
     return response.data;
   },
 
-  // Invitar a un nuevo usuario (Solo ADMIN)
-  inviteUser: async (email, role) => {
-    const response = await api.post("/users/invite", { email, role });
+  // Invitar a un nuevo usuario (Solo ADMIN). clientId solo aplica si role === 'CLIENT'.
+  inviteUser: async (email, role, clientId) => {
+    const response = await api.post("/users/invite", { email, role, clientId });
     return response.data;
   },
 

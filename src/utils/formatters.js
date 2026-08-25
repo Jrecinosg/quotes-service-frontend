@@ -7,6 +7,14 @@ export const formatQuotationId = (num) => {
 };
 
 /**
+ * Convierte un ID numérico en un correlativo tipo SOL00001 (solicitudes)
+ */
+export const formatRequestId = (num) => {
+  if (!num) return 'SOL00000';
+  return `SOL${String(num).padStart(5, '0')}`;
+};
+
+/**
  * Redondea a 2 decimales evitando errores de precisión de punto flotante
  * (ej. 10.005 * 1 no debe quedar en 10.004999999999999)
  */

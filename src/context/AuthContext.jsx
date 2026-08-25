@@ -59,7 +59,9 @@ export function AuthProvider({ children }) {
           setUser({
             ...currentUser,
             role: dbUser.role,
-            name: currentUser.displayName || dbUser.name
+            name: currentUser.displayName || dbUser.name,
+            clientId: dbUser.clientId || null,
+            client: dbUser.client || null
           });
 
         } catch (error) {
