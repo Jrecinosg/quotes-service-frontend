@@ -98,6 +98,18 @@ export default function AdminPage() {
         }
     };
 
+    const staffUsers = authorizedUsers.filter((u) => u.role !== 'CLIENT');
+    const clientGroups = Object.values(
+        authorizedUsers
+            .filter((u) => u.role === 'CLIENT')
+            .reduce((acc, u) => {
+                const key = u.clientId || u.client?.name || 'sin-empresa';
+                if (!acc[key]) acc[key] = { clientName: u.client?.name || 'Sin empresa asignada', users: [] };
+                acc[key].users.push(u);
+                return acc;
+            }, {})
+    ).sort((a, b) => a.clientName.localeCompare(b.clientName));
+
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <header>
@@ -173,12 +185,12 @@ export default function AdminPage() {
                 )}
             </div>
 
-            {/* Tabla de Usuarios Autorizados */}
+            {/* Equipo interno */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="p-6 border-b border-gray-100">
                     <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
                         <ShieldCheck size={20} className="text-green-500" />
-                        Usuarios Autorizados
+                        Equipo interno
                     </h2>
                 </div>
                 <div className="overflow-x-auto">
@@ -194,59 +206,99 @@ export default function AdminPage() {
                         <tbody className="divide-y divide-gray-100">
                             {fetching ? (
                                 <tr><td colSpan="4" className="text-center py-10 text-gray-400">Cargando lista...</td></tr>
-                            ) : authorizedUsers.length === 0 ? (
-                                <tr><td colSpan="4" className="text-center py-10 text-gray-400">No hay usuarios registrados.</td></tr>
+                            ) : staffUsers.length === 0 ? (
+                                <tr><td colSpan="4" className="text-center py-10 text-gray-400">No hay colaboradores registrados.</td></tr>
                             ) : (
-                                authorizedUsers.map((user) => (
-                                    <tr key={user.email} className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4 flex items-center gap-3">
-                                            <div className="bg-gray-100 p-2 rounded-full">
-                                                <UserIcon size={16} className="text-gray-500" />
-                                            </div>
-                                            <span className="font-medium text-gray-700">{user.email}</span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                                                user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700'
-                                                : user.role === 'CLIENT' ? 'bg-orange-100 text-orange-700'
-                                                : 'bg-blue-100 text-blue-700'
-                                                }`}>
-                                                {user.role}
-                                            </span>
-                                            {user.role === 'CLIENT' && user.client && (
-                                                <span className="ml-2 text-xs text-gray-500 inline-flex items-center gap-1">
-                                                    <Building2 size={12} /> {user.client.name}
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">
-                                            {new Date(user.invitedAt).toLocaleDateString()}
-                                        </td>
-                                        <td className="px-6 py-4 text-center">
-                                            <div className="flex items-center justify-center gap-1">
-                                                <button
-                                                    onClick={() => startEdit(user)}
-                                                    className="text-blue-400 hover:text-blue-600 transition-colors p-2 hover:bg-blue-50 rounded-lg"
-                                                    title="Editar rol"
-                                                >
-                                                    <Pencil size={18} />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(user.email)}
-                                                    className="text-red-400 hover:text-red-600 transition-colors p-2 hover:bg-red-50 rounded-lg"
-                                                    title="Revocar acceso"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                staffUsers.map((user) => (
+                                    <UserRow key={user.email} user={user} onEdit={startEdit} onDelete={handleDelete} />
                                 ))
                             )}
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            {/* Clientes, agrupados por empresa */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="p-6 border-b border-gray-100">
+                    <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                        <Building2 size={20} className="text-orange-500" />
+                        Clientes con acceso al portal
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">Una misma empresa puede tener más de una persona con acceso — solo invita otro correo con la misma empresa seleccionada.</p>
+                </div>
+                {fetching ? (
+                    <div className="text-center py-10 text-gray-400">Cargando lista...</div>
+                ) : clientGroups.length === 0 ? (
+                    <div className="text-center py-10 text-gray-400">Todavía no hay clientes con acceso al portal.</div>
+                ) : (
+                    <div className="divide-y divide-gray-100">
+                        {clientGroups.map(({ clientName, users }) => (
+                            <div key={clientName}>
+                                <div className="px-6 py-3 bg-gray-50 flex items-center gap-2">
+                                    <Building2 size={14} className="text-gray-400" />
+                                    <span className="font-semibold text-gray-700 text-sm">{clientName}</span>
+                                    <span className="text-xs text-gray-400">({users.length} persona{users.length === 1 ? '' : 's'})</span>
+                                </div>
+                                <table className="w-full text-left border-collapse">
+                                    <tbody className="divide-y divide-gray-100">
+                                        {users.map((user) => (
+                                            <UserRow key={user.email} user={user} onEdit={startEdit} onDelete={handleDelete} hideRole />
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
+    );
+}
+
+function UserRow({ user, onEdit, onDelete, hideRole = false }) {
+    return (
+        <tr className="hover:bg-gray-50 transition-colors">
+            <td className="px-6 py-4 w-1/3">
+                <div className="flex items-center gap-3">
+                    <div className="bg-gray-100 p-2 rounded-full">
+                        <UserIcon size={16} className="text-gray-500" />
+                    </div>
+                    <span className="font-medium text-gray-700">{user.email}</span>
+                </div>
+            </td>
+            {!hideRole && (
+                <td className="px-6 py-4">
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                        user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700'
+                        : user.role === 'CLIENT' ? 'bg-orange-100 text-orange-700'
+                        : 'bg-blue-100 text-blue-700'
+                        }`}>
+                        {user.role}
+                    </span>
+                </td>
+            )}
+            <td className="px-6 py-4 text-sm text-gray-500">
+                {new Date(user.invitedAt).toLocaleDateString()}
+            </td>
+            <td className="px-6 py-4 text-center">
+                <div className="flex items-center justify-center gap-1">
+                    <button
+                        onClick={() => onEdit(user)}
+                        className="text-blue-400 hover:text-blue-600 transition-colors p-2 hover:bg-blue-50 rounded-lg"
+                        title="Editar rol"
+                    >
+                        <Pencil size={18} />
+                    </button>
+                    <button
+                        onClick={() => onDelete(user.email)}
+                        className="text-red-400 hover:text-red-600 transition-colors p-2 hover:bg-red-50 rounded-lg"
+                        title="Revocar acceso"
+                    >
+                        <Trash2 size={18} />
+                    </button>
+                </div>
+            </td>
+        </tr>
     );
 }

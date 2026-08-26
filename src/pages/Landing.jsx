@@ -398,7 +398,7 @@ export default function Landing() {
                 <p>Cuéntanos qué necesita tu operación y te contactamos para agendar una visita de diagnóstico.</p>
               </div>
               <div className="contact-links">
-                <a href="mailto:contacto@grupo-ac.com.gt">contacto@grupo-ac.com.gt</a>
+                <a href="mailto:info@grupo-ac.com.gt">info@grupo-ac.com.gt</a>
                 <span className="domain">grupo-ac.com.gt</span>
               </div>
             </div>

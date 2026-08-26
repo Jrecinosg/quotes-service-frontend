@@ -272,6 +272,7 @@ export default function Requests() {
                     <tr>
                       <th className="px-6 py-3">Folio</th>
                       <th className="px-6 py-3">Título</th>
+                      <th className="px-6 py-3">Creado por</th>
                       <th className="px-6 py-3">Estado</th>
                       <th className="px-6 py-3">Última actualización</th>
                     </tr>
@@ -285,6 +286,7 @@ export default function Requests() {
                           </Link>
                         </td>
                         <td className="px-6 py-4 text-gray-800">{r.title}</td>
+                        <td className="px-6 py-4 text-gray-500 text-sm">{r.createdBy?.name || r.createdBy?.email || '—'}</td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold ${STATUS_STYLE[r.status]}`}>
                             {STATUS_LABEL[r.status]}

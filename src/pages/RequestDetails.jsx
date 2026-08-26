@@ -91,7 +91,8 @@ export default function RequestDetails() {
           <div>
             <h1 className="font-display text-2xl font-extrabold text-gray-900">{formatRequestId(request.correlativo)} — {request.title}</h1>
             <p className="text-gray-500 mt-1 font-medium">
-              {isStaff ? request.client?.name : 'Creada'} · {formatDate(request.createdAt)}
+              {isStaff && request.client?.name ? `${request.client.name} · ` : ''}
+              Creada por {request.createdBy?.name || request.createdBy?.email || 'desconocido'} · {formatDate(request.createdAt)}
             </p>
           </div>
           <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${STATUS_STYLE[request.status]}`}>
