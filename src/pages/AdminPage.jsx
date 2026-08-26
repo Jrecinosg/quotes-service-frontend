@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { userService } from '../services/user.service';
 import { clientService } from '../services/client.service';
 import Swal from 'sweetalert2';
-import { Trash2, ShieldCheck, User as UserIcon, Mail, Building2 } from 'lucide-react';
+import { Trash2, Pencil, X, ShieldCheck, User as UserIcon, Mail, Building2 } from 'lucide-react';
 
 export default function AdminPage() {
     const [email, setEmail] = useState('');
@@ -12,6 +12,7 @@ export default function AdminPage() {
     const [loading, setLoading] = useState(false);
     const [authorizedUsers, setAuthorizedUsers] = useState([]);
     const [fetching, setFetching] = useState(true);
+    const [editingEmail, setEditingEmail] = useState(null); // email en edición, o null = invitar nuevo
 
     // Cargar lista de usuarios autorizados
     const fetchUsers = async () => {
@@ -35,25 +36,43 @@ export default function AdminPage() {
         setLoading(true);
 
         try {
-            await userService.inviteUser(email, role, role === 'CLIENT' ? clientId : undefined);
+            const result = await userService.inviteUser(email, role, role === 'CLIENT' ? clientId : undefined);
             Swal.fire({
                 icon: 'success',
-                title: '¡Invitación enviada!',
-                text: `Se ha autorizado a ${email} con éxito.`,
+                title: result.wasNew ? '¡Invitación enviada!' : '¡Rol actualizado!',
+                text: result.wasNew
+                    ? `Se ha autorizado a ${email} con éxito.`
+                    : `${email} ahora tiene el rol seleccionado.`,
                 confirmButtonColor: '#3b82f6'
             });
             setEmail('');
             setClientId('');
+            setEditingEmail(null);
             fetchUsers();
         } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error.response?.data?.error || 'No se pudo enviar la invitación',
+                text: error.response?.data?.error || 'No se pudo guardar el cambio',
             });
         } finally {
             setLoading(false);
         }
+    };
+
+    const startEdit = (u) => {
+        setEditingEmail(u.email);
+        setEmail(u.email);
+        setRole(u.role);
+        setClientId(u.clientId ? String(u.clientId) : '');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const cancelEdit = () => {
+        setEditingEmail(null);
+        setEmail('');
+        setRole('USER');
+        setClientId('');
     };
 
     const handleDelete = async (userEmail) => {
@@ -86,12 +105,19 @@ export default function AdminPage() {
                 <p className="text-gray-600">Gestiona quién tiene acceso al cotizador y sus permisos.</p>
             </header>
 
-            {/* Formulario de Invitación */}
+            {/* Formulario de Invitación / Edición de rol */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
-                    <Mail size={20} className="text-blue-500" />
-                    Invitar Nuevo Usuario
-                </h2>
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                        <Mail size={20} className="text-blue-500" />
+                        {editingEmail ? 'Editar rol de usuario' : 'Invitar Nuevo Usuario'}
+                    </h2>
+                    {editingEmail && (
+                        <button type="button" onClick={cancelEdit} className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
+                            <X size={16} /> Cancelar
+                        </button>
+                    )}
+                </div>
                 <form onSubmit={handleInvite} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
@@ -100,7 +126,8 @@ export default function AdminPage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
+                            disabled={!!editingEmail}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-100 disabled:text-gray-500"
                             placeholder="correo@empresa.com"
                         />
                     </div>
@@ -138,7 +165,7 @@ export default function AdminPage() {
                         className={`py-2 px-4 rounded-md text-white font-medium transition-all md:col-start-3 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-brand-gradient hover:brightness-105 shadow-sm'
                             }`}
                     >
-                        {loading ? 'Procesando...' : 'Enviar Invitación'}
+                        {loading ? 'Procesando...' : editingEmail ? 'Actualizar Rol' : 'Enviar Invitación'}
                     </button>
                 </form>
                 {role === 'CLIENT' && clients.length === 0 && (
@@ -196,13 +223,22 @@ export default function AdminPage() {
                                             {new Date(user.invitedAt).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4 text-center">
-                                            <button
-                                                onClick={() => handleDelete(user.email)}
-                                                className="text-red-400 hover:text-red-600 transition-colors p-2 hover:bg-red-50 rounded-lg"
-                                                title="Revocar acceso"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
+                                            <div className="flex items-center justify-center gap-1">
+                                                <button
+                                                    onClick={() => startEdit(user)}
+                                                    className="text-blue-400 hover:text-blue-600 transition-colors p-2 hover:bg-blue-50 rounded-lg"
+                                                    title="Editar rol"
+                                                >
+                                                    <Pencil size={18} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(user.email)}
+                                                    className="text-red-400 hover:text-red-600 transition-colors p-2 hover:bg-red-50 rounded-lg"
+                                                    title="Revocar acceso"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
