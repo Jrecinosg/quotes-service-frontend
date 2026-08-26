@@ -19,5 +19,12 @@ export const clientService = {
   delete: async (id) => {
     const response = await api.delete(`/clients/${id}`);
     return response.data;
+  },
+
+  // Fusiona el cliente `id` (duplicado) dentro de `intoClientId` (el que se
+  // conserva): mueve sus cotizaciones/solicitudes y borra el duplicado.
+  merge: async (id, intoClientId) => {
+    const response = await api.post(`/clients/${id}/merge`, { intoClientId });
+    return response.data;
   }
 };

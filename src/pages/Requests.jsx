@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { formatRequestId, formatDate } from "../utils/formatters";
 import { pdf } from '@react-pdf/renderer';
 import { RequestsDocument } from "../components/RequestsPDF";
+import appLogo from "../assets/logo.png";
 
 const STATUS_LABEL = { PENDING: 'Pendiente', IN_PROGRESS: 'En proceso', DONE: 'Finalizado' };
 const STATUS_STYLE = {
@@ -138,14 +139,23 @@ export default function Requests() {
           <div className="absolute right-10 -bottom-16 w-32 h-32 rounded-full bg-white/10 pointer-events-none" />
           <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="flex items-center gap-4">
-              {user?.client?.logoBase64 && (
-                <div className="w-14 h-14 rounded-xl bg-white p-2 flex items-center justify-center shadow-md shrink-0">
-                  <img src={user.client.logoBase64} alt={user.client.name} className="w-full h-full object-contain" />
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="w-14 h-14 rounded-xl bg-white p-2 flex items-center justify-center shadow-md">
+                  <img src={appLogo} alt="Grupo AC" className="w-full h-full object-contain" />
                 </div>
-              )}
+                {user?.client?.logoBase64 && (
+                  <>
+                    <span className="text-white/50 text-xl font-light">+</span>
+                    <div className="w-14 h-14 rounded-xl bg-white p-2 flex items-center justify-center shadow-md">
+                      <img src={user.client.logoBase64} alt={user.client.name} className="w-full h-full object-contain" />
+                    </div>
+                  </>
+                )}
+              </div>
               <div>
                 <p className="text-blue-100 text-sm font-medium">Bienvenido a tu portal</p>
                 <h1 className="font-display text-2xl md:text-3xl font-bold">{user?.client?.name || "Tu empresa"}</h1>
+                <p className="text-blue-100 text-sm mt-0.5">{user?.name || user?.email}</p>
               </div>
             </div>
             <div className="flex gap-3 shrink-0">

@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { Plus, Search, Pencil, Trash2, User } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, Merge } from "lucide-react";
 import { clientService } from "../services/client.service";
 import ClientModal from "../components/ClientModal";
+import { useAuth } from "../context/AuthContext";
 import Swal from "sweetalert2";
 
 export default function Clients() {
+    const { user } = useAuth();
+    const isAdmin = user?.role === 'ADMIN';
     const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
@@ -59,6 +62,54 @@ export default function Clients() {
             } catch (error) {
                 Swal.fire('Error', 'No se pudo borrar (tal vez tiene cotizaciones asociadas).', 'error');
             }
+        }
+    };
+
+    const handleMerge = async (client) => {
+        const others = clients.filter((c) => c.id !== client.id);
+        if (others.length === 0) {
+            Swal.fire('No hay otro cliente', 'Necesitas al menos otro cliente registrado para fusionar.', 'info');
+            return;
+        }
+
+        const inputOptions = others.reduce((acc, c) => {
+            acc[c.id] = `${c.name}${c.taxId ? ` — NIT ${c.taxId}` : ''}`;
+            return acc;
+        }, {});
+
+        const { value: intoClientId, isConfirmed } = await Swal.fire({
+            title: `Fusionar "${client.name}"`,
+            html: `Elige el cliente que se <strong>conserva</strong>. Todas las cotizaciones y solicitudes de <strong>${client.name}</strong> se moverán ahí, y luego se borrará este duplicado.`,
+            input: 'select',
+            inputOptions,
+            inputPlaceholder: 'Selecciona el cliente que se conserva...',
+            showCancelButton: true,
+            confirmButtonText: 'Fusionar',
+            confirmButtonColor: '#2563eb',
+            cancelButtonText: 'Cancelar',
+            inputValidator: (value) => !value && 'Selecciona un cliente'
+        });
+
+        if (!isConfirmed || !intoClientId) return;
+
+        const target = others.find((c) => String(c.id) === String(intoClientId));
+        const confirm = await Swal.fire({
+            title: '¿Confirmar fusión?',
+            text: `"${client.name}" se borrará y todo lo suyo pasará a "${target.name}". Esta acción no se puede deshacer.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Sí, fusionar'
+        });
+        if (!confirm.isConfirmed) return;
+
+        try {
+            const result = await clientService.merge(client.id, intoClientId);
+            Swal.fire('¡Fusionado!', `${result.message} (${result.movedQuotations} cotizaciones y ${result.movedRequests} solicitudes movidas)`, 'success');
+            fetchClients();
+        } catch (error) {
+            Swal.fire('Error', error.response?.data?.error || 'No se pudo fusionar', 'error');
         }
     };
 
@@ -146,6 +197,14 @@ export default function Clients() {
                                                 >
                                                     <Pencil size={18} />
                                                 </button>
+                                                {isAdmin && (
+                                                    <button
+                                                        onClick={() => handleMerge(client)}
+                                                        className="p-2 text-purple-600 hover:bg-purple-100 rounded-lg" title="Fusionar con otro cliente"
+                                                    >
+                                                        <Merge size={18} />
+                                                    </button>
+                                                )}
                                                 <button
                                                     onClick={() => handleDelete(client.id)}
                                                     className="p-2 text-red-600 hover:bg-red-100 rounded-lg" title="Eliminar"
