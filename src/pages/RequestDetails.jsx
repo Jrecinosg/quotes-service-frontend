@@ -89,7 +89,7 @@ export default function RequestDetails() {
       <div className="bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
         <div className="bg-gray-50 px-8 py-6 border-b border-gray-200 flex justify-between items-start flex-wrap gap-4">
           <div>
-            <h1 className="text-2xl font-extrabold text-gray-900">{formatRequestId(request.correlativo)} — {request.title}</h1>
+            <h1 className="font-display text-2xl font-extrabold text-gray-900">{formatRequestId(request.correlativo)} — {request.title}</h1>
             <p className="text-gray-500 mt-1 font-medium">
               {isStaff ? request.client?.name : 'Creada'} · {formatDate(request.createdAt)}
             </p>

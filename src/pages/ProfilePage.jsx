@@ -40,7 +40,7 @@ export default function ProfilePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <header>
-        <h1 className="text-3xl font-bold text-gray-900">Mi Perfil</h1>
+        <h1 className="font-display text-3xl font-bold text-gray-900">Mi Perfil</h1>
         <p className="text-gray-600">Gestiona tu información personal en el sistema.</p>
       </header>
 
@@ -102,7 +102,7 @@ export default function ProfilePage() {
               className={`w-full flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-white transition-all ${
                 loading || name === user?.name
                   ? 'bg-gray-300 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700 shadow-md'
+                  : 'bg-brand-gradient hover:brightness-105 shadow-md'
               }`}
             >
               {loading ? 'Guardando...' : <><Save size={20} /> Guardar Cambios</>}

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { User, Lock, Mail, AlertCircle, Type } from "lucide-react";
+import { Lock, Mail, AlertCircle, Type } from "lucide-react";
 import Swal from "sweetalert2";
+import logo from "../assets/logo.png";
 
 export default function Login() {
   const { login, signup, loginWithGoogle, resetPassword, user } = useAuth();
@@ -60,17 +61,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-orange-50 p-4">
       <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg border border-blue-100">
 
         <div className="text-center mb-6">
-          <div className="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3">
-            <User className="w-7 h-7 text-blue-600" />
+          <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center mx-auto mb-3 p-2">
+            <img src={logo} alt="Grupo AC" className="w-full h-full object-contain" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="font-display text-2xl font-bold text-gray-800">
             {isRegistering ? "Crear Cuenta" : "Bienvenido de nuevo"}
           </h2>
-          <p className="text-gray-500 text-sm mt-1">Sistema de Cotizaciones Pro</p>
+          <p className="text-sm mt-1 font-semibold text-transparent bg-clip-text bg-brand-gradient">Plataforma Grupo AC</p>
         </div>
 
         {error && (
@@ -143,7 +144,7 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md mt-2"
+            className="w-full bg-brand-gradient hover:brightness-105 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md mt-2"
           >
             {isRegistering ? "Registrarse" : "Iniciar Sesión"}
           </button>

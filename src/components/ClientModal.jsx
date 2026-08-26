@@ -80,7 +80,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden animate-fade-in">
 
         {/* Header */}
-        <div className="bg-blue-600 px-6 py-4 flex justify-between items-center">
+        <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
           <h2 className="text-white font-bold text-lg">
             {clientToEdit ? "Editar Cliente" : "Nuevo Cliente"}
           </h2>
@@ -185,7 +185,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2"
+              className="px-4 py-2 bg-brand-gradient text-white rounded-md hover:brightness-105 flex items-center gap-2"
             >
               <Save size={18} />
               Guardar

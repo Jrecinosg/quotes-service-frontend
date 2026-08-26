@@ -82,7 +82,7 @@ export default function AdminPage() {
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <header>
-                <h1 className="text-3xl font-bold text-gray-900">Configuración del Sistema</h1>
+                <h1 className="font-display text-3xl font-bold text-gray-900">Configuración del Sistema</h1>
                 <p className="text-gray-600">Gestiona quién tiene acceso al cotizador y sus permisos.</p>
             </header>
 
@@ -135,7 +135,7 @@ export default function AdminPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`py-2 px-4 rounded-md text-white font-medium transition-all md:col-start-3 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 shadow-sm'
+                        className={`py-2 px-4 rounded-md text-white font-medium transition-all md:col-start-3 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-brand-gradient hover:brightness-105 shadow-sm'
                             }`}
                     >
                         {loading ? 'Procesando...' : 'Enviar Invitación'}

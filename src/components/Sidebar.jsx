@@ -33,8 +33,12 @@ export default function Sidebar() {
                     )}
                 </div>
             ) : (
-                <div className="h-16 flex items-center justify-center border-b border-gray-100">
-                    <h1 className="text-2xl font-bold text-blue-600">Cotizador</h1>
+                <div className="h-16 flex items-center gap-2 border-b border-gray-100 px-4">
+                    <img src={appLogo} alt="Grupo AC" className="h-8 w-auto" />
+                    <div className="flex flex-col leading-none">
+                        <span className="font-display font-extrabold text-sm tracking-wide text-gray-900">GRUPO AC</span>
+                        <span className="text-[10px] font-semibold text-transparent bg-clip-text bg-brand-gradient uppercase tracking-wider">Plataforma</span>
+                    </div>
                 </div>
             )}
 
@@ -48,9 +52,9 @@ export default function Sidebar() {
                         <Link
                             key={item.path}
                             to={item.path}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
-                                ? "bg-blue-50 text-blue-600 font-medium"
-                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors border-l-4 ${isActive
+                                ? "bg-blue-50 text-blue-700 font-medium border-brand-blue"
+                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-transparent"
                                 }`}
                         >
                             <Icon size={20} />
@@ -78,7 +82,7 @@ export default function Sidebar() {
             <div className="p-4 border-t border-gray-100 space-y-2">
                 {/* Info de Usuario */}
                 <Link to="/app/profile" className="flex items-center gap-3 px-3 py-4 mb-2 bg-gray-50 rounded-xl border border-gray-100">
-                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shrink-0 shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-brand-gradient flex items-center justify-center text-white font-bold shrink-0 shadow-sm">
                         {getInitial(user?.name)}
                     </div>
                     <div className="flex flex-col min-w-0">

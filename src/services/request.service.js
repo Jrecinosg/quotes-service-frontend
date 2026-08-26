@@ -24,5 +24,10 @@ export const requestService = {
   addNote: async (id, body) => {
     const response = await api.post(`/requests/${id}/notes`, { body });
     return response.data;
+  },
+
+  getStats: async () => {
+    const response = await api.get("/requests/stats");
+    return response.data;
   }
 };

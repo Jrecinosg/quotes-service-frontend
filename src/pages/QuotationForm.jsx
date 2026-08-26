@@ -165,7 +165,7 @@ export default function QuotationForm() {
                 <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full text-gray-600">
                     <ArrowLeft size={24} />
                 </button>
-                <h1 className="text-2xl font-bold text-gray-800">
+                <h1 className="font-display text-2xl font-bold text-gray-800">
                     {id ? `Editar Cotización` : "Nueva Cotización"}
                 </h1>
             </div>

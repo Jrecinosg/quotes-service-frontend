@@ -32,7 +32,7 @@ export default function ForbiddenPage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/app"
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-brand-gradient text-white rounded-lg font-semibold hover:brightness-105 transition-colors shadow-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             Volver al Inicio
@@ -50,7 +50,7 @@ export default function ForbiddenPage() {
 
       {/* Footer */}
       <p className="mt-12 text-sm text-gray-400 font-medium tracking-widest uppercase">
-        Sistema de Cotizaciones © 2026
+        Plataforma Grupo AC © 2026
       </p>
     </div>
   );
