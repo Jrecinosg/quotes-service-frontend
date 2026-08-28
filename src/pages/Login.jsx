@@ -48,13 +48,28 @@ export default function Login() {
 
     try {
       if (isRegistering) {
-        await signup(email, password, name);
+        try {
+          await signup(email, password, name);
+        } catch (signupErr) {
+          // El correo ya tiene cuenta (de una invitacion anterior, por ejemplo):
+          // en vez de dejar a la persona atascada en un error, se intenta
+          // entrar directo con la misma contraseña que acaba de escribir.
+          if (signupErr.code === 'auth/email-already-in-use') {
+            await login(email, password);
+          } else {
+            throw signupErr;
+          }
+        }
       } else {
         await login(email, password);
       }
     } catch (err) {
       console.error(err);
-      if (err.code === 'auth/invalid-credential') setError("Correo o contraseña incorrectos.");
+      if (err.code === 'auth/invalid-credential') {
+        setError(isRegistering
+          ? "Ya tienes una cuenta con este correo, pero la contraseña no coincide. Usa \"¿Olvidaste tu contraseña?\" para restablecerla."
+          : "Correo o contraseña incorrectos.");
+      }
       else if (err.code === 'auth/email-already-in-use') setError("Este correo ya está registrado.");
       else if (err.code === 'auth/weak-password') setError("La contraseña debe tener al menos 6 caracteres.");
       else setError("Ocurrió un error. Intenta de nuevo.");
@@ -119,16 +134,15 @@ export default function Login() {
             <div className="flex justify-between items-center mb-1">
               <label className="block text-sm font-medium text-gray-700">Contraseña</label>
 
-              {/* LINK: Olvidé mi contraseña */}
-              {!isRegistering && (
-                <button
-                  type="button"
-                  onClick={handleForgotPassword}
-                  className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors"
-                >
-                  ¿Olvidaste tu contraseña?
-                </button>
-              )}
+              {/* LINK: Olvidé mi contraseña -visible tambien en registro, por si
+                  el correo ya tenia cuenta y la contraseña no coincide */}
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors"
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
             </div>
             <div className="relative">
               <Lock className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
