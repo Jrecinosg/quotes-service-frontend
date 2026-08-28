@@ -166,3 +166,17 @@
   }
   @media (max-width: 620px){.gac-landing .solutions-grid { grid-template-columns:1fr; }.gac-landing .trust-strip { grid-template-columns:1fr; }.gac-landing .trust-item { border-left:none; border-top:1px solid var(--line); }.gac-landing .trust-item:first-child { border-top:none; }.gac-landing .sectors { grid-template-columns:1fr; }.gac-landing .process { grid-template-columns:1fr; }.gac-landing .qp-grid { grid-template-columns:1fr 1fr; }
   }
+
+  /* Header en celular: con el logo+texto y los 2 botones ya no cabe todo en
+     una fila -se aprietan y el boton circular "Cotiza tu proyecto" queda
+     encimado con "Ingresar". Se libera espacio quitando el subtitulo del
+     logo y el boton de cotizar del header (sigue disponible en el hero y en
+     la seccion de contacto, no se pierde la accion). */
+  @media (max-width: 560px) {
+    .gac-landing .nav { padding: 12px var(--edge); }
+    .gac-landing .brand-text .tag { display: none; }
+    .gac-landing .brand img { height: 30px; }
+    .gac-landing .brand-text .name { font-size: 13.5px; }
+    .gac-landing .nav-actions .btn-cta { display: none; }
+    .gac-landing .btn-ghost { padding: 8px 14px; font-size: 12px; }
+  }
