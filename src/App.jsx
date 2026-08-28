@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Clients from "./pages/Clients";
@@ -60,6 +61,7 @@ export default function App() {
         {/* Rutas Públicas */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/403" element={<ForbiddenPage />} />
 
         {/* Rutas Protegidas por Login */}
