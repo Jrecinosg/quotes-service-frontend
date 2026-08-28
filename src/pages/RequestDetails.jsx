@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Send, CheckCircle2, Clock, PlayCircle } from "lucide-react";
+import { ArrowLeft, Send, CheckCircle2, PlayCircle } from "lucide-react";
 import { requestService } from "../services/request.service";
 import { useAuth } from "../context/AuthContext";
-import { formatRequestId, formatDate } from "../utils/formatters";
+import { formatRequestId, formatDate, formatDateTime } from "../utils/formatters";
 import Swal from "sweetalert2";
 
 const STATUS_LABEL = { PENDING: 'Pendiente', IN_PROGRESS: 'En proceso', DONE: 'Finalizado' };
@@ -129,15 +129,20 @@ export default function RequestDetails() {
               <div key={n.id} className="flex gap-3">
                 <div className="mt-1 shrink-0">
                   {n.type === 'STATUS_CHANGE' ? (
-                    <Clock size={16} className="text-blue-500" />
+                    <CheckCircle2 size={16} className="text-green-500" />
                   ) : (
                     <div className="w-2 h-2 rounded-full bg-gray-300 mt-1.5 ml-1" />
                   )}
                 </div>
                 <div className="flex-1 border-b border-gray-100 pb-3">
+                  {n.type === 'STATUS_CHANGE' && (
+                    <p className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider mb-1 ${STATUS_STYLE[n.statusTo]}`}>
+                      {STATUS_LABEL[n.statusTo]}
+                    </p>
+                  )}
                   <p className="text-sm text-gray-700">{n.body}</p>
                   <p className="text-xs text-gray-400 mt-1">
-                    {n.createdBy?.name || n.createdBy?.email} · {formatDate(n.createdAt)}
+                    {n.createdBy?.name || n.createdBy?.email} · {formatDateTime(n.createdAt)}
                   </p>
                 </div>
               </div>
