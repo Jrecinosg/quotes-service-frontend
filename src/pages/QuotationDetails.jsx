@@ -33,7 +33,7 @@ export default function QuotationDetails() {
         <div className="max-w-4xl mx-auto pb-10">
 
             {/* Cabecera de Navegación */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <button onClick={() => navigate("/app/quotations")} className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <ArrowLeft size={20} /> Volver al listado
                 </button>
@@ -59,7 +59,7 @@ export default function QuotationDetails() {
             <div className="bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
                 
                 {/* Encabezado Documento */}
-                <div className="bg-gray-50 px-8 py-6 border-b border-gray-200">
+                <div className="bg-gray-50 px-4 md:px-8 py-6 border-b border-gray-200">
                     <div className="flex justify-between items-center">
                         <div>
                             <h1 className="font-display text-3xl font-extrabold text-gray-900">
@@ -77,16 +77,16 @@ export default function QuotationDetails() {
                     </div>
                 </div>
 
-                <div className="p-8">
+                <div className="p-4 md:p-8">
                     {/* Datos Cliente y Vendedor */}
-                    <div className="grid grid-cols-2 gap-12 mb-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 mb-10">
                         <div>
                             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Información del Cliente</h3>
                             <p className="font-bold text-xl text-gray-800 mb-1">{quotation.client.name}</p>
                             <p className="text-gray-600 leading-relaxed">{quotation.client.address}</p>
                             <p className="text-gray-500 mt-2 font-medium">NIT: {quotation.client.taxId || 'C/F'}</p>
                         </div>
-                        <div className="text-right">
+                        <div className="md:text-right">
                             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Elaborado por</h3>
                             <p className="text-lg font-semibold text-gray-800">{quotation.elaboratedBy || "No especificado"}</p>
                             <p className="text-sm text-gray-500 italic mt-1">Representante de Ventas</p>
@@ -95,7 +95,7 @@ export default function QuotationDetails() {
 
                     {/* --- TABLA DE ÍTEMS ACTUALIZADA --- */}
                     <div className="overflow-x-auto mb-8">
-                        <table className="w-full text-left">
+                        <table className="w-full text-left min-w-[700px]">
                             <thead className="border-b-2 border-gray-100 text-gray-400 text-xs uppercase font-bold">
                                 <tr>
                                     <th className="px-4 py-3 text-center w-16">Cant.</th>
@@ -173,12 +173,12 @@ export default function QuotationDetails() {
                     {/* Condiciones Comerciales */}
                     <div className="mt-12 bg-gray-50 rounded-xl p-6 border border-gray-100">
                         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Condiciones y Observaciones</h3>
-                        <div className="grid grid-cols-2 gap-6 text-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                             <div className="space-y-2">
                                 <p><span className="font-bold text-gray-700">Garantía:</span> <span className="text-gray-600">{quotation.warranty}</span></p>
                                 <p><span className="font-bold text-gray-700">Tiempo de Entrega:</span> <span className="text-gray-600">{quotation.deliveryTime}</span></p>
                             </div>
-                            <div className="space-y-2 text-right">
+                            <div className="space-y-2 md:text-right">
                                 <p><span className="font-bold text-gray-700">Forma de Pago:</span> <span className="text-gray-600">{quotation.paymentMethod}</span></p>
                                 <p><span className="font-bold text-gray-700">Validez:</span> <span className="text-gray-600">{quotation.validity || 'No especificada'}</span></p>
                             </div>

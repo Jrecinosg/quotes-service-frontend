@@ -240,13 +240,15 @@ export default function AdminPage() {
                                     <span className="font-semibold text-gray-700 text-sm">{clientName}</span>
                                     <span className="text-xs text-gray-400">({users.length} persona{users.length === 1 ? '' : 's'})</span>
                                 </div>
-                                <table className="w-full text-left border-collapse">
-                                    <tbody className="divide-y divide-gray-100">
-                                        {users.map((user) => (
-                                            <UserRow key={user.email} user={user} onEdit={startEdit} onDelete={handleDelete} hideRole />
-                                        ))}
-                                    </tbody>
-                                </table>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left border-collapse">
+                                        <tbody className="divide-y divide-gray-100">
+                                            {users.map((user) => (
+                                                <UserRow key={user.email} user={user} onEdit={startEdit} onDelete={handleDelete} hideRole />
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         ))}
                     </div>

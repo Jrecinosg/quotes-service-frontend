@@ -87,7 +87,7 @@ export default function RequestDetails() {
       </button>
 
       <div className="bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
-        <div className="bg-gray-50 px-8 py-6 border-b border-gray-200 flex justify-between items-start flex-wrap gap-4">
+        <div className="bg-gray-50 px-4 md:px-8 py-6 border-b border-gray-200 flex justify-between items-start flex-wrap gap-4">
           <div>
             <h1 className="font-display text-2xl font-extrabold text-gray-900">{formatRequestId(request.correlativo)} — {request.title}</h1>
             <p className="text-gray-500 mt-1 font-medium">
@@ -100,7 +100,7 @@ export default function RequestDetails() {
           </span>
         </div>
 
-        <div className="p-8">
+        <div className="p-4 md:p-8">
           <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Descripción</h3>
           <p className="text-gray-700 whitespace-pre-wrap mb-8">{request.description}</p>
 

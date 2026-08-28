@@ -46,8 +46,8 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden animate-fade-in">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in">
         <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
           <h2 className="text-white font-bold text-lg">Nueva solicitud</h2>
           <button type="button" onClick={onClose} className="text-blue-100 hover:text-white">
