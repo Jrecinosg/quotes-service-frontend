@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 
 import {
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signOut,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
@@ -36,9 +38,20 @@ export function AuthProvider({ children }) {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  // 3. Login con Google
-  const loginWithGoogle = () => {
-    return signInWithPopup(auth, googleProvider);
+  // 3. Login con Google -en celular los navegadores casi siempre bloquean la
+  // ventana emergente (auth/popup-blocked); si eso pasa, se cae a redirect
+  // (misma pestaña, sin ventana emergente). En escritorio la ventana
+  // emergente sigue siendo la experiencia normal.
+  const loginWithGoogle = async () => {
+    try {
+      return await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      const fallbackCodes = ['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment'];
+      if (fallbackCodes.includes(error.code)) {
+        return signInWithRedirect(auth, googleProvider);
+      }
+      throw error;
+    }
   };
 
   const resetPassword = (email) => {
@@ -46,6 +59,20 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => signOut(auth);
+
+  // Captura errores del login con Google cuando volvio por redirect (celular)
+  // -si el redirect si funciono, onAuthStateChanged de abajo ya lo agarra solo.
+  useEffect(() => {
+    getRedirectResult(auth).catch((error) => {
+      console.error("Error en el resultado del redirect de Google:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'No se pudo iniciar sesión con Google',
+        text: 'Intenta de nuevo o usa correo y contraseña.',
+        confirmButtonColor: '#ef4444'
+      });
+    });
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
