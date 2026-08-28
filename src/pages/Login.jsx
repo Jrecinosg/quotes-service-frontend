@@ -10,8 +10,9 @@ export default function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  const invitedEmail = searchParams.get("email") || "";
   const [isRegistering, setIsRegistering] = useState(searchParams.get("mode") === "register");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(invitedEmail);
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
@@ -124,10 +125,14 @@ export default function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                readOnly={!!invitedEmail}
+                className={`w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${invitedEmail ? "bg-gray-100 text-gray-600 cursor-not-allowed" : ""}`}
                 placeholder="ejemplo@empresa.com"
               />
             </div>
+            {invitedEmail && (
+              <p className="text-xs text-gray-500 mt-1">Esta invitación es para este correo específico.</p>
+            )}
           </div>
 
           <div>
