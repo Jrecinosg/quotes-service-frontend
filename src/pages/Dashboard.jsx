@@ -99,20 +99,20 @@ export default function Dashboard() {
                 ) : (
                     <ResponsiveContainer width="100%" height={260}>
                         <BarChart data={performance} margin={{ top: 8, right: 8, left: 0, bottom: 0 }} barCategoryGap="30%">
-                            <CartesianGrid vertical={false} stroke="#F1F5F9" />
+                            <CartesianGrid vertical={false} stroke="#CBD5E1" />
                             <XAxis
                                 dataKey="month"
                                 tickFormatter={MONTH_LABEL}
                                 tick={{ fontSize: 12, fill: "#6B7280" }}
-                                axisLine={{ stroke: "#E5E7EB" }}
+                                axisLine={{ stroke: "#94A3B8" }}
                                 tickLine={false}
                             />
                             <YAxis
                                 tick={{ fontSize: 12, fill: "#6B7280" }}
                                 axisLine={false}
                                 tickLine={false}
-                                width={36}
-                                label={{ value: "horas", angle: -90, position: "insideLeft", fill: "#9CA3AF", fontSize: 11 }}
+                                width={48}
+                                tickFormatter={(value) => `${value}h`}
                             />
                             <Tooltip content={<PerformanceTooltip />} cursor={{ fill: "#F1F5F9" }} />
                             <Bar dataKey="avgHours" fill="#2563EB" radius={[4, 4, 0, 0]} maxBarSize={40} />
