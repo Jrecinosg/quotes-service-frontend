@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Lock, Mail, AlertCircle, Type } from "lucide-react";
 import Swal from "sweetalert2";
@@ -8,8 +8,9 @@ import logo from "../assets/logo.png";
 export default function Login() {
   const { login, signup, loginWithGoogle, resetPassword, user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const [isRegistering, setIsRegistering] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(searchParams.get("mode") === "register");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
