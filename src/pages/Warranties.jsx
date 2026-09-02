@@ -77,7 +77,7 @@ export default function Warranties() {
     const term = supplierSearch.trim().toLowerCase();
     if (!term) return suppliers;
     return suppliers.filter((s) =>
-      [s.name, s.contactName, s.phone, s.email].filter(Boolean).some((v) => v.toLowerCase().includes(term))
+      [s.name, s.taxId, s.contactName, s.phone, s.email].filter(Boolean).some((v) => v.toLowerCase().includes(term))
     );
   }, [suppliers, supplierSearch]);
 
@@ -322,7 +322,14 @@ export default function Warranties() {
                             <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold shrink-0">
                               {s.name.charAt(0).toUpperCase()}
                             </div>
-                            <p className="font-medium text-gray-900">{s.name}</p>
+                            <div>
+                              <p className="font-medium text-gray-900">{s.name}</p>
+                              {s.taxId && (
+                                <span className="inline-block px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-[11px] font-mono">
+                                  NIT {s.taxId}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-600">{s.contactName || "—"}</td>

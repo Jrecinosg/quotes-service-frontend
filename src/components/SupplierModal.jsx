@@ -4,7 +4,7 @@ import { X, Save } from "lucide-react";
 import { supplierService } from "../services/supplier.service";
 import Swal from "sweetalert2";
 
-const EMPTY = { name: "", contactName: "", phone: "", email: "" };
+const EMPTY = { name: "", taxId: "", contactName: "", phone: "", email: "" };
 
 export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSuccess }) {
   const [formData, setFormData] = useState(EMPTY);
@@ -14,6 +14,7 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
     if (supplierToEdit) {
       setFormData({
         name: supplierToEdit.name || "",
+        taxId: supplierToEdit.taxId || "",
         contactName: supplierToEdit.contactName || "",
         phone: supplierToEdit.phone || "",
         email: supplierToEdit.email || ""
@@ -72,6 +73,17 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
               className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">NIT</label>
+            <input
+              type="text"
+              placeholder="Ej. 12345678-9"
+              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={formData.taxId}
+              onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
             />
           </div>
 
