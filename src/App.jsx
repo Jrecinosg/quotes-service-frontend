@@ -11,6 +11,9 @@ import QuotationForm from "./pages/QuotationForm";
 import QuotationDetails from "./pages/QuotationDetails";
 import Requests from "./pages/Requests";
 import RequestDetails from "./pages/RequestDetails";
+import Warranties from "./pages/Warranties";
+import WarrantyProjectForm from "./pages/WarrantyProjectForm";
+import WarrantyProjectDetails from "./pages/WarrantyProjectDetails";
 import AdminPage from "./pages/AdminPage";
 import ForbiddenPage from "./pages/ForbiddenPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -77,6 +80,12 @@ export default function App() {
           <Route path="quotations/new" element={<StaffRoute><QuotationForm /></StaffRoute>} />
           <Route path="quotations/edit/:id" element={<StaffRoute><QuotationForm /></StaffRoute>} />
           <Route path="quotations/:id" element={<StaffRoute><QuotationDetails /></StaffRoute>} />
+          {/* Garantías: módulo interno, un CLIENT que entre por URL directa
+              se va a sus solicitudes (mismo StaffRoute que clientes/cotizaciones) */}
+          <Route path="warranties" element={<StaffRoute><Warranties /></StaffRoute>} />
+          <Route path="warranties/new" element={<StaffRoute><WarrantyProjectForm /></StaffRoute>} />
+          <Route path="warranties/edit/:id" element={<StaffRoute><WarrantyProjectForm /></StaffRoute>} />
+          <Route path="warranties/:id" element={<StaffRoute><WarrantyProjectDetails /></StaffRoute>} />
           <Route path="requests" element={<Requests />} />
           <Route path="requests/:id" element={<RequestDetails />} />
           <Route path="profile" element={<ProfilePage />} />

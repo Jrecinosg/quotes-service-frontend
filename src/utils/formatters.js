@@ -15,6 +15,14 @@ export const formatRequestId = (num) => {
 };
 
 /**
+ * Convierte un ID numérico en un correlativo tipo GAR00001 (garantías)
+ */
+export const formatWarrantyId = (num) => {
+  if (!num) return 'GAR00000';
+  return `GAR${String(num).padStart(5, '0')}`;
+};
+
+/**
  * Redondea a 2 decimales evitando errores de precisión de punto flotante
  * (ej. 10.005 * 1 no debe quedar en 10.004999999999999)
  */
@@ -39,6 +47,18 @@ export const formatCurrency = (amount) => {
 export const formatDate = (dateString) => {
   if (!dateString) return '---';
   return new Date(dateString).toLocaleDateString('es-GT');
+};
+
+/**
+ * Pasa una fecha del servidor al formato que necesita un <input type="date">
+ * (YYYY-MM-DD). Las fechas de garantías se guardan a mediodía UTC justo para
+ * que este corte no se desplace un día por la zona horaria.
+ */
+export const toDateInputValue = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+  return date.toISOString().slice(0, 10);
 };
 
 /**

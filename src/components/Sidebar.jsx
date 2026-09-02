@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, FileText, LogOut, Settings, User, ClipboardList, Menu, X } from "lucide-react";
+import { LayoutDashboard, Users, FileText, LogOut, Settings, User, ClipboardList, ShieldCheck, Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import appLogo from "../assets/logo.png";
 
@@ -17,6 +17,8 @@ export default function Sidebar() {
             { path: "/app/clients", icon: Users, label: "Clientes" },
             { path: "/app/quotations", icon: FileText, label: "Cotizaciones" },
             { path: "/app/requests", icon: ClipboardList, label: "Solicitudes" },
+            // Garantías es interno: va solo en este menú, nunca en el de CLIENT
+            { path: "/app/warranties", icon: ShieldCheck, label: "Garantías" },
         ];
 
     const getInitial = (name) => name ? name.charAt(0).toUpperCase() : "?";
