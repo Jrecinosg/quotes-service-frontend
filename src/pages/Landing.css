@@ -68,7 +68,8 @@
     display:inline-flex; align-items:center; gap:7px;
   }.gac-landing .btn-ghost:hover { background:rgba(31,140,255,.26); box-shadow:0 9px 28px -6px var(--glow-blue), 0 0 0 1px rgba(255,255,255,.12) inset; }.gac-landing .btn-ghost svg { width:13px; height:13px; }.gac-landing .btn-cta {
     position:relative; overflow:hidden;
-    font-size:13.5px; font-weight:700; color:#0A0E1A; background:var(--grad-brand);
+    font-size:13.5px; font-weight:700; color:#FFFFFF; background:var(--grad-brand);
+    text-shadow:0 1px 3px rgba(10,14,26,.55);
     border:none; border-radius:100px; padding:11px 22px; cursor:pointer;
     box-shadow:0 10px 32px -8px var(--glow-orange), 0 6px 22px -10px var(--glow-blue), 0 0 0 1px rgba(255,255,255,.08) inset;
     transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
