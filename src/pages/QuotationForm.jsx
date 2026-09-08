@@ -15,6 +15,9 @@ export default function QuotationForm() {
 
     // --- ESTADOS ---
     const [client, setClient] = useState(null);
+    // Solo para ubicar la cotizacion mas rapido dentro del modulo -nunca se
+    // manda al PDF.
+    const [projectReference, setProjectReference] = useState("");
 
     // 2. Orden de columnas cambiado: Cantidad primero
     const [items, setItems] = useState([
@@ -52,6 +55,7 @@ export default function QuotationForm() {
             quotationService.getById(id)
                 .then(data => {
                     setClient(data.client);
+                    setProjectReference(data.projectReference || "");
 
                     const formattedItems = data.items.map(i => ({
                         quantity: Number(i.quantity),
@@ -112,6 +116,7 @@ export default function QuotationForm() {
         setLoading(true);
         const payload = {
             clientId: client.id,
+            projectReference: projectReference.trim(),
             items: items.map(item => ({
                 quantity: item.quantity,
                 description: item.description,
@@ -204,11 +209,17 @@ export default function QuotationForm() {
                             )}
                         </div>
 
-                        {/* Derecha/Centro: Título del Proyecto y Logo */}
-                        <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4">
-                            {/* Aquí iría el Logo de empresa */}
-                            {/* <img src="/logo.png" className="h-16 mb-2" /> */}
-
+                        {/* Derecha: Referencia interna del proyecto */}
+                        <div className="flex-1 flex flex-col justify-start gap-1">
+                            <label className="font-bold text-gray-700">Referencia de proyecto</label>
+                            <input
+                                type="text"
+                                placeholder="Ej. Bodega Zona 4 -para ubicarla más rápido"
+                                className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                                value={projectReference}
+                                onChange={(e) => setProjectReference(e.target.value)}
+                            />
+                            <p className="text-xs text-gray-400">Solo se ve aquí dentro del sistema, no sale en el PDF.</p>
                         </div>
                     </div>
                 </div>

@@ -23,7 +23,16 @@ export default function QuotationDetails() {
     const handleOpenPdf = async () => {
         const blob = await pdf(<QuotationDocument quotation={quotation} />).toBlob();
         const url = URL.createObjectURL(blob);
-        window.open(url, '_blank');
+        // Se fuerza la descarga (no solo abrir en pestaña) para que el archivo
+        // quede guardado con el número real de la cotización, no un nombre
+        // genérico tipo "blob".
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${formatQuotationId(quotation.correlativo)}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     };
 
     if (loading) return <div className="p-8 text-center text-gray-500">Cargando detalles de la cotización...</div>;
@@ -68,6 +77,11 @@ export default function QuotationDetails() {
                             <p className="text-gray-500 mt-1 font-medium">
                                 Emitida el {formatDate(quotation.createdAt)}
                             </p>
+                            {quotation.projectReference && (
+                                <p className="text-sm text-orange-600 font-semibold mt-1">
+                                    {quotation.projectReference}
+                                </p>
+                            )}
                         </div>
                         <div className="text-right">
                             <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">

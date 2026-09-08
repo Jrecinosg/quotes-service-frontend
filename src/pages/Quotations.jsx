@@ -87,7 +87,7 @@ export default function Quotations() {
                     <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
                     <input
                         type="text"
-                        placeholder="Buscar por cliente o correlativo (ej: CO00001)..."
+                        placeholder="Buscar por cliente, correlativo o referencia de proyecto..."
                         className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -120,7 +120,10 @@ export default function Quotations() {
                                             {formatQuotationId(q.correlativo)}
                                         </td>
                                         <td className="px-6 py-4 font-medium text-gray-700">
-                                            {q.client?.name || "Cliente no disponible"}
+                                            <p>{q.client?.name || "Cliente no disponible"}</p>
+                                            {q.projectReference && (
+                                                <p className="text-xs font-normal text-gray-400 mt-0.5">{q.projectReference}</p>
+                                            )}
                                         </td>
                                         <td className="px-6 py-4 text-gray-500">
                                             {formatDate(q.createdAt)}
