@@ -90,16 +90,16 @@ const styles = StyleSheet.create({
     borderTopColor: '#F46B20',
   },
 
-  // --- ANCHOS DE COLUMNA (Ajustados para 4 columnas) ---
+  // --- ANCHOS DE COLUMNA (Cant, Descripción, P.Lista, %Desc, P.Oferta, Total) ---
   colCant: {
-    width: '10%',
+    width: '8%',
     borderRightWidth: 1,
     borderRightColor: '#F46B20',
     justifyContent: 'center',
     textAlign: 'center'
   },
   colDesc: {
-    width: '55%', // Aumentado al quitar columnas de descuento
+    width: '34%',
     borderRightWidth: 1,
     borderRightColor: '#F46B20',
     paddingLeft: 5,
@@ -107,6 +107,20 @@ const styles = StyleSheet.create({
   },
   colDescrip: {
     fontSize: 10,
+  },
+  colLista: {
+    width: '15%',
+    borderRightWidth: 1,
+    borderRightColor: '#F46B20',
+    textAlign: 'center',
+    justifyContent: 'center'
+  },
+  colDescPct: {
+    width: '10%',
+    borderRightWidth: 1,
+    borderRightColor: '#F46B20',
+    textAlign: 'center',
+    justifyContent: 'center'
   },
   colUni: {
     width: '15%',
@@ -116,9 +130,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   colTot: {
-    width: '20%', // Aumentado un poco para totales grandes
+    width: '18%',
     textAlign: 'center',
     justifyContent: 'center'
+  },
+  strikeText: {
+    textDecoration: 'line-through',
+    color: '#888',
+  },
+  discountText: {
+    color: '#F46B20',
+    fontWeight: 'bold',
   },
 
   // --- TOTAL ---
@@ -240,19 +262,21 @@ export const QuotationDocument = ({ quotation }) => {
           </View>
         </View>
 
-        {/* --- TABLA (SOLO 4 COLUMNAS) --- */}
+        {/* --- TABLA --- */}
         <View style={styles.table}>
           <View style={[styles.tableRow, styles.tableHeader]} fixed>
             <View style={styles.colCant}><Text>Cant.</Text></View>
             <View style={styles.colDesc}><Text>Descripción</Text></View>
-            <View style={styles.colUni}><Text>P. Unitario</Text></View>
+            <View style={styles.colLista}><Text>P. Lista</Text></View>
+            <View style={styles.colDescPct}><Text>% Desc.</Text></View>
+            <View style={styles.colUni}><Text>P. Oferta</Text></View>
             <View style={styles.colTot}><Text>P. Total</Text></View>
           </View>
 
           {items.map((item, i) => {
-            // Calculamos el Precio Unitario final (P. Oferta) para mostrarlo
             const listPrice = Number(item.listPrice) || 0;
             const discount = Number(item.discountPercent) || 0;
+            const hasDiscount = discount > 0;
             const finalUnitPrice = listPrice * (1 - discount / 100);
 
             return (
@@ -265,7 +289,17 @@ export const QuotationDocument = ({ quotation }) => {
                   <Text style={styles.colDescrip}>{item.description}</Text>
                 </View>
 
-                {/* Mostramos el precio con el descuento ya aplicado */}
+                {/* Precio de lista: tachado si tiene descuento, para que se
+                    note que el precio de oferta ya viene rebajado */}
+                <View style={styles.colLista}>
+                  <Text style={hasDiscount ? styles.strikeText : null}>{formatCurrency(listPrice)}</Text>
+                </View>
+
+                <View style={styles.colDescPct}>
+                  <Text style={hasDiscount ? styles.discountText : null}>{hasDiscount ? `-${discount}%` : '-'}</Text>
+                </View>
+
+                {/* Precio con el descuento ya aplicado */}
                 <View style={styles.colUni}>
                   <Text>{formatCurrency(finalUnitPrice)}</Text>
                 </View>
