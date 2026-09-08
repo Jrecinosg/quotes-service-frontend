@@ -134,10 +134,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center'
   },
-  strikeText: {
-    textDecoration: 'line-through',
-    color: '#888',
-  },
   discountText: {
     color: '#F46B20',
     fontWeight: 'bold',
@@ -289,10 +285,8 @@ export const QuotationDocument = ({ quotation }) => {
                   <Text style={styles.colDescrip}>{item.description}</Text>
                 </View>
 
-                {/* Precio de lista: tachado si tiene descuento, para que se
-                    note que el precio de oferta ya viene rebajado */}
                 <View style={styles.colLista}>
-                  <Text style={hasDiscount ? styles.strikeText : null}>{formatCurrency(listPrice)}</Text>
+                  <Text>{formatCurrency(listPrice)}</Text>
                 </View>
 
                 <View style={styles.colDescPct}>
