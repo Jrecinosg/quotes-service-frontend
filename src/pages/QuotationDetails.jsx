@@ -1,24 +1,71 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Pencil, FileText } from "lucide-react";
+import { ArrowLeft, Pencil, FileText, Wallet, Plus, Trash2 } from "lucide-react";
 import { quotationService } from "../services/quotation.service";
 import { pdf } from '@react-pdf/renderer';
 import { QuotationDocument } from "../components/QuotationPDF";
+import PaymentModal from "../components/PaymentModal";
+import Swal from "sweetalert2";
 // Importamos los formatters
 import { formatQuotationId, formatCurrency, formatDate } from "../utils/formatters";
+
+const PAYMENT_TYPE_LABEL = { ANTICIPO: "Anticipo", FINAL: "Pago final" };
+const PAYMENT_TYPE_STYLE = { ANTICIPO: "bg-blue-100 text-blue-700", FINAL: "bg-green-100 text-green-700" };
 
 export default function QuotationDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [quotation, setQuotation] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-    useEffect(() => {
-        quotationService.getById(id)
+    const fetchQuotation = () => {
+        return quotationService.getById(id)
             .then(setQuotation)
             .catch(() => navigate("/app/quotations"))
             .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        fetchQuotation();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id, navigate]);
+
+    const payments = quotation?.payments || [];
+    // Se cuadra con montos brutos (lo pactado) y netos (lo que de verdad
+    // entró al banco despues de la retencion) por separado -para eso es
+    // justo este resumen.
+    const paymentTotals = useMemo(() => {
+        const gross = payments.reduce((acc, p) => acc + Number(p.amount), 0);
+        const withheld = payments.reduce((acc, p) => acc + Number(p.taxWithholdingAmount || 0), 0);
+        return {
+            gross,
+            withheld,
+            net: gross - withheld,
+            pending: quotation ? Number(quotation.total) - gross : 0
+        };
+    }, [payments, quotation]);
+
+    const handleDeletePayment = async (payment) => {
+        const result = await Swal.fire({
+            title: '¿Eliminar este pago?',
+            text: `Se borrará el registro de ${formatCurrency(payment.amount)} del ${formatDate(payment.receivedDate)}.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        });
+        if (!result.isConfirmed) return;
+
+        try {
+            await quotationService.deletePayment(id, payment.id);
+            fetchQuotation();
+        } catch (error) {
+            Swal.fire('Error', error.response?.data?.error || 'No se pudo eliminar el pago.', 'error');
+        }
+    };
 
     const handleOpenPdf = async () => {
         const blob = await pdf(<QuotationDocument quotation={quotation} />).toBlob();
@@ -207,6 +254,116 @@ export default function QuotationDetails() {
                     </div>
                 </div>
             </div>
+
+            {/* --- PAGOS RECIBIDOS (solo dentro del sistema, no sale en el PDF) --- */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-6">
+                <div className="px-4 md:px-8 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                        <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <Wallet size={18} />
+                        </div>
+                        <div>
+                            <h2 className="font-semibold text-gray-800">Pagos recibidos</h2>
+                            <p className="text-xs text-gray-500">Anticipos y pagos finales, para cuadrar contra el total cotizado</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => setIsPaymentModalOpen(true)}
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-brand-gradient hover:brightness-105 text-white rounded-lg font-semibold text-sm shadow-sm transition-all"
+                    >
+                        <Plus size={16} /> Registrar pago
+                    </button>
+                </div>
+
+                {/* Resumen de cuadre */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-8 py-5 bg-gray-50/60 border-b border-gray-100 text-sm">
+                    <div>
+                        <p className="text-xs text-gray-400 uppercase tracking-wide">Recibido (bruto)</p>
+                        <p className="font-bold text-gray-800">{formatCurrency(paymentTotals.gross)}</p>
+                    </div>
+                    <div>
+                        <p className="text-xs text-gray-400 uppercase tracking-wide">Retenido</p>
+                        <p className="font-bold text-gray-800">{formatCurrency(paymentTotals.withheld)}</p>
+                    </div>
+                    <div>
+                        <p className="text-xs text-gray-400 uppercase tracking-wide">Neto recibido</p>
+                        <p className="font-bold text-gray-800">{formatCurrency(paymentTotals.net)}</p>
+                    </div>
+                    <div>
+                        <p className="text-xs text-gray-400 uppercase tracking-wide">Saldo pendiente</p>
+                        <p className={`font-bold ${paymentTotals.pending > 0 ? 'text-orange-600' : 'text-green-600'}`}>
+                            {formatCurrency(paymentTotals.pending)}
+                        </p>
+                    </div>
+                </div>
+
+                {payments.length === 0 ? (
+                    <div className="text-center py-10 text-gray-400 text-sm">
+                        Todavía no se ha registrado ningún pago para esta cotización.
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left min-w-[700px]">
+                            <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                                <tr>
+                                    <th className="px-4 md:px-8 py-3">Tipo</th>
+                                    <th className="px-4 py-3">Fecha</th>
+                                    <th className="px-4 py-3 text-right">Monto</th>
+                                    <th className="px-4 py-3 text-right">Retención</th>
+                                    <th className="px-4 py-3 text-right">Neto</th>
+                                    <th className="px-4 py-3">Registrado por</th>
+                                    <th className="px-4 py-3 text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                {payments.map((p) => {
+                                    const withheld = Number(p.taxWithholdingAmount || 0);
+                                    const net = Number(p.amount) - withheld;
+                                    return (
+                                        <tr key={p.id} className="hover:bg-gray-50/50 transition-colors group">
+                                            <td className="px-4 md:px-8 py-4">
+                                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${PAYMENT_TYPE_STYLE[p.type]}`}>
+                                                    {PAYMENT_TYPE_LABEL[p.type]}
+                                                </span>
+                                            </td>
+                                            <td className="px-4 py-4 text-gray-600">{formatDate(p.receivedDate)}</td>
+                                            <td className="px-4 py-4 text-right font-medium text-gray-800">{formatCurrency(p.amount)}</td>
+                                            <td className="px-4 py-4 text-right text-gray-500">
+                                                {withheld > 0 ? (
+                                                    <>
+                                                        {formatCurrency(withheld)}
+                                                        {p.taxWithholdingPercent && (
+                                                            <span className="text-xs text-gray-400"> ({Number(p.taxWithholdingPercent)}%)</span>
+                                                        )}
+                                                    </>
+                                                ) : "—"}
+                                            </td>
+                                            <td className="px-4 py-4 text-right font-bold text-green-700">{formatCurrency(net)}</td>
+                                            <td className="px-4 py-4 text-gray-500 text-sm">{p.createdBy?.name || p.createdBy?.email || "—"}</td>
+                                            <td className="px-4 py-4 text-right">
+                                                <button
+                                                    onClick={() => handleDeletePayment(p)}
+                                                    className="p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 rounded-lg opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all"
+                                                    title="Eliminar pago"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+
+            <PaymentModal
+                isOpen={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+                quotationId={id}
+                onSuccess={fetchQuotation}
+            />
         </div>
     );
 }

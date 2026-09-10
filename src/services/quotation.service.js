@@ -36,4 +36,14 @@ export const quotationService = {
     const response = await api.get("/quotations/stats");
     return response.data;
   },
+
+  addPayment: async (quotationId, paymentData) => {
+    const response = await api.post(`/quotations/${quotationId}/payments`, paymentData);
+    return response.data;
+  },
+
+  deletePayment: async (quotationId, paymentId) => {
+    const response = await api.delete(`/quotations/${quotationId}/payments/${paymentId}`);
+    return response.data;
+  },
 };
