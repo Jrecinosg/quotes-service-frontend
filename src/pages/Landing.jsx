@@ -100,6 +100,32 @@ export default function Landing() {
       color: s.color, speed: s.speed, phase: s.phase, width: s.w,
     }));
 
+    // Sprites de brillo pre-dibujados (uno por color unico) -antes cada punto
+    // de cada estela se pintaba con shadowBlur en vivo (7 estelas x ~23
+    // puntos = ~160 sombras recalculadas por cuadro), que en un celular
+    // real se traduce en cuadros perdidos y se ve "trabado"/robotico. Un
+    // sprite dibujado UNA sola vez y reutilizado con drawImage es muchisimo
+    // mas barato -es la tecnica estandar para brillos animados en canvas.
+    const SPRITE_SIZE = 96;
+    const glowSpriteCache = new Map();
+    const getGlowSprite = (color) => {
+      const key = color.join(',');
+      if (glowSpriteCache.has(key)) return glowSpriteCache.get(key);
+      const off = document.createElement('canvas');
+      off.width = off.height = SPRITE_SIZE;
+      const octx = off.getContext('2d');
+      const c = SPRITE_SIZE / 2;
+      const grad = octx.createRadialGradient(c, c, 0, c, c, c);
+      grad.addColorStop(0, `rgba(${color[0]},${color[1]},${color[2]},1)`);
+      grad.addColorStop(0.4, `rgba(${color[0]},${color[1]},${color[2]},.55)`);
+      grad.addColorStop(1, `rgba(${color[0]},${color[1]},${color[2]},0)`);
+      octx.fillStyle = grad;
+      octx.fillRect(0, 0, SPRITE_SIZE, SPRITE_SIZE);
+      glowSpriteCache.set(key, off);
+      return off;
+    };
+    streaks.forEach((s) => { s.sprite = getGlowSprite(s.color); });
+
     const drawStatic = () => {
       ctx.clearRect(0, 0, w, h);
       streaks.forEach((s) => {
@@ -132,21 +158,17 @@ export default function Landing() {
         ctx.stroke();
 
         const tt = (t * s.speed + s.phase) % 1;
-        const tailLen = 22;
-        ctx.shadowColor = `rgba(${s.color[0]},${s.color[1]},${s.color[2]},.9)`;
+        const tailLen = 16;
         for (let k = tailLen; k >= 0; k--) {
-          let tk = tt - k * 0.011;
+          let tk = tt - k * 0.014;
           if (tk < 0) tk += 1;
           const p = cubicPoint(tk, s.p0, s.p1, s.p2, s.p3);
           const alpha = Math.pow(1 - k / tailLen, 1.4);
-          const r = s.width * (1 + (1 - k / tailLen) * 3);
-          ctx.shadowBlur = 14 * (1 - k / tailLen);
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(${s.color[0]},${s.color[1]},${s.color[2]},${alpha.toFixed(3)})`;
-          ctx.arc(p.x * w, p.y * h, r, 0, Math.PI * 2);
-          ctx.fill();
+          const r = s.width * (2.2 + (1 - k / tailLen) * 4.5);
+          ctx.globalAlpha = alpha;
+          ctx.drawImage(s.sprite, p.x * w - r, p.y * h - r, r * 2, r * 2);
         }
-        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
       });
       ctx.globalCompositeOperation = "source-over";
     };
