@@ -6,7 +6,7 @@ import { formatQuotationId, formatCurrency, formatDate } from '../utils/formatte
 const styles = StyleSheet.create({
   page: {
     paddingTop: 40,
-    paddingBottom: 75,
+    paddingBottom: 50,
     paddingHorizontal: 40,
     fontSize: 10,
     fontFamily: 'Helvetica'
@@ -306,7 +306,7 @@ export const QuotationDocument = ({ quotation }) => {
           })}
         </View>
 
-        {/* --- CIERRE Y TOTALES --- */}
+        {/* --- TOTALES --- */}
         <View wrap={false} style={{ width: '100%', marginTop: 10 }}>
 
           {/* Fila Subtotal */}
@@ -334,15 +334,16 @@ export const QuotationDocument = ({ quotation }) => {
               </Text>
             </View>
           </View>
+        </View>
 
-          <View style={{ marginTop: 15 }}>
-            <View style={styles.rowInfo}><Text style={styles.label}>Garantía:</Text><Text style={styles.valueFooter}>{quotation.warranty}</Text></View>
-            <View style={styles.rowInfo}><Text style={styles.label}>Entrega:</Text><Text style={styles.valueFooter}>{quotation.deliveryTime}</Text></View>
-            <View style={styles.rowInfo}><Text style={styles.label}>Forma pago:</Text><Text style={styles.valueFooter}>{quotation.paymentMethod}</Text></View>
-            <View style={styles.rowInfo}><Text style={styles.label}>Validez:</Text><Text style={styles.valueFooter}>{validity}</Text></View>
-            <View style={styles.rowInfo}><Text style={styles.label}>Elaborado:</Text><Text style={styles.valueFooter}>{elaboratedBy}</Text></View>
-            <Text style={{ marginTop: 10, fontSize: 9, lineHeight: 1.4 }}>{quotation.observations}</Text>
-          </View>
+        {/* --- CONDICIONES --- */}
+        <View style={{ marginTop: 15 }}>
+          <View style={styles.rowInfo}><Text style={styles.label}>Garantía:</Text><Text style={styles.valueFooter}>{quotation.warranty}</Text></View>
+          <View style={styles.rowInfo}><Text style={styles.label}>Entrega:</Text><Text style={styles.valueFooter}>{quotation.deliveryTime}</Text></View>
+          <View style={styles.rowInfo}><Text style={styles.label}>Forma pago:</Text><Text style={styles.valueFooter}>{quotation.paymentMethod}</Text></View>
+          <View style={styles.rowInfo}><Text style={styles.label}>Validez:</Text><Text style={styles.valueFooter}>{validity}</Text></View>
+          <View style={styles.rowInfo}><Text style={styles.label}>Elaborado:</Text><Text style={styles.valueFooter}>{elaboratedBy}</Text></View>
+          <Text style={{ marginTop: 10, fontSize: 9, lineHeight: 1.4 }}>{quotation.observations}</Text>
         </View>
 
         {/* --- FOOTER --- */}
