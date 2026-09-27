@@ -8,9 +8,9 @@ import Swal from "sweetalert2";
 
 const STATUS_LABEL = { PENDING: 'Pendiente', IN_PROGRESS: 'En proceso', DONE: 'Finalizado' };
 const STATUS_STYLE = {
-  PENDING: 'bg-amber-100 text-amber-700',
-  IN_PROGRESS: 'bg-blue-100 text-blue-700',
-  DONE: 'bg-green-100 text-green-700'
+  PENDING: 'bg-amber-500/15 text-amber-400',
+  IN_PROGRESS: 'bg-blue-500/15 text-blue-400',
+  DONE: 'bg-green-500/15 text-green-400'
 };
 
 export default function RequestDetails() {
@@ -77,7 +77,7 @@ export default function RequestDetails() {
     }
   };
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Cargando solicitud...</div>;
+  if (loading) return <div className="p-8 text-center text-gray-400">Cargando solicitud...</div>;
   if (!request) return null;
 
   return (
@@ -86,11 +86,11 @@ export default function RequestDetails() {
         <ArrowLeft size={20} /> Volver al listado
       </button>
 
-      <div className="bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
-        <div className="bg-gray-50 px-4 md:px-8 py-6 border-b border-gray-200 flex justify-between items-start flex-wrap gap-4">
+      <div className="bg-surface-card rounded-xl shadow-xl border border-surface-border overflow-hidden">
+        <div className="bg-surface-base px-4 md:px-8 py-6 border-b border-surface-border flex justify-between items-start flex-wrap gap-4">
           <div>
-            <h1 className="font-display text-2xl font-extrabold text-gray-900">{formatRequestId(request.correlativo)} — {request.title}</h1>
-            <p className="text-gray-500 mt-1 font-medium">
+            <h1 className="font-display text-2xl font-extrabold text-white">{formatRequestId(request.correlativo)} — {request.title}</h1>
+            <p className="text-gray-400 mt-1 font-medium">
               {isStaff && request.client?.name ? `${request.client.name} · ` : ''}
               Creada por {request.createdBy?.name || request.createdBy?.email || 'desconocido'} · {formatDate(request.createdAt)}
             </p>
@@ -102,7 +102,7 @@ export default function RequestDetails() {
 
         <div className="p-4 md:p-8">
           <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Descripción</h3>
-          <p className="text-gray-700 whitespace-pre-wrap mb-8">{request.description}</p>
+          <p className="text-gray-200 whitespace-pre-wrap mb-8">{request.description}</p>
 
           {isStaff && (
             <div className="mb-8 flex flex-wrap gap-3">
@@ -131,16 +131,16 @@ export default function RequestDetails() {
                   {n.type === 'STATUS_CHANGE' ? (
                     <CheckCircle2 size={16} className="text-green-500" />
                   ) : (
-                    <div className="w-2 h-2 rounded-full bg-gray-300 mt-1.5 ml-1" />
+                    <div className="w-2 h-2 rounded-full bg-gray-500 mt-1.5 ml-1" />
                   )}
                 </div>
-                <div className="flex-1 border-b border-gray-100 pb-3">
+                <div className="flex-1 border-b border-surface-border pb-3">
                   {n.type === 'STATUS_CHANGE' && (
                     <p className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider mb-1 ${STATUS_STYLE[n.statusTo]}`}>
                       {STATUS_LABEL[n.statusTo]}
                     </p>
                   )}
-                  <p className="text-sm text-gray-700">{n.body}</p>
+                  <p className="text-sm text-gray-200">{n.body}</p>
                   <p className="text-xs text-gray-400 mt-1">
                     {n.createdBy?.name || n.createdBy?.email} · {formatDateTime(n.createdAt)}
                   </p>
@@ -155,12 +155,12 @@ export default function RequestDetails() {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Agregar una observación o recordatorio..."
-              className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="bg-surface-base text-white placeholder:text-gray-500 flex-1 border border-surface-border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
             />
             <button
               type="submit"
               disabled={sending || !note.trim()}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 disabled:opacity-50 transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-brand-gradient text-white rounded-lg hover:brightness-105 disabled:opacity-50 transition-all"
             >
               <Send size={18} />
             </button>

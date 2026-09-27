@@ -60,7 +60,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
 
   return createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-surface-card rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
 
         <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
           <h2 className="text-white font-bold text-lg">Registrar pago recibido</h2>
@@ -71,10 +71,10 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Tipo de pago *</label>
+            <label className="block text-sm font-medium text-gray-300">Tipo de pago *</label>
             <select
               required
-              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               value={formData.type}
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
             >
@@ -85,55 +85,55 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Fecha en que se recibió *</label>
+              <label className="block text-sm font-medium text-gray-300">Fecha en que se recibió *</label>
               <input
                 type="date"
                 required
-                className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 value={formData.receivedDate}
                 onChange={(e) => setFormData({ ...formData, receivedDate: e.target.value })}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Monto acordado *</label>
+              <label className="block text-sm font-medium text-gray-300">Monto acordado *</label>
               <input
                 type="number"
                 min="0.01"
                 step="0.01"
                 required
                 placeholder="Ej. 5000.00"
-                className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               />
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Retención de impuesto (opcional)</p>
+          <div className="bg-surface-base rounded-lg p-3 border border-surface-border">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Retención de impuesto (opcional)</p>
             <p className="text-xs text-gray-400 mb-3">Solo si el cliente retiene -algunas empresas lo hacen, otras no.</p>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">% Retenido</label>
+                <label className="block text-sm font-medium text-gray-300">% Retenido</label>
                 <input
                   type="number"
                   min="0"
                   max="100"
                   step="0.01"
                   placeholder="Ej. 5"
-                  className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   value={formData.taxWithholdingPercent}
                   onChange={(e) => handlePercentChange(e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Monto retenido</label>
+                <label className="block text-sm font-medium text-gray-300">Monto retenido</label>
                 <input
                   type="number"
                   min="0"
                   step="0.01"
                   placeholder="Se calcula solo"
-                  className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   value={formData.taxWithholdingAmount}
                   onChange={(e) => setFormData({ ...formData, taxWithholdingAmount: e.target.value })}
                 />
@@ -142,11 +142,11 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Notas</label>
+            <label className="block text-sm font-medium text-gray-300">Notas</label>
             <input
               type="text"
               placeholder="Opcional -ej. número de depósito"
-              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
             />
@@ -156,7 +156,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+              className="px-4 py-2 text-gray-200 bg-surface-hover rounded-lg hover:bg-surface-border"
             >
               Cancelar
             </button>

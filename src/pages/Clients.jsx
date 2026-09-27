@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Plus, Search, Pencil, Trash2, Merge } from "lucide-react";
 import { clientService } from "../services/client.service";
 import ClientModal from "../components/ClientModal";
@@ -11,6 +12,11 @@ export default function Clients() {
     const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
+    // ?highlight=<id>: viene del buscador global del encabezado -resalta y
+    // lleva a la vista la fila de ese cliente (no hay página de detalle).
+    const [searchParams] = useSearchParams();
+    const highlightId = Number(searchParams.get("highlight")) || null;
+    const highlightRef = useRef(null);
 
     // Estado para Modal
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,6 +37,12 @@ export default function Clients() {
     useEffect(() => {
         fetchClients();
     }, []);
+
+    useEffect(() => {
+        if (!loading && highlightId && highlightRef.current) {
+            highlightRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }, [loading, highlightId]);
 
     const handleCreate = () => {
         setEditingClient(null);
@@ -115,7 +127,7 @@ export default function Clients() {
 
     const filteredClients = clients.filter(c =>
         c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.taxId.includes(searchTerm)
+        (c.taxId || "").includes(searchTerm)
     );
 
     return (
@@ -136,13 +148,13 @@ export default function Clients() {
             </div>
 
             {/* Barra de Búsqueda */}
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+            <div className="bg-surface-card p-4 rounded-2xl border border-surface-border mb-6">
                 <div className="relative">
                     <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
                     <input
                         type="text"
                         placeholder="Buscar por nombre o NIT..."
-                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full pl-10 pr-4 py-2 bg-surface-base border border-surface-border text-white placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -150,10 +162,10 @@ export default function Clients() {
             </div>
 
             {/* Tabla */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-surface-card rounded-2xl border border-surface-border overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left min-w-[800px]">
-                        <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                        <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
                             <tr>
                                 <th className="px-6 py-4">Cliente</th>
                                 <th className="px-6 py-4">Documento</th>
@@ -161,31 +173,35 @@ export default function Clients() {
                                 <th className="px-6 py-4 text-right">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-surface-border">
                             {loading ? (
-                                <tr><td colSpan="4" className="text-center py-8">Cargando...</td></tr>
+                                <tr><td colSpan="4" className="text-center py-8 text-gray-400">Cargando...</td></tr>
                             ) : filteredClients.length === 0 ? (
-                                <tr><td colSpan="4" className="text-center py-8 text-gray-500">No se encontraron clientes</td></tr>
+                                <tr><td colSpan="4" className="text-center py-8 text-gray-400">No se encontraron clientes</td></tr>
                             ) : (
                                 filteredClients.map((client) => (
-                                    <tr key={client.id} className="hover:bg-blue-50 transition-colors group">
+                                    <tr
+                                        key={client.id}
+                                        ref={client.id === highlightId ? highlightRef : null}
+                                        className={`transition-colors group ${client.id === highlightId ? "bg-blue-500/10 ring-1 ring-inset ring-blue-400/50" : "hover:bg-surface-hover"}`}
+                                    >
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                                                <div className="w-10 h-10 shrink-0 rounded-full bg-blue-500/15 flex items-center justify-center text-blue-400 font-bold">
                                                     {client.name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-gray-900">{client.name}</p>
-                                                    <p className="text-xs text-gray-500 truncate max-w-[200px]">{client.address}</p>
+                                                    <p className="font-medium text-white">{client.name}</p>
+                                                    <p className="text-xs text-gray-400 truncate max-w-[200px]">{client.address}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-mono">
-                                                {client.taxId}
+                                            <span className="px-2 py-1 bg-surface-hover text-gray-300 rounded text-xs font-mono">
+                                                {client.taxId || "Sin NIT"}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-600">
+                                        <td className="px-6 py-4 text-sm text-gray-300">
                                             <p>{client.email}</p>
                                             <p>{client.phone}</p>
                                         </td>
@@ -193,21 +209,21 @@ export default function Clients() {
                                             <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => handleEdit(client)}
-                                                    className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg" title="Editar"
+                                                    className="p-2 text-blue-400 hover:bg-blue-500/15 rounded-lg" title="Editar"
                                                 >
                                                     <Pencil size={18} />
                                                 </button>
                                                 {isAdmin && (
                                                     <button
                                                         onClick={() => handleMerge(client)}
-                                                        className="p-2 text-purple-600 hover:bg-purple-100 rounded-lg" title="Fusionar con otro cliente"
+                                                        className="p-2 text-purple-400 hover:bg-purple-500/15 rounded-lg" title="Fusionar con otro cliente"
                                                     >
                                                         <Merge size={18} />
                                                     </button>
                                                 )}
                                                 <button
                                                     onClick={() => handleDelete(client.id)}
-                                                    className="p-2 text-red-600 hover:bg-red-100 rounded-lg" title="Eliminar"
+                                                    className="p-2 text-red-400 hover:bg-red-500/15 rounded-lg" title="Eliminar"
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>

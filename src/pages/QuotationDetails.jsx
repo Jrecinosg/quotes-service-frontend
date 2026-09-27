@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 import { formatQuotationId, formatCurrency, formatDate } from "../utils/formatters";
 
 const PAYMENT_TYPE_LABEL = { ANTICIPO: "Anticipo", FINAL: "Pago final" };
-const PAYMENT_TYPE_STYLE = { ANTICIPO: "bg-blue-100 text-blue-700", FINAL: "bg-green-100 text-green-700" };
+const PAYMENT_TYPE_STYLE = { ANTICIPO: "bg-blue-500/15 text-blue-400", FINAL: "bg-green-500/15 text-green-400" };
 
 export default function QuotationDetails() {
     const { id } = useParams();
@@ -82,7 +82,7 @@ export default function QuotationDetails() {
         URL.revokeObjectURL(url);
     };
 
-    if (loading) return <div className="p-8 text-center text-gray-500">Cargando detalles de la cotización...</div>;
+    if (loading) return <div className="p-8 text-center text-gray-400">Cargando detalles de la cotización...</div>;
     if (!quotation) return null;
 
     return (
@@ -97,7 +97,7 @@ export default function QuotationDetails() {
                 <div className="flex gap-3">
                     <Link
                         to={`/app/quotations/edit/${id}`}
-                        className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-all shadow-sm"
+                        className="flex items-center gap-2 px-4 py-2 border border-surface-border rounded-lg text-gray-200 hover:bg-surface-hover transition-all shadow-sm"
                     >
                         <Pencil size={18} /> Editar
                     </Link>
@@ -112,26 +112,26 @@ export default function QuotationDetails() {
             </div>
 
             {/* --- VISTA DE SOLO LECTURA --- */}
-            <div className="bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+            <div className="bg-surface-card rounded-xl shadow-xl border border-surface-border overflow-hidden">
                 
                 {/* Encabezado Documento */}
-                <div className="bg-gray-50 px-4 md:px-8 py-6 border-b border-gray-200">
+                <div className="bg-surface-base px-4 md:px-8 py-6 border-b border-surface-border">
                     <div className="flex justify-between items-center">
                         <div>
-                            <h1 className="font-display text-3xl font-extrabold text-gray-900">
+                            <h1 className="font-display text-3xl font-extrabold text-white">
                                 {formatQuotationId(quotation.correlativo)}
                             </h1>
-                            <p className="text-gray-500 mt-1 font-medium">
+                            <p className="text-gray-400 mt-1 font-medium">
                                 Emitida el {formatDate(quotation.createdAt)}
                             </p>
                             {quotation.projectReference && (
-                                <p className="text-sm text-orange-600 font-semibold mt-1">
+                                <p className="text-sm text-orange-400 font-semibold mt-1">
                                     {quotation.projectReference}
                                 </p>
                             )}
                         </div>
                         <div className="text-right">
-                            <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            <span className="bg-green-500/15 text-green-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                                 Registrada
                             </span>
                         </div>
@@ -143,21 +143,21 @@ export default function QuotationDetails() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 mb-10">
                         <div>
                             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Información del Cliente</h3>
-                            <p className="font-bold text-xl text-gray-800 mb-1">{quotation.client.name}</p>
-                            <p className="text-gray-600 leading-relaxed">{quotation.client.address}</p>
-                            <p className="text-gray-500 mt-2 font-medium">NIT: {quotation.client.taxId || 'C/F'}</p>
+                            <p className="font-bold text-xl text-white mb-1">{quotation.client.name}</p>
+                            <p className="text-gray-300 leading-relaxed">{quotation.client.address}</p>
+                            <p className="text-gray-400 mt-2 font-medium">NIT: {quotation.client.taxId || 'C/F'}</p>
                         </div>
                         <div className="md:text-right">
                             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Elaborado por</h3>
-                            <p className="text-lg font-semibold text-gray-800">{quotation.elaboratedBy || "No especificado"}</p>
-                            <p className="text-sm text-gray-500 italic mt-1">Representante de Ventas</p>
+                            <p className="text-lg font-semibold text-white">{quotation.elaboratedBy || "No especificado"}</p>
+                            <p className="text-sm text-gray-400 italic mt-1">Representante de Ventas</p>
                         </div>
                     </div>
 
                     {/* --- TABLA DE ÍTEMS ACTUALIZADA --- */}
                     <div className="overflow-x-auto mb-8">
                         <table className="w-full text-left min-w-[700px]">
-                            <thead className="border-b-2 border-gray-100 text-gray-400 text-xs uppercase font-bold">
+                            <thead className="border-b-2 border-surface-border text-gray-400 text-xs uppercase font-bold">
                                 <tr>
                                     <th className="px-4 py-3 text-center w-16">Cant.</th>
                                     <th className="px-4 py-3">Descripción</th>
@@ -167,7 +167,7 @@ export default function QuotationDetails() {
                                     <th className="px-4 py-3 text-right">Total</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-50">
+                            <tbody className="divide-y divide-surface-border">
                                 {quotation.items.map((item, i) => {
                                     // Extraemos y calculamos los valores
                                     const listPrice = Number(item.listPrice) || 0;
@@ -175,35 +175,35 @@ export default function QuotationDetails() {
                                     const discountedUnitPrice = listPrice * (1 - discount / 100);
 
                                     return (
-                                        <tr key={i} className="hover:bg-gray-50/50 transition-colors">
-                                            <td className="px-4 py-4 text-center font-medium text-gray-600">
+                                        <tr key={i} className="hover:bg-surface-hover transition-colors">
+                                            <td className="px-4 py-4 text-center font-medium text-gray-300">
                                                 {item.quantity}
                                             </td>
-                                            <td className="px-4 py-4 text-gray-800">
+                                            <td className="px-4 py-4 text-white">
                                                 {item.description}
                                             </td>
                                             
                                             {/* P. Lista (Tachado si hay descuento) */}
-                                            <td className={`px-4 py-4 text-right ${discount > 0 ? 'text-gray-400 line-through' : 'text-gray-600'}`}>
+                                            <td className={`px-4 py-4 text-right ${discount > 0 ? 'text-gray-400 line-through' : 'text-gray-300'}`}>
                                                 {discount > 0 ? formatCurrency(listPrice) : '-'}
                                             </td>
                                             
                                             {/* % Descuento (Con un badge resaltado) */}
-                                            <td className="px-4 py-4 text-center">
+                                            <td className="px-4 py-4 text-center text-gray-400">
                                                 {discount > 0 ? (
-                                                    <span className="bg-orange-100 text-orange-600 px-2 py-1 rounded text-xs font-bold">
+                                                    <span className="bg-orange-500/15 text-orange-400 px-2 py-1 rounded text-xs font-bold">
                                                         -{discount}%
                                                     </span>
                                                 ) : '-'}
                                             </td>
                                             
                                             {/* P. Oferta (Azul para resaltar) */}
-                                            <td className="px-4 py-4 text-right font-medium text-blue-700">
+                                            <td className="px-4 py-4 text-right font-medium text-blue-400">
                                                 {formatCurrency(discountedUnitPrice)}
                                             </td>
                                             
                                             {/* Total de línea (subtotalItem) */}
-                                            <td className="px-4 py-4 text-right font-bold text-gray-900">
+                                            <td className="px-4 py-4 text-right font-bold text-white">
                                                 {formatCurrency(item.subtotalItem)}
                                             </td>
                                         </tr>
@@ -214,17 +214,17 @@ export default function QuotationDetails() {
                     </div>
 
                     {/* Sección de Totales */}
-                    <div className="flex justify-end border-t border-gray-100 pt-6">
+                    <div className="flex justify-end border-t border-surface-border pt-6">
                         <div className="w-72 space-y-3">
-                            <div className="flex justify-between text-gray-500 font-medium">
+                            <div className="flex justify-between text-gray-400 font-medium">
                                 <span>Subtotal:</span>
                                 <span>{formatCurrency(quotation.subtotal)}</span>
                             </div>
-                            <div className="flex justify-between text-gray-500 font-medium">
+                            <div className="flex justify-between text-gray-400 font-medium">
                                 <span>IVA (12%):</span>
                                 <span>{formatCurrency(quotation.tax)}</span>
                             </div>
-                            <div className="flex justify-between text-2xl font-black text-orange-600 border-t-2 border-orange-50 pt-3 mt-3">
+                            <div className="flex justify-between text-2xl font-black text-orange-400 border-t-2 border-orange-500/30 pt-3 mt-3">
                                 <span>TOTAL:</span>
                                 <span>{formatCurrency(quotation.total)}</span>
                             </div>
@@ -232,22 +232,22 @@ export default function QuotationDetails() {
                     </div>
 
                     {/* Condiciones Comerciales */}
-                    <div className="mt-12 bg-gray-50 rounded-xl p-6 border border-gray-100">
+                    <div className="mt-12 bg-surface-base rounded-xl p-6 border border-surface-border">
                         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Condiciones y Observaciones</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                             <div className="space-y-2">
-                                <p><span className="font-bold text-gray-700">Garantía:</span> <span className="text-gray-600">{quotation.warranty}</span></p>
-                                <p><span className="font-bold text-gray-700">Tiempo de Entrega:</span> <span className="text-gray-600">{quotation.deliveryTime}</span></p>
+                                <p><span className="font-bold text-gray-200">Garantía:</span> <span className="text-gray-300">{quotation.warranty}</span></p>
+                                <p><span className="font-bold text-gray-200">Tiempo de Entrega:</span> <span className="text-gray-300">{quotation.deliveryTime}</span></p>
                             </div>
                             <div className="space-y-2 md:text-right">
-                                <p><span className="font-bold text-gray-700">Forma de Pago:</span> <span className="text-gray-600">{quotation.paymentMethod}</span></p>
-                                <p><span className="font-bold text-gray-700">Validez:</span> <span className="text-gray-600">{quotation.validity || 'No especificada'}</span></p>
+                                <p><span className="font-bold text-gray-200">Forma de Pago:</span> <span className="text-gray-300">{quotation.paymentMethod}</span></p>
+                                <p><span className="font-bold text-gray-200">Validez:</span> <span className="text-gray-300">{quotation.validity || 'No especificada'}</span></p>
                             </div>
                         </div>
                         {quotation.observations && (
-                            <div className="mt-4 pt-4 border-t border-gray-200">
-                                <p className="text-gray-600 text-sm italic">
-                                    <span className="font-bold not-italic text-gray-700">Notas:</span> {quotation.observations}
+                            <div className="mt-4 pt-4 border-t border-surface-border">
+                                <p className="text-gray-300 text-sm italic">
+                                    <span className="font-bold not-italic text-gray-200">Notas:</span> {quotation.observations}
                                 </p>
                             </div>
                         )}
@@ -256,15 +256,15 @@ export default function QuotationDetails() {
             </div>
 
             {/* --- PAGOS RECIBIDOS (solo dentro del sistema, no sale en el PDF) --- */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-6">
-                <div className="px-4 md:px-8 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden mt-6">
+                <div className="px-4 md:px-8 py-5 border-b border-surface-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
-                        <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <div className="w-9 h-9 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center">
                             <Wallet size={18} />
                         </div>
                         <div>
-                            <h2 className="font-semibold text-gray-800">Pagos recibidos</h2>
-                            <p className="text-xs text-gray-500">Anticipos y pagos finales, para cuadrar contra el total cotizado</p>
+                            <h2 className="font-semibold text-white">Pagos recibidos</h2>
+                            <p className="text-xs text-gray-400">Anticipos y pagos finales, para cuadrar contra el total cotizado</p>
                         </div>
                     </div>
                     <button
@@ -276,22 +276,22 @@ export default function QuotationDetails() {
                 </div>
 
                 {/* Resumen de cuadre */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-8 py-5 bg-gray-50/60 border-b border-gray-100 text-sm">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-8 py-5 bg-surface-base border-b border-surface-border text-sm">
                     <div>
                         <p className="text-xs text-gray-400 uppercase tracking-wide">Recibido (bruto)</p>
-                        <p className="font-bold text-gray-800">{formatCurrency(paymentTotals.gross)}</p>
+                        <p className="font-bold text-white">{formatCurrency(paymentTotals.gross)}</p>
                     </div>
                     <div>
                         <p className="text-xs text-gray-400 uppercase tracking-wide">Retenido</p>
-                        <p className="font-bold text-gray-800">{formatCurrency(paymentTotals.withheld)}</p>
+                        <p className="font-bold text-white">{formatCurrency(paymentTotals.withheld)}</p>
                     </div>
                     <div>
                         <p className="text-xs text-gray-400 uppercase tracking-wide">Neto recibido</p>
-                        <p className="font-bold text-gray-800">{formatCurrency(paymentTotals.net)}</p>
+                        <p className="font-bold text-white">{formatCurrency(paymentTotals.net)}</p>
                     </div>
                     <div>
                         <p className="text-xs text-gray-400 uppercase tracking-wide">Saldo pendiente</p>
-                        <p className={`font-bold ${paymentTotals.pending > 0 ? 'text-orange-600' : 'text-green-600'}`}>
+                        <p className={`font-bold ${paymentTotals.pending > 0 ? 'text-orange-400' : 'text-green-400'}`}>
                             {formatCurrency(paymentTotals.pending)}
                         </p>
                     </div>
@@ -304,7 +304,7 @@ export default function QuotationDetails() {
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left min-w-[700px]">
-                            <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                            <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
                                 <tr>
                                     <th className="px-4 md:px-8 py-3">Tipo</th>
                                     <th className="px-4 py-3">Fecha</th>
@@ -315,20 +315,20 @@ export default function QuotationDetails() {
                                     <th className="px-4 py-3 text-right">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-surface-border">
                                 {payments.map((p) => {
                                     const withheld = Number(p.taxWithholdingAmount || 0);
                                     const net = Number(p.amount) - withheld;
                                     return (
-                                        <tr key={p.id} className="hover:bg-gray-50/50 transition-colors group">
+                                        <tr key={p.id} className="hover:bg-surface-hover transition-colors group">
                                             <td className="px-4 md:px-8 py-4">
                                                 <span className={`px-2 py-1 rounded-full text-xs font-bold ${PAYMENT_TYPE_STYLE[p.type]}`}>
                                                     {PAYMENT_TYPE_LABEL[p.type]}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-4 text-gray-600">{formatDate(p.receivedDate)}</td>
-                                            <td className="px-4 py-4 text-right font-medium text-gray-800">{formatCurrency(p.amount)}</td>
-                                            <td className="px-4 py-4 text-right text-gray-500">
+                                            <td className="px-4 py-4 text-gray-300">{formatDate(p.receivedDate)}</td>
+                                            <td className="px-4 py-4 text-right font-medium text-white">{formatCurrency(p.amount)}</td>
+                                            <td className="px-4 py-4 text-right text-gray-400">
                                                 {withheld > 0 ? (
                                                     <>
                                                         {formatCurrency(withheld)}
@@ -338,12 +338,12 @@ export default function QuotationDetails() {
                                                     </>
                                                 ) : "—"}
                                             </td>
-                                            <td className="px-4 py-4 text-right font-bold text-green-700">{formatCurrency(net)}</td>
-                                            <td className="px-4 py-4 text-gray-500 text-sm">{p.createdBy?.name || p.createdBy?.email || "—"}</td>
+                                            <td className="px-4 py-4 text-right font-bold text-green-400">{formatCurrency(net)}</td>
+                                            <td className="px-4 py-4 text-gray-400 text-sm">{p.createdBy?.name || p.createdBy?.email || "—"}</td>
                                             <td className="px-4 py-4 text-right">
                                                 <button
                                                     onClick={() => handleDeletePayment(p)}
-                                                    className="p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 rounded-lg opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all"
+                                                    className="p-2 text-gray-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all"
                                                     title="Eliminar pago"
                                                 >
                                                     <Trash2 size={16} />

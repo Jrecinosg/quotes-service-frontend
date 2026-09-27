@@ -45,11 +45,11 @@ export default function ClientSearch({ onSelect, selectedClient }) {
 
   if (selectedClient) {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex justify-between items-center">
+      <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 flex justify-between items-center">
         <div>
-          <p className="font-bold text-blue-900">{selectedClient.name}</p>
-          <p className="text-sm text-blue-700">NIT: {selectedClient.taxId}</p>
-          <p className="text-xs text-blue-600">{selectedClient.address}</p>
+          <p className="font-bold text-blue-300">{selectedClient.name}</p>
+          <p className="text-sm text-blue-400">NIT: {selectedClient.taxId}</p>
+          <p className="text-xs text-blue-400">{selectedClient.address}</p>
         </div>
         <button
           type="button"
@@ -68,7 +68,7 @@ export default function ClientSearch({ onSelect, selectedClient }) {
         <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
         <input
           type="text"
-          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+          className="bg-surface-base text-white placeholder:text-gray-500 w-full pl-10 pr-4 py-3 border border-surface-border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
           placeholder="Buscar cliente por nombre o NIT..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -77,22 +77,22 @@ export default function ClientSearch({ onSelect, selectedClient }) {
 
       {/* Dropdown de Resultados */}
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto">
+        <div className="absolute z-10 w-full mt-1 bg-surface-card border border-surface-border rounded-lg shadow-xl max-h-60 overflow-y-auto">
           {results.map((client) => (
             <div
               key={client.id}
               onClick={() => handleSelect(client)}
-              className="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-0"
+              className="p-3 hover:bg-surface-hover cursor-pointer border-b border-surface-border last:border-0"
             >
-              <p className="font-medium text-gray-800">{client.name}</p>
-              <p className="text-xs text-gray-500">{client.taxId}</p>
+              <p className="font-medium text-white">{client.name}</p>
+              <p className="text-xs text-gray-400">{client.taxId}</p>
             </div>
           ))}
 
           {/* Botón para crear nuevo si no existe */}
           <div
             onClick={() => setIsModalOpen(true)}
-            className="p-3 bg-gray-50 hover:bg-gray-100 cursor-pointer text-blue-600 flex items-center gap-2 font-medium border-t border-gray-200"
+            className="p-3 bg-surface-base hover:bg-surface-hover cursor-pointer text-blue-400 flex items-center gap-2 font-medium border-t border-surface-border"
           >
             <UserPlus size={18} />
             Crear nuevo cliente

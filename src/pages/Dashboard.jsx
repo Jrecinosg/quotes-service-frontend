@@ -1,17 +1,37 @@
 import { useEffect, useState } from "react";
 import { quotationService } from "../services/quotation.service";
 import { requestService } from "../services/request.service";
-import { FileText, ClipboardList, ArrowRight, Plus, ShieldCheck, Users, TrendingUp } from "lucide-react";
+import { dashboardService } from "../services/dashboard.service";
+import {
+    FileText, ClipboardList, ArrowRight, Plus, ShieldCheck, Users, TrendingUp,
+    ArrowUpRight, ArrowDownRight, Sparkles, Video, KeyRound, Wifi, Network, Activity, Quote
+} from "lucide-react";
 import { Link } from "react-router-dom";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+    AreaChart, Area, Legend
+} from "recharts";
 import { formatQuotationId, formatCurrency, formatDate } from "../utils/formatters";
 import { useAuth } from "../context/AuthContext";
+
+const AXIS_TICK = { fontSize: 12, fill: "#8B93B8" };
+const GRID_STROKE = "#2A355F";
+const SERIES_BLUE = "#1F8CFF";
+const SERIES_ORANGE = "#FF6A00";
 
 const MONTH_LABEL = (key) => {
     const [year, month] = key.split("-");
     const date = new Date(Number(year), Number(month) - 1, 1);
     return date.toLocaleDateString("es-GT", { month: "short", year: "2-digit" });
 };
+
+// "2026-09-21" -> fecha local (sin conversión de zona horaria, es un día de calendario)
+const parseDayKey = (key) => {
+    const [y, m, d] = key.split("-").map(Number);
+    return new Date(y, m - 1, d);
+};
+const DAY_LABEL = (key) => parseDayKey(key).toLocaleDateString("es-GT", { weekday: "short", day: "numeric" });
+const DAY_LABEL_LONG = (key) => parseDayKey(key).toLocaleDateString("es-GT", { weekday: "long", day: "numeric", month: "long" });
 
 function PerformanceTooltip({ active, payload }) {
     if (!active || !payload?.length) return null;
@@ -20,7 +40,19 @@ function PerformanceTooltip({ active, payload }) {
         <div className="bg-surface-hover border border-surface-border rounded-lg shadow-lg px-3 py-2 text-sm">
             <p className="font-semibold text-white">{MONTH_LABEL(p.month)}</p>
             <p className="text-gray-300">{p.avgHours}h promedio para finalizar</p>
-            <p className="text-gray-500 text-xs">{p.count} solicitud{p.count === 1 ? "" : "es"} finalizada{p.count === 1 ? "" : "s"}</p>
+            <p className="text-gray-400 text-xs">{p.count} solicitud{p.count === 1 ? "" : "es"} finalizada{p.count === 1 ? "" : "s"}</p>
+        </div>
+    );
+}
+
+function WeekTooltip({ active, payload }) {
+    if (!active || !payload?.length) return null;
+    const p = payload[0].payload;
+    return (
+        <div className="bg-surface-hover border border-surface-border rounded-lg shadow-lg px-3 py-2 text-sm">
+            <p className="font-semibold text-white capitalize">{DAY_LABEL_LONG(p.date)}</p>
+            <p className="text-gray-300"><span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: SERIES_BLUE }} />{p.quotations} cotizaci{p.quotations === 1 ? "ón" : "ones"}</p>
+            <p className="text-gray-300"><span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: SERIES_ORANGE }} />{p.clients} cliente{p.clients === 1 ? "" : "s"} nuevo{p.clients === 1 ? "" : "s"}</p>
         </div>
     );
 }
@@ -32,11 +64,91 @@ const QUICK_ACTIONS = [
     { to: "/app/warranties", icon: ShieldCheck, label: "Garantías", iconBg: "bg-emerald-500/15", iconColor: "text-emerald-400" },
 ];
 
+// Líneas de servicio reales de Grupo AC (texto fijo, no es un dato)
+const SERVICE_LINES = [
+    { icon: Video, label: "Videovigilancia", sub: "Mayor seguridad", color: "text-blue-400", bg: "bg-blue-500/15" },
+    { icon: KeyRound, label: "Control de acceso", sub: "Protege lo importante", color: "text-purple-400", bg: "bg-purple-500/15" },
+    { icon: Wifi, label: "Enlaces y conectividad", sub: "Sin límites", color: "text-orange-400", bg: "bg-orange-500/15" },
+    { icon: Network, label: "Redes estructuradas", sub: "Tu infraestructura", color: "text-emerald-400", bg: "bg-emerald-500/15" },
+];
+
+const STAT_CARDS = [
+    { key: "quotations", title: "Cotizaciones", icon: FileText, iconBg: "bg-blue-500/15", iconColor: "text-blue-400" },
+    { key: "clients", title: "Clientes", icon: Users, iconBg: "bg-purple-500/15", iconColor: "text-purple-400" },
+    { key: "requests", title: "Solicitudes", icon: ClipboardList, iconBg: "bg-orange-500/15", iconColor: "text-orange-400" },
+    { key: "warranties", title: "Garantías", icon: ShieldCheck, iconBg: "bg-emerald-500/15", iconColor: "text-emerald-400" },
+];
+
+// Tendencia real: este mes vs. el mes anterior (conteos del servidor)
+function TrendBadge({ thisMonth, lastMonth }) {
+    if (!thisMonth && !lastMonth) return null;
+    if (!lastMonth) {
+        return (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-500/15 text-blue-400">
+                <Sparkles size={12} /> Nuevo
+            </span>
+        );
+    }
+    const pct = Math.round(((thisMonth - lastMonth) / lastMonth) * 100);
+    if (pct === 0) {
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-500/15 text-gray-300">Igual que el mes pasado</span>;
+    }
+    const up = pct > 0;
+    const Icon = up ? ArrowUpRight : ArrowDownRight;
+    return (
+        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold ${up ? "bg-emerald-500/15 text-emerald-400" : "bg-red-500/15 text-red-400"}`}>
+            <Icon size={13} /> {up ? "+" : ""}{pct}%
+        </span>
+    );
+}
+
+function StatCard({ title, stat, icon: Icon, iconBg, iconColor, loading }) {
+    return (
+        <div className="bg-surface-card p-5 rounded-2xl border border-surface-border transition-colors hover:bg-surface-hover">
+            <div className="flex items-center justify-between gap-3">
+                <p className="text-gray-400 text-sm font-medium">{title}</p>
+                <div className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center ${iconBg}`}>
+                    <Icon className={`w-5 h-5 ${iconColor}`} />
+                </div>
+            </div>
+            <h3 className="text-3xl font-bold text-white tracking-tight mt-2">
+                {loading ? <span className="inline-block w-16 h-8 rounded-lg bg-surface-hover animate-pulse align-middle" /> : stat ? stat.total : "—"}
+            </h3>
+            <div className="mt-3 flex flex-wrap items-center gap-2 min-h-[22px]">
+                {!loading && stat && (
+                    <>
+                        <TrendBadge thisMonth={stat.thisMonth} lastMonth={stat.lastMonth} />
+                        {(stat.thisMonth > 0 || stat.lastMonth > 0) && (
+                            <span className="text-xs text-gray-400">{stat.thisMonth} este mes · {stat.lastMonth} el anterior</span>
+                        )}
+                    </>
+                )}
+            </div>
+        </div>
+    );
+}
+
+// Vigencia derivada del campo real validUntil. Si la cotización no tiene
+// fecha de vencimiento guardada, se dice tal cual -no se asume "vigente".
+function ValidityPill({ validUntil }) {
+    if (!validUntil) {
+        return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-gray-500/15 text-gray-300 whitespace-nowrap">Sin fecha</span>;
+    }
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+    const expired = new Date(validUntil) < startOfToday;
+    return expired ? (
+        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/15 text-red-400 whitespace-nowrap">Vencida</span>
+    ) : (
+        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 whitespace-nowrap">Vigente</span>
+    );
+}
+
 export default function Dashboard() {
     const { user } = useAuth();
     const [quotations, setQuotations] = useState([]);
-    const [quotationCount, setQuotationCount] = useState(0);
-    const [requestCount, setRequestCount] = useState(0);
+    const [stats, setStats] = useState(null);
+    const [statsError, setStatsError] = useState(false);
     const [performance, setPerformance] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -44,55 +156,82 @@ export default function Dashboard() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const [listResponse, quotationStats, requestStats] = await Promise.all([
-                    quotationService.getAll(1, 10),
-                    quotationService.getStats(),
-                    requestService.getStats()
-                ]);
+            // Cada bloque carga por su cuenta: si uno falla, los demás se muestran igual.
+            const [listResult, requestResult, statsResult] = await Promise.allSettled([
+                quotationService.getAll(1, 10, "", "recent"),
+                requestService.getStats(),
+                dashboardService.getStats()
+            ]);
 
-                setQuotations(listResponse.data || []);
-                setQuotationCount(quotationStats.totalCount || 0);
-                setRequestCount(requestStats.counts?.total || 0);
-                setPerformance(requestStats.performance || []);
-            } catch (error) {
-                console.error("Error cargando dashboard:", error);
-            } finally {
-                setLoading(false);
+            if (listResult.status === "fulfilled") setQuotations(listResult.value.data || []);
+            else console.error("Error cargando últimas cotizaciones:", listResult.reason);
+
+            if (requestResult.status === "fulfilled") setPerformance(requestResult.value.performance || []);
+            else console.error("Error cargando rendimiento de solicitudes:", requestResult.reason);
+
+            if (statsResult.status === "fulfilled") setStats(statsResult.value);
+            else {
+                console.error("Error cargando estadísticas del dashboard:", statsResult.reason);
+                setStatsError(true);
             }
+
+            setLoading(false);
         };
         fetchData();
     }, []);
 
-    const StatCard = ({ title, value, icon: Icon, iconBg, iconColor }) => (
-        <div className="bg-surface-card p-6 rounded-2xl border border-surface-border flex items-center gap-4 transition-colors hover:border-surface-hover">
-            <div className={`w-14 h-14 shrink-0 rounded-full flex items-center justify-center ${iconBg}`}>
-                <Icon className={`w-6 h-6 ${iconColor}`} />
-            </div>
-            <div>
-                <p className="text-gray-400 text-sm">{title}</p>
-                <h3 className="text-3xl font-bold text-white tracking-tight">{value}</h3>
-            </div>
-        </div>
-    );
+    const weekData = stats?.last7Days
+        ? stats.last7Days.quotations.map((q, i) => ({
+            date: q.date,
+            quotations: q.count,
+            clients: stats.last7Days.clients[i]?.count ?? 0
+        }))
+        : [];
+    const weekQuotations = weekData.reduce((sum, d) => sum + d.quotations, 0);
+    const weekClients = weekData.reduce((sum, d) => sum + d.clients, 0);
 
     return (
         <div>
             {/* Hero de bienvenida + acciones rápidas */}
-            <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6 mb-8">
-                <div className="relative overflow-hidden rounded-3xl bg-surface-card border border-surface-border p-8 flex flex-col justify-center bg-brand-glow">
-                    <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">Plataforma Grupo AC</p>
-                    <h1 className="font-display text-3xl md:text-4xl font-bold text-white">
-                        {firstName ? `Hola, ${firstName}` : "Resumen General"}
-                    </h1>
-                    <p className="text-gray-400 mt-2 max-w-md">Esto es lo que está pasando en tu operación hoy.</p>
-                    <Link
-                        to="/app/quotations/new"
-                        className="inline-flex items-center gap-2 mt-6 w-fit px-5 py-2.5 rounded-full text-white text-sm font-semibold bg-brand-gradient shadow-lg shadow-blue-500/10 hover:brightness-105 transition-all"
-                    >
-                        <Plus size={16} />
-                        Nueva Cotización
-                    </Link>
+            <div className="grid grid-cols-1 xl:grid-cols-[1.6fr_1fr] gap-6 mb-8">
+                <div className="relative overflow-hidden rounded-3xl bg-surface-card border border-surface-border p-6 md:p-8 bg-brand-glow">
+                    {/* Silueta decorativa de fondo (ícono, no foto) */}
+                    <ShieldCheck
+                        aria-hidden="true"
+                        strokeWidth={1}
+                        className="absolute -right-10 -bottom-12 w-64 h-64 text-white opacity-[0.04] pointer-events-none"
+                    />
+
+                    <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-center">
+                        <div>
+                            <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">Plataforma Grupo AC</p>
+                            <h1 className="font-display text-3xl md:text-4xl font-bold text-white">
+                                {firstName ? `Hola, ${firstName}` : "Resumen General"}
+                            </h1>
+                            <p className="text-gray-300 mt-2 max-w-md">Esto es lo que está pasando en tu operación hoy.</p>
+                            <Link
+                                to="/app/quotations/new"
+                                className="inline-flex items-center gap-2 mt-6 w-fit px-5 py-2.5 rounded-full text-white text-sm font-semibold bg-brand-gradient shadow-lg shadow-blue-500/10 hover:brightness-105 transition-all"
+                            >
+                                <Plus size={16} />
+                                Nueva Cotización
+                            </Link>
+                        </div>
+
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+                            {SERVICE_LINES.map(({ icon: Icon, label, sub, color, bg }) => (
+                                <li key={label} className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-surface-base/60 border border-surface-border">
+                                    <div className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center ${bg}`}>
+                                        <Icon size={17} className={color} />
+                                    </div>
+                                    <div className="leading-tight">
+                                        <p className="text-sm font-semibold text-white">{label}</p>
+                                        <p className="text-xs text-gray-400">{sub}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
 
                 <div className="bg-surface-card border border-surface-border rounded-3xl p-6">
@@ -102,7 +241,7 @@ export default function Dashboard() {
                             <Link
                                 key={to}
                                 to={to}
-                                className="flex flex-col gap-2 p-4 rounded-2xl bg-surface-base border border-surface-border hover:border-surface-hover hover:bg-surface-hover transition-colors"
+                                className="flex flex-col gap-2 p-4 rounded-2xl bg-surface-base border border-surface-border hover:bg-surface-hover transition-colors"
                             >
                                 <div className={`w-9 h-9 rounded-full flex items-center justify-center ${iconBg}`}>
                                     <Icon size={18} className={iconColor} />
@@ -114,22 +253,98 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Grid de Estadísticas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <StatCard
-                    title="Total de Cotizaciones"
-                    value={quotationCount}
-                    icon={FileText}
-                    iconBg="bg-blue-500/15"
-                    iconColor="text-blue-400"
-                />
-                <StatCard
-                    title="Total de Solicitudes"
-                    value={requestCount}
-                    icon={ClipboardList}
-                    iconBg="bg-orange-500/15"
-                    iconColor="text-orange-400"
-                />
+            {/* Estadísticas con tendencia (este mes vs. mes anterior) */}
+            {statsError && (
+                <p className="mb-4 text-sm text-red-400">No se pudieron cargar las estadísticas en este momento. Recarga la página para intentarlo de nuevo.</p>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 mb-8">
+                {STAT_CARDS.map(({ key, ...card }) => (
+                    <StatCard key={key} {...card} stat={stats?.[key]} loading={loading} />
+                ))}
+            </div>
+
+            {/* Últimos 7 días + tarjeta "Recuerda" */}
+            <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-6 mb-8">
+                <div className="bg-surface-card rounded-2xl border border-surface-border p-6">
+                    <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-orange-500/15 flex items-center justify-center shrink-0">
+                                    <Activity size={16} className="text-orange-400" />
+                                </div>
+                                <h2 className="text-lg font-semibold text-white">Cotizaciones y clientes de los últimos 7 días</h2>
+                            </div>
+                            {!loading && stats && (
+                                <p className="text-gray-400 text-sm mt-1">
+                                    {weekQuotations} cotizaci{weekQuotations === 1 ? "ón" : "ones"} y {weekClients} cliente{weekClients === 1 ? "" : "s"} nuevo{weekClients === 1 ? "" : "s"} en los últimos 7 días
+                                </p>
+                            )}
+                        </div>
+                    </div>
+
+                    {loading ? (
+                        <div className="h-64 flex items-center justify-center text-gray-400">Cargando...</div>
+                    ) : !stats ? (
+                        <div className="h-64 flex items-center justify-center text-gray-400 text-sm">No hay datos disponibles.</div>
+                    ) : (
+                        <ResponsiveContainer width="100%" height={260}>
+                            <AreaChart data={weekData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="fillQuotations" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor={SERIES_BLUE} stopOpacity={0.35} />
+                                        <stop offset="100%" stopColor={SERIES_BLUE} stopOpacity={0} />
+                                    </linearGradient>
+                                    <linearGradient id="fillClients" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor={SERIES_ORANGE} stopOpacity={0.3} />
+                                        <stop offset="100%" stopColor={SERIES_ORANGE} stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid vertical={false} stroke={GRID_STROKE} />
+                                <XAxis
+                                    dataKey="date"
+                                    tickFormatter={DAY_LABEL}
+                                    tick={AXIS_TICK}
+                                    axisLine={{ stroke: GRID_STROKE }}
+                                    tickLine={false}
+                                />
+                                <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={32} allowDecimals={false} />
+                                <Tooltip content={<WeekTooltip />} cursor={{ stroke: GRID_STROKE }} />
+                                <Legend
+                                    verticalAlign="top"
+                                    align="right"
+                                    height={32}
+                                    iconType="circle"
+                                    iconSize={8}
+                                    itemSorter={(item) => (item.dataKey === "quotations" ? 0 : 1)}
+                                    formatter={(value) => <span className="text-sm text-gray-300">{value}</span>}
+                                />
+                                <Area type="monotone" dataKey="quotations" name="Cotizaciones" stroke={SERIES_BLUE} strokeWidth={2} fill="url(#fillQuotations)" dot={{ r: 3, fill: SERIES_BLUE }} activeDot={{ r: 5 }} />
+                                <Area type="monotone" dataKey="clients" name="Clientes nuevos" stroke={SERIES_ORANGE} strokeWidth={2} fill="url(#fillClients)" dot={{ r: 3, fill: SERIES_ORANGE }} activeDot={{ r: 5 }} />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    )}
+                </div>
+
+                {/* Decorativo: frase fija, no es un dato */}
+                <div className="relative overflow-hidden rounded-2xl border border-surface-border bg-surface-card p-6 flex flex-col">
+                    <div className="absolute inset-x-0 top-0 h-1 bg-brand-gradient" />
+                    <div className="w-10 h-10 rounded-full bg-blue-500/15 flex items-center justify-center mb-4">
+                        <Quote size={18} className="text-blue-400" />
+                    </div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-orange-400 mb-2">Recuerda</p>
+                    <p className="text-white text-lg font-semibold leading-snug">
+                        Una cotización que sale rápido y clara ya es parte del servicio.
+                    </p>
+                    <p className="text-gray-400 text-sm mt-3">
+                        Dar seguimiento a tiempo convierte una propuesta en un proyecto y a un cliente en uno que regresa.
+                    </p>
+                    <Link
+                        to="/app/quotations"
+                        className="mt-auto pt-6 inline-flex items-center gap-1 text-sm font-medium text-blue-400 hover:text-blue-300 w-fit"
+                    >
+                        Revisar cotizaciones <ArrowRight size={16} />
+                    </Link>
+                </div>
             </div>
 
             {/* Rendimiento de solicitudes */}
@@ -143,43 +358,43 @@ export default function Dashboard() {
                 <p className="text-gray-400 text-sm mb-4 mt-1">Tiempo promedio para finalizar una solicitud, por mes</p>
 
                 {loading ? (
-                    <div className="h-64 flex items-center justify-center text-gray-500">Cargando...</div>
+                    <div className="h-64 flex items-center justify-center text-gray-400">Cargando...</div>
                 ) : performance.length === 0 ? (
-                    <div className="h-64 flex items-center justify-center text-gray-500 text-sm">
+                    <div className="h-64 flex items-center justify-center text-gray-400 text-sm">
                         Todavía no hay solicitudes finalizadas para medir el rendimiento.
                     </div>
                 ) : (
                     <ResponsiveContainer width="100%" height={260}>
                         <BarChart data={performance} margin={{ top: 8, right: 8, left: 0, bottom: 0 }} barCategoryGap="30%">
-                            <CartesianGrid vertical={false} stroke="#2A355F" />
+                            <CartesianGrid vertical={false} stroke={GRID_STROKE} />
                             <XAxis
                                 dataKey="month"
                                 tickFormatter={MONTH_LABEL}
-                                tick={{ fontSize: 12, fill: "#8B93B8" }}
-                                axisLine={{ stroke: "#2A355F" }}
+                                tick={AXIS_TICK}
+                                axisLine={{ stroke: GRID_STROKE }}
                                 tickLine={false}
                             />
                             <YAxis
-                                tick={{ fontSize: 12, fill: "#8B93B8" }}
+                                tick={AXIS_TICK}
                                 axisLine={false}
                                 tickLine={false}
                                 width={48}
                                 tickFormatter={(value) => `${value}h`}
                             />
                             <Tooltip content={<PerformanceTooltip />} cursor={{ fill: "#1C2650" }} />
-                            <Bar dataKey="avgHours" fill="#1F8CFF" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                            <Bar dataKey="avgHours" fill={SERIES_BLUE} radius={[4, 4, 0, 0]} maxBarSize={40} />
                         </BarChart>
                     </ResponsiveContainer>
                 )}
             </div>
 
-            {/* Últimas Cotizaciones */}
+            {/* Últimas Cotizaciones (las más recientes primero) */}
             <div className="bg-surface-card rounded-2xl border border-surface-border overflow-hidden">
-                <div className="p-6 border-b border-surface-border flex justify-between items-center">
+                <div className="p-6 border-b border-surface-border flex justify-between items-center gap-3">
                     <h2 className="text-lg font-semibold text-white">Últimas Cotizaciones</h2>
                     <Link
                         to="/app/quotations"
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-blue-400 hover:bg-blue-500/10 text-sm font-medium transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-blue-400 hover:bg-blue-500/10 text-sm font-medium transition-colors shrink-0"
                     >
                         Ver todas <ArrowRight size={16} />
                     </Link>
@@ -191,20 +406,23 @@ export default function Dashboard() {
                             <tr>
                                 <th className="px-6 py-3">Correlativo</th>
                                 <th className="px-6 py-3">Cliente</th>
-                                <th className="px-6 py-3">Total</th>
+                                <th className="px-6 py-3 text-right">Total</th>
                                 <th className="px-6 py-3">Fecha</th>
+                                <th className="px-6 py-3">Estado</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-surface-border">
                             {loading ? (
-                                <tr><td colSpan="4" className="text-center py-10 text-gray-500">Cargando datos...</td></tr>
+                                <tr><td colSpan="5" className="text-center py-10 text-gray-400">Cargando datos...</td></tr>
                             ) : quotations.length === 0 ? (
-                                <tr><td colSpan="4" className="text-center py-10 text-gray-500">No hay cotizaciones registradas.</td></tr>
+                                <tr><td colSpan="5" className="text-center py-10 text-gray-400">No hay cotizaciones registradas.</td></tr>
                             ) : (
                                 quotations.map((q) => (
                                     <tr key={q.id} className="hover:bg-surface-hover transition-colors">
-                                        <td className="px-6 py-4 font-bold text-blue-400">
-                                            {formatQuotationId(q.correlativo)}
+                                        <td className="px-6 py-4 font-bold">
+                                            <Link to={`/app/quotations/${q.id}`} className="text-blue-400 hover:text-blue-300">
+                                                {formatQuotationId(q.correlativo)}
+                                            </Link>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
@@ -214,11 +432,14 @@ export default function Dashboard() {
                                                 <span className="text-gray-300">{q.client?.name || "Sin Nombre"}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 font-bold text-white">
+                                        <td className="px-6 py-4 font-bold text-white text-right">
                                             {formatCurrency(q.total)}
                                         </td>
-                                        <td className="px-6 py-4 text-gray-500">
+                                        <td className="px-6 py-4 text-gray-400">
                                             {formatDate(q.createdAt)}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <ValidityPill validUntil={q.validUntil} />
                                         </td>
                                     </tr>
                                 ))

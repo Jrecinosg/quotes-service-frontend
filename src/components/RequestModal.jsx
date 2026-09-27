@@ -47,7 +47,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
 
   return createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in">
+      <div className="bg-surface-card rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in">
         <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
           <h2 className="text-white font-bold text-lg">Nueva solicitud</h2>
           <button type="button" onClick={onClose} className="text-blue-100 hover:text-white">
@@ -58,10 +58,10 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {forStaff && (
             <div>
-              <label className="block text-sm font-medium text-gray-700">Empresa cliente *</label>
+              <label className="block text-sm font-medium text-gray-300">Empresa cliente *</label>
               <select
                 required
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+                className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
                 value={clientId}
                 onChange={(e) => setClientId(e.target.value)}
               >
@@ -74,11 +74,11 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Título *</label>
+            <label className="block text-sm font-medium text-gray-300">Título *</label>
             <input
               type="text"
               required
-              className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Ej. Cámara sin señal en bodega 2"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -86,11 +86,11 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Descripción *</label>
+            <label className="block text-sm font-medium text-gray-300">Descripción *</label>
             <textarea
               required
               rows={4}
-              className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Cuéntanos qué necesita con el mayor detalle posible."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -98,7 +98,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
           </div>
 
           <div className="pt-4 flex justify-end gap-3">
-            <button type="button" onClick={onClose} className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+            <button type="button" onClick={onClose} className="px-4 py-2 text-gray-200 bg-surface-hover rounded-md hover:bg-surface-border">
               Cancelar
             </button>
             <button

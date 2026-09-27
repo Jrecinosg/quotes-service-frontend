@@ -6,6 +6,13 @@ export const clientService = {
     return response.data;
   },
 
+  // Búsqueda en el servidor (nombre, NIT o contacto) -para el buscador
+  // global del encabezado. Devuelve solo id/nombre/NIT/contacto, sin logo.
+  search: async (term, limit = 5) => {
+    const response = await api.get("/clients", { params: { search: term, limit } });
+    return response.data;
+  },
+
   create: async (clientData) => {
     const response = await api.post("/clients", clientData);
     return response.data;

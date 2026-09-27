@@ -1,12 +1,15 @@
 import api from "./api";
 
 export const quotationService = {
-  getAll: async (page = 1, limit = 10, search = "") => {
+  // sort: "" = agrupadas por cliente (listado normal); "recent" = las más
+  // recientes primero (Dashboard y buscador global).
+  getAll: async (page = 1, limit = 10, search = "", sort = "") => {
     const response = await api.get("/quotations", {
       params: {
         page,
         limit,
-        search
+        search,
+        ...(sort ? { sort } : {})
       }
     });
     return response.data;

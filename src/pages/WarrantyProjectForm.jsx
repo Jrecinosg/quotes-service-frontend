@@ -139,10 +139,10 @@ export default function WarrantyProjectForm() {
     if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault();
   };
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Cargando proyecto...</div>;
+  if (loading) return <div className="p-8 text-center text-gray-400">Cargando proyecto...</div>;
 
-  const inputClass = "w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none";
-  const labelClass = "block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1";
+  const inputClass = "w-full border border-surface-border rounded-lg p-2 text-sm text-white placeholder:text-gray-500 [color-scheme:dark] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none";
+  const labelClass = "block text-xs font-semibold text-gray-300 uppercase tracking-wide mb-1";
 
   return (
     <div className="max-w-5xl mx-auto pb-10">
@@ -160,7 +160,7 @@ export default function WarrantyProjectForm() {
           <h1 className="font-display text-2xl font-bold text-white">
             {isEditing ? "Editar proyecto de garantía" : "Nuevo proyecto de garantía"}
           </h1>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-400 text-sm">
             Registra a quién se le facturó y de qué proveedor salió cada equipo
           </p>
         </div>
@@ -169,12 +169,12 @@ export default function WarrantyProjectForm() {
       <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-6">
 
         {/* Datos del proyecto */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="bg-surface-card p-6 rounded-2xl shadow-sm border border-surface-border">
           <div className="flex items-center gap-2 mb-5">
-            <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center">
               <FileText size={18} />
             </div>
-            <h2 className="font-semibold text-gray-800">Datos del proyecto</h2>
+            <h2 className="font-semibold text-white">Datos del proyecto</h2>
           </div>
 
           <div className="space-y-5">
@@ -190,7 +190,7 @@ export default function WarrantyProjectForm() {
                   type="text"
                   required
                   placeholder="Ej. Instalación CCTV bodega 2"
-                  className={inputClass}
+                  className={`${inputClass} bg-surface-base`}
                   value={header.title}
                   onChange={(e) => setHeader({ ...header, title: e.target.value })}
                 />
@@ -201,7 +201,7 @@ export default function WarrantyProjectForm() {
                 <input
                   type="text"
                   placeholder="Se puede completar después, cuando factures"
-                  className={inputClass}
+                  className={`${inputClass} bg-surface-base`}
                   value={header.clientInvoiceNumber}
                   onChange={(e) => setHeader({ ...header, clientInvoiceNumber: e.target.value })}
                 />
@@ -211,7 +211,7 @@ export default function WarrantyProjectForm() {
                 <label className={labelClass}>Fecha de esa factura</label>
                 <input
                   type="date"
-                  className={inputClass}
+                  className={`${inputClass} bg-surface-base`}
                   value={header.clientInvoiceDate}
                   onChange={(e) => setHeader({ ...header, clientInvoiceDate: e.target.value })}
                 />
@@ -221,15 +221,15 @@ export default function WarrantyProjectForm() {
         </div>
 
         {/* Equipos */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="bg-surface-card p-6 rounded-2xl shadow-sm border border-surface-border">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
                 <Package size={18} />
               </div>
               <div>
-                <h2 className="font-semibold text-gray-800">Equipos del proyecto</h2>
-                <p className="text-xs text-gray-500">Cada equipo lleva su propio proveedor, compra y factura</p>
+                <h2 className="font-semibold text-white">Equipos del proyecto</h2>
+                <p className="text-xs text-gray-400">Cada equipo lleva su propio proveedor, compra y factura</p>
               </div>
             </div>
             <span className="text-xs font-semibold text-gray-400 sm:ml-auto">
@@ -239,7 +239,7 @@ export default function WarrantyProjectForm() {
 
           <div className="space-y-4">
             {items.map((item, index) => (
-              <div key={index} className="rounded-xl border border-gray-200 bg-gray-50/60 p-4">
+              <div key={index} className="rounded-xl border border-surface-border bg-surface-base p-4">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                     Equipo #{index + 1}
@@ -248,7 +248,7 @@ export default function WarrantyProjectForm() {
                     type="button"
                     onClick={() => removeItem(index)}
                     disabled={items.length === 1}
-                    className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
                     title={items.length === 1 ? "El proyecto necesita al menos un equipo" : "Quitar este equipo"}
                   >
                     <Trash2 size={16} />
@@ -260,7 +260,7 @@ export default function WarrantyProjectForm() {
                     <label className={labelClass}>Proveedor *</label>
                     <select
                       required
-                      className={`${inputClass} bg-white`}
+                      className={`${inputClass} bg-surface-card`}
                       value={item.supplierId}
                       onChange={(e) => handleItemChange(index, "supplierId", e.target.value)}
                     >
@@ -272,7 +272,7 @@ export default function WarrantyProjectForm() {
                     <button
                       type="button"
                       onClick={() => openSupplierModal(index)}
-                      className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800"
+                      className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-blue-400 hover:text-blue-300"
                     >
                       <Truck size={13} /> Nuevo proveedor
                     </button>
@@ -284,7 +284,7 @@ export default function WarrantyProjectForm() {
                       type="text"
                       required
                       placeholder="Ej. Cámara IP domo 4MP DS-2CD1143G0"
-                      className={inputClass}
+                      className={`${inputClass} bg-surface-card`}
                       value={item.description}
                       onChange={(e) => handleItemChange(index, "description", e.target.value)}
                     />
@@ -296,7 +296,7 @@ export default function WarrantyProjectForm() {
                       type="number"
                       min="1"
                       required
-                      className={`${inputClass} text-center`}
+                      className={`${inputClass} bg-surface-card text-center`}
                       value={item.quantity}
                       onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
                     />
@@ -307,7 +307,7 @@ export default function WarrantyProjectForm() {
                     <input
                       type="date"
                       required
-                      className={inputClass}
+                      className={`${inputClass} bg-surface-card`}
                       value={item.purchaseDate}
                       onChange={(e) => handleItemChange(index, "purchaseDate", e.target.value)}
                     />
@@ -319,7 +319,7 @@ export default function WarrantyProjectForm() {
                       type="text"
                       required
                       placeholder="No. de factura que le dio el proveedor"
-                      className={inputClass}
+                      className={`${inputClass} bg-surface-card`}
                       value={item.supplierInvoiceNumber}
                       onChange={(e) => handleItemChange(index, "supplierInvoiceNumber", e.target.value)}
                     />
@@ -330,7 +330,7 @@ export default function WarrantyProjectForm() {
                     <input
                       type="text"
                       placeholder="Opcional"
-                      className={`${inputClass} font-mono`}
+                      className={`${inputClass} bg-surface-card font-mono`}
                       value={item.serialNumber}
                       onChange={(e) => handleItemChange(index, "serialNumber", e.target.value)}
                     />
@@ -343,7 +343,7 @@ export default function WarrantyProjectForm() {
           <button
             type="button"
             onClick={addItem}
-            className="mt-4 flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold text-sm"
+            className="mt-4 flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold text-sm"
           >
             <Plus size={16} /> Agregar equipo
           </button>
@@ -354,7 +354,7 @@ export default function WarrantyProjectForm() {
           <button
             type="button"
             onClick={() => navigate("/app/warranties")}
-            className="px-5 py-3 rounded-lg text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 font-medium"
+            className="px-5 py-3 rounded-lg text-gray-200 bg-surface-card border border-surface-border hover:bg-surface-hover font-medium"
           >
             Cancelar
           </button>

@@ -77,7 +77,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
 
   return createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in">
+      <div className="bg-surface-card rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in">
 
         {/* Header */}
         <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
@@ -92,11 +92,11 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
         {/* Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nombre / Razón Social *</label>
+            <label className="block text-sm font-medium text-gray-300">Nombre / Razón Social *</label>
             <input
               type="text"
               required
-              className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
@@ -104,20 +104,20 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">NIT *</label>
+              <label className="block text-sm font-medium text-gray-300">NIT *</label>
               <input
                 type="text"
                 required
-                className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2"
                 value={formData.taxId}
                 onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Teléfono</label>
+              <label className="block text-sm font-medium text-gray-300">Teléfono</label>
               <input
                 type="text"
-                className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               />
@@ -125,40 +125,40 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+            <label className="block text-sm font-medium text-gray-300">Correo Electrónico</label>
             <input
               type="email"
-              className="mt-1 w-full border border-gray-300 rounded-md p-2"
+              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Dirección</label>
+            <label className="block text-sm font-medium text-gray-300">Dirección</label>
             <input
               type="text"
-              className="mt-1 w-full border border-gray-300 rounded-md p-2"
+              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nombre del contacto</label>
+            <label className="block text-sm font-medium text-gray-300">Nombre del contacto</label>
             <input
               type="text"
-              className="mt-1 w-full border border-gray-300 rounded-md p-2"
+              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2"
               value={formData.contactName}
               onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Logo del cliente</label>
+            <label className="block text-sm font-medium text-gray-300">Logo del cliente</label>
             <p className="text-xs text-gray-400 mb-1">Aparece junto al de Grupo AC cuando esta empresa inicia sesión en el portal.</p>
             <div className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="w-14 h-14 rounded-lg border border-surface-border bg-surface-base flex items-center justify-center overflow-hidden shrink-0">
                 {formData.logoBase64 ? (
                   <img src={formData.logoBase64} alt="Logo" className="w-full h-full object-contain" />
                 ) : (
@@ -169,7 +169,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
                 type="file"
                 accept="image/png,image/jpeg,image/svg+xml,image/webp"
                 onChange={handleLogoChange}
-                className="text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-600 file:font-medium hover:file:bg-blue-100"
+                className="text-sm text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-500/10 file:text-blue-400 file:font-medium hover:file:bg-blue-500/20"
               />
             </div>
           </div>
@@ -179,7 +179,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+              className="px-4 py-2 text-gray-200 bg-surface-hover rounded-md hover:bg-surface-border"
             >
               Cancelar
             </button>

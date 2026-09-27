@@ -11,20 +11,20 @@ import appLogo from "../assets/logo.png";
 
 const STATUS_LABEL = { PENDING: 'Pendiente', IN_PROGRESS: 'En proceso', DONE: 'Finalizado' };
 const STATUS_STYLE = {
-  PENDING: 'bg-amber-100 text-amber-700',
-  IN_PROGRESS: 'bg-blue-100 text-blue-700',
-  DONE: 'bg-green-100 text-green-700'
+  PENDING: 'bg-amber-500/15 text-amber-400',
+  IN_PROGRESS: 'bg-blue-500/15 text-blue-400',
+  DONE: 'bg-green-500/15 text-green-400'
 };
 
 function StatTile({ label, value, icon: Icon, colorClass }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+    <div className="bg-surface-card rounded-xl border border-surface-border shadow-sm p-4 flex items-center gap-3">
       <div className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 ${colorClass}`}>
         <Icon size={20} />
       </div>
       <div>
-        <p className="text-2xl font-bold text-gray-800 leading-none">{value}</p>
-        <p className="text-xs text-gray-500 mt-1">{label}</p>
+        <p className="text-2xl font-bold text-white leading-none">{value}</p>
+        <p className="text-xs text-gray-400 mt-1">{label}</p>
       </div>
     </div>
   );
@@ -108,13 +108,13 @@ export default function Requests() {
     : null;
 
   const StatusFilterChips = () => (
-    <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex gap-2">
+    <div className="bg-surface-card p-4 rounded-xl shadow-sm border border-surface-border mb-6 flex gap-2">
       {["", "PENDING", "IN_PROGRESS", "DONE"].map((s) => (
         <button
           key={s || 'ALL'}
           onClick={() => setStatusFilter(s)}
           className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-            statusFilter === s ? "bg-brand-gradient text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            statusFilter === s ? "bg-brand-gradient text-white" : "bg-surface-hover text-gray-300 hover:bg-surface-border"
           }`}
         >
           {s ? STATUS_LABEL[s] : "Todas"}
@@ -124,7 +124,7 @@ export default function Requests() {
   );
 
   const EmptyState = () => (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 text-center py-14 text-gray-400">
+    <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-14 text-gray-400">
       <ClipboardList className="mx-auto mb-2 text-gray-300" size={32} />
       {isClient ? "Todavía no tienes solicitudes. Crea la primera con el botón de arriba." : "No hay solicitudes registradas."}
     </div>
@@ -178,20 +178,20 @@ export default function Requests() {
 
         {/* Tarjetones de conteo */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <StatTile label="Total" value={counts.total} icon={ClipboardList} colorClass="bg-gray-100 text-gray-600" />
-          <StatTile label="Pendiente" value={counts.PENDING} icon={Clock} colorClass="bg-amber-100 text-amber-600" />
-          <StatTile label="En proceso" value={counts.IN_PROGRESS} icon={PlayCircle} colorClass="bg-blue-100 text-blue-600" />
-          <StatTile label="Finalizado" value={counts.DONE} icon={CheckCircle2} colorClass="bg-green-100 text-green-600" />
+          <StatTile label="Total" value={counts.total} icon={ClipboardList} colorClass="bg-surface-hover text-gray-300" />
+          <StatTile label="Pendiente" value={counts.PENDING} icon={Clock} colorClass="bg-amber-500/15 text-amber-400" />
+          <StatTile label="En proceso" value={counts.IN_PROGRESS} icon={PlayCircle} colorClass="bg-blue-500/15 text-blue-400" />
+          <StatTile label="Finalizado" value={counts.DONE} icon={CheckCircle2} colorClass="bg-green-500/15 text-green-400" />
         </div>
 
         <StatusFilterChips />
 
         {loading ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 text-center py-10 text-gray-400">Cargando...</div>
+          <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-10 text-gray-400">Cargando...</div>
         ) : requests.length === 0 ? (
           <EmptyState />
         ) : visibleRequests.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 text-center py-14 text-gray-400">
+          <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-14 text-gray-400">
             No hay solicitudes con este estado.
           </div>
         ) : (
@@ -200,7 +200,7 @@ export default function Requests() {
               <Link
                 key={r.id}
                 to={`/app/requests/${r.id}`}
-                className="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all p-5 flex flex-col gap-3"
+                className="group bg-surface-card rounded-xl border border-surface-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all p-5 flex flex-col gap-3"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs text-gray-400">{formatRequestId(r.correlativo)}</span>
@@ -208,10 +208,10 @@ export default function Requests() {
                     {STATUS_LABEL[r.status]}
                   </span>
                 </div>
-                <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
+                <h3 className="font-semibold text-white group-hover:text-blue-300 transition-colors line-clamp-2">
                   {r.title}
                 </h3>
-                <p className="text-xs text-gray-400 mt-auto pt-2 border-t border-gray-50">
+                <p className="text-xs text-gray-400 mt-auto pt-2 border-t border-surface-border">
                   Actualizado {formatDate(r.updatedAt)}
                 </p>
               </Link>
@@ -241,7 +241,7 @@ export default function Requests() {
           <button
             onClick={handleDownloadPdf}
             disabled={downloading || requests.length === 0}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-all"
+            className="flex items-center gap-2 px-4 py-2 border border-surface-border rounded-lg text-gray-200 hover:bg-surface-hover disabled:opacity-50 transition-all"
           >
             <FileDown size={18} /> {downloading ? "Generando..." : "Descargar PDF"}
           </button>
@@ -257,28 +257,28 @@ export default function Requests() {
       <StatusFilterChips />
 
       {loading ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 text-center py-10 text-gray-400">Cargando...</div>
+        <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-10 text-gray-400">Cargando...</div>
       ) : requests.length === 0 ? (
         <EmptyState />
       ) : (
         <div className="space-y-6">
           {groups.map(({ client, items }) => (
-            <div key={client?.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+            <div key={client?.id} className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
+              <div className="px-6 py-4 border-b border-surface-border flex items-center justify-between bg-surface-base">
                 <div>
-                  <h2 className="font-semibold text-gray-800">{client?.name}</h2>
-                  <p className="text-xs text-gray-500">{items.length} solicitud{items.length === 1 ? '' : 'es'}</p>
+                  <h2 className="font-semibold text-white">{client?.name}</h2>
+                  <p className="text-xs text-gray-400">{items.length} solicitud{items.length === 1 ? '' : 'es'}</p>
                 </div>
                 <button
                   onClick={() => openNewRequest(client?.id)}
-                  className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  className="flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300 font-medium"
                 >
                   <Plus size={16} /> Nueva para este cliente
                 </button>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left min-w-[600px]">
-                  <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                  <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
                     <tr>
                       <th className="px-6 py-3">Folio</th>
                       <th className="px-6 py-3">Título</th>
@@ -287,22 +287,22 @@ export default function Requests() {
                       <th className="px-6 py-3">Última actualización</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-surface-border">
                     {items.map((r) => (
-                      <tr key={r.id} className="hover:bg-blue-50 transition-colors">
+                      <tr key={r.id} className="hover:bg-surface-hover transition-colors">
                         <td className="px-6 py-4">
-                          <Link to={`/app/requests/${r.id}`} className="font-bold text-blue-600 hover:underline">
+                          <Link to={`/app/requests/${r.id}`} className="font-bold text-blue-400 hover:underline">
                             {formatRequestId(r.correlativo)}
                           </Link>
                         </td>
-                        <td className="px-6 py-4 text-gray-800">{r.title}</td>
-                        <td className="px-6 py-4 text-gray-500 text-sm">{r.createdBy?.name || r.createdBy?.email || '—'}</td>
+                        <td className="px-6 py-4 text-white">{r.title}</td>
+                        <td className="px-6 py-4 text-gray-400 text-sm">{r.createdBy?.name || r.createdBy?.email || '—'}</td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold ${STATUS_STYLE[r.status]}`}>
                             {STATUS_LABEL[r.status]}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-gray-500">{formatDate(r.updatedAt)}</td>
+                        <td className="px-6 py-4 text-gray-400">{formatDate(r.updatedAt)}</td>
                       </tr>
                     ))}
                   </tbody>

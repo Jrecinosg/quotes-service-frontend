@@ -163,7 +163,7 @@ export default function Warranties() {
             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               tab === key
                 ? "bg-brand-gradient text-white shadow-sm"
-                : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                : "bg-surface-card text-gray-300 border border-surface-border hover:bg-surface-hover"
             }`}
           >
             <Icon size={16} />
@@ -178,13 +178,13 @@ export default function Warranties() {
       {tab === "projects" ? (
         <>
           {/* Buscador */}
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+          <div className="bg-surface-card p-4 rounded-xl shadow-sm border border-surface-border mb-6">
             <div className="relative">
               <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Buscar por folio, cliente, título, factura o número de serie..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-surface-base text-white placeholder:text-gray-500 w-full pl-10 pr-4 py-2 border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -192,10 +192,10 @@ export default function Warranties() {
           </div>
 
           {/* Tabla de proyectos */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left min-w-[820px]">
-                <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
                   <tr>
                     <th className="px-6 py-4">Folio</th>
                     <th className="px-6 py-4">Cliente</th>
@@ -205,7 +205,7 @@ export default function Warranties() {
                     <th className="px-6 py-4 text-right">Acciones</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-surface-border">
                   {loadingProjects ? (
                     <tr><td colSpan="6" className="text-center py-10 text-gray-400">Cargando garantías...</td></tr>
                   ) : projects.length === 0 ? (
@@ -222,25 +222,25 @@ export default function Warranties() {
                       <tr
                         key={p.id}
                         onClick={() => navigate(`/app/warranties/${p.id}`)}
-                        className="hover:bg-blue-50 transition-colors group cursor-pointer"
+                        className="hover:bg-surface-hover transition-colors group cursor-pointer"
                       >
                         <td className="px-6 py-4">
-                          <span className="font-bold text-blue-600">{formatWarrantyId(p.correlativo)}</span>
+                          <span className="font-bold text-blue-400">{formatWarrantyId(p.correlativo)}</span>
                         </td>
-                        <td className="px-6 py-4 text-gray-800 font-medium">{p.client?.name || "—"}</td>
-                        <td className="px-6 py-4 text-gray-600">{p.title}</td>
+                        <td className="px-6 py-4 text-white font-medium">{p.client?.name || "—"}</td>
+                        <td className="px-6 py-4 text-gray-300">{p.title}</td>
                         <td className="px-6 py-4 text-sm">
                           {p.clientInvoiceNumber ? (
                             <>
-                              <p className="text-gray-800 font-mono">{p.clientInvoiceNumber}</p>
+                              <p className="text-white font-mono">{p.clientInvoiceNumber}</p>
                               <p className="text-xs text-gray-400">{formatDate(p.clientInvoiceDate)}</p>
                             </>
                           ) : (
-                            <span className="inline-flex px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold">Sin facturar aún</span>
+                            <span className="inline-flex px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 text-xs font-semibold">Sin facturar aún</span>
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-semibold">
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold">
                             <Package size={13} />
                             {p.items?.length || 0}
                           </span>
@@ -249,19 +249,19 @@ export default function Warranties() {
                           <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                             <Link
                               to={`/app/warranties/${p.id}`}
-                              className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg" title="Ver detalle"
+                              className="p-2 text-gray-400 hover:bg-surface-hover rounded-lg" title="Ver detalle"
                             >
                               <Eye size={18} />
                             </Link>
                             <Link
                               to={`/app/warranties/edit/${p.id}`}
-                              className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg" title="Editar"
+                              className="p-2 text-blue-400 hover:bg-blue-500/20 rounded-lg" title="Editar"
                             >
                               <Pencil size={18} />
                             </Link>
                             <button
                               onClick={() => handleDeleteProject(p)}
-                              className="p-2 text-red-600 hover:bg-red-100 rounded-lg" title="Eliminar"
+                              className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg" title="Eliminar"
                             >
                               <Trash2 size={18} />
                             </button>
@@ -278,23 +278,23 @@ export default function Warranties() {
       ) : (
         <>
           {/* Buscador de proveedores */}
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+          <div className="bg-surface-card p-4 rounded-xl shadow-sm border border-surface-border mb-6">
             <div className="relative">
               <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Buscar proveedor por nombre, contacto o teléfono..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-surface-base text-white placeholder:text-gray-500 w-full pl-10 pr-4 py-2 border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={supplierSearch}
                 onChange={(e) => setSupplierSearch(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left min-w-[620px]">
-                <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
                   <tr>
                     <th className="px-6 py-4">Proveedor</th>
                     <th className="px-6 py-4">Contacto</th>
@@ -302,7 +302,7 @@ export default function Warranties() {
                     <th className="px-6 py-4 text-right">Acciones</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-surface-border">
                   {loadingSuppliers ? (
                     <tr><td colSpan="4" className="text-center py-10 text-gray-400">Cargando proveedores...</td></tr>
                   ) : suppliers.length === 0 ? (
@@ -316,24 +316,24 @@ export default function Warranties() {
                     <tr><td colSpan="4" className="text-center py-14 text-gray-400">No se encontró ningún proveedor con esa búsqueda.</td></tr>
                   ) : (
                     filteredSuppliers.map((s) => (
-                      <tr key={s.id} className="hover:bg-blue-50 transition-colors group">
+                      <tr key={s.id} className="hover:bg-surface-hover transition-colors group">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold shrink-0">
+                            <div className="w-10 h-10 rounded-full bg-indigo-500/15 flex items-center justify-center text-indigo-400 font-bold shrink-0">
                               {s.name.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                              <p className="font-medium text-gray-900">{s.name}</p>
+                              <p className="font-medium text-white">{s.name}</p>
                               {s.taxId && (
-                                <span className="inline-block px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-[11px] font-mono">
+                                <span className="inline-block px-1.5 py-0.5 bg-surface-hover text-gray-400 rounded text-[11px] font-mono">
                                   NIT {s.taxId}
                                 </span>
                               )}
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">{s.contactName || "—"}</td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
+                        <td className="px-6 py-4 text-sm text-gray-300">{s.contactName || "—"}</td>
+                        <td className="px-6 py-4 text-sm text-gray-300">
                           <p>{s.phone || "—"}</p>
                           <p className="text-xs text-gray-400">{s.email || ""}</p>
                         </td>
@@ -341,13 +341,13 @@ export default function Warranties() {
                           <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                             <button
                               onClick={() => { setEditingSupplier(s); setIsSupplierModalOpen(true); }}
-                              className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg" title="Editar"
+                              className="p-2 text-blue-400 hover:bg-blue-500/20 rounded-lg" title="Editar"
                             >
                               <Pencil size={18} />
                             </button>
                             <button
                               onClick={() => handleDeleteSupplier(s)}
-                              className="p-2 text-red-600 hover:bg-red-100 rounded-lg" title="Eliminar"
+                              className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg" title="Eliminar"
                             >
                               <Trash2 size={18} />
                             </button>

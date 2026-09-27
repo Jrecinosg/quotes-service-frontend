@@ -106,13 +106,13 @@ export default function Quotations() {
             </div>
 
             {/* 2. Barra de Búsqueda (Ancho Completo como en Clientes) */}
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+            <div className="bg-surface-card p-4 rounded-xl shadow-sm border border-surface-border mb-6">
                 <div className="relative">
                     <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
                     <input
                         type="text"
                         placeholder="Buscar por cliente, correlativo o referencia de proyecto..."
-                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        className="bg-surface-base text-white placeholder:text-gray-500 w-full pl-10 pr-4 py-2 border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -121,26 +121,26 @@ export default function Quotations() {
 
             {/* 3. Empresas agrupadas (acordeón) */}
             {loading ? (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 text-center py-10 text-gray-400">Cargando cotizaciones...</div>
+                <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-10 text-gray-400">Cargando cotizaciones...</div>
             ) : groups.length === 0 ? (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 text-center py-10 text-gray-500">No hay cotizaciones que coincidan con la búsqueda.</div>
+                <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-10 text-gray-400">No hay cotizaciones que coincidan con la búsqueda.</div>
             ) : (
                 <div className="space-y-3">
                     {groups.map(({ client, items }) => {
                         const isOpen = isSearching || expanded.has(client?.id);
                         return (
-                            <div key={client?.id || 'sin-cliente'} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div key={client?.id || 'sin-cliente'} className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
                                 <button
                                     type="button"
                                     onClick={() => toggleExpanded(client?.id)}
-                                    className="w-full flex items-center justify-between gap-3 px-6 py-4 hover:bg-gray-50 transition-colors text-left"
+                                    className="w-full flex items-center justify-between gap-3 px-6 py-4 hover:bg-surface-hover transition-colors text-left"
                                 >
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                                        <div className="w-9 h-9 rounded-full bg-blue-500/15 flex items-center justify-center text-blue-400 shrink-0">
                                             <Building2 size={16} />
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="font-semibold text-gray-800 truncate">{client?.name || "Cliente no disponible"}</p>
+                                            <p className="font-semibold text-white truncate">{client?.name || "Cliente no disponible"}</p>
                                             <p className="text-xs text-gray-400">{items.length} cotización{items.length === 1 ? '' : 'es'}</p>
                                         </div>
                                     </div>
@@ -151,9 +151,9 @@ export default function Quotations() {
                                 </button>
 
                                 {isOpen && (
-                                    <div className="overflow-x-auto border-t border-gray-100">
+                                    <div className="overflow-x-auto border-t border-surface-border">
                                         <table className="w-full text-left min-w-[700px]">
-                                            <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                                            <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
                                                 <tr>
                                                     <th className="px-6 py-3">Correlativo</th>
                                                     <th className="px-6 py-3">Referencia</th>
@@ -162,40 +162,40 @@ export default function Quotations() {
                                                     <th className="px-6 py-3 text-right">Acciones</th>
                                                 </tr>
                                             </thead>
-                                            <tbody className="divide-y divide-gray-100">
+                                            <tbody className="divide-y divide-surface-border">
                                                 {items.map((q) => (
-                                                    <tr key={q.id} className="hover:bg-blue-50/50 transition-colors group">
-                                                        <td className="px-6 py-4 text-blue-600 font-mono font-bold">
+                                                    <tr key={q.id} className="hover:bg-surface-hover transition-colors group">
+                                                        <td className="px-6 py-4 text-blue-400 font-mono font-bold">
                                                             {formatQuotationId(q.correlativo)}
                                                         </td>
-                                                        <td className="px-6 py-4 text-gray-500 text-sm">
+                                                        <td className="px-6 py-4 text-gray-400 text-sm">
                                                             {q.projectReference || "—"}
                                                         </td>
-                                                        <td className="px-6 py-4 text-gray-500">
+                                                        <td className="px-6 py-4 text-gray-400">
                                                             {formatDate(q.createdAt)}
                                                         </td>
-                                                        <td className="px-6 py-4 font-bold text-gray-900">
+                                                        <td className="px-6 py-4 font-bold text-white">
                                                             {formatCurrency(q.total)}
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
                                                             <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                                                                 <Link
                                                                     to={`/app/quotations/${q.id}`}
-                                                                    className="p-2 text-gray-400 hover:bg-white hover:text-blue-600 rounded-lg shadow-sm border border-transparent hover:border-gray-200 transition-all"
+                                                                    className="p-2 text-gray-400 hover:bg-surface-hover hover:text-blue-300 rounded-lg shadow-sm border border-transparent hover:border-surface-border transition-all"
                                                                     title="Ver Detalles y PDF"
                                                                 >
                                                                     <Eye size={18} />
                                                                 </Link>
                                                                 <Link
                                                                     to={`/app/quotations/edit/${q.id}`}
-                                                                    className="p-2 text-gray-400 hover:bg-white hover:text-blue-600 rounded-lg shadow-sm border border-transparent hover:border-gray-200 transition-all"
+                                                                    className="p-2 text-gray-400 hover:bg-surface-hover hover:text-blue-300 rounded-lg shadow-sm border border-transparent hover:border-surface-border transition-all"
                                                                     title="Editar"
                                                                 >
                                                                     <Pencil size={18} />
                                                                 </Link>
                                                                 <button
                                                                     onClick={() => handleDelete(q)}
-                                                                    className="p-2 text-gray-400 hover:bg-white hover:text-red-600 rounded-lg shadow-sm border border-transparent hover:border-gray-200 transition-all"
+                                                                    className="p-2 text-gray-400 hover:bg-surface-hover hover:text-red-300 rounded-lg shadow-sm border border-transparent hover:border-surface-border transition-all"
                                                                     title="Eliminar"
                                                                 >
                                                                     <Trash2 size={18} />

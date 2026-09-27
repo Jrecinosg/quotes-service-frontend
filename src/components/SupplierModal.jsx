@@ -49,7 +49,7 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
 
   return createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-surface-card rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
 
         {/* Header */}
         <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
@@ -64,35 +64,35 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
         {/* Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nombre del proveedor *</label>
+            <label className="block text-sm font-medium text-gray-300">Nombre del proveedor *</label>
             <input
               type="text"
               required
               autoFocus
               placeholder="Ej. Distribuidora Tecnológica S.A."
-              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">NIT</label>
+            <label className="block text-sm font-medium text-gray-300">NIT</label>
             <input
               type="text"
               placeholder="Ej. 12345678-9"
-              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               value={formData.taxId}
               onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nombre del contacto</label>
+            <label className="block text-sm font-medium text-gray-300">Nombre del contacto</label>
             <input
               type="text"
               placeholder="Persona con quien se gestiona la garantía"
-              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               value={formData.contactName}
               onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
             />
@@ -100,19 +100,19 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Teléfono</label>
+              <label className="block text-sm font-medium text-gray-300">Teléfono</label>
               <input
                 type="text"
-                className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Correo</label>
+              <label className="block text-sm font-medium text-gray-300">Correo</label>
               <input
                 type="email"
-                className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
@@ -124,7 +124,7 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+              className="px-4 py-2 text-gray-200 bg-surface-hover rounded-lg hover:bg-surface-border"
             >
               Cancelar
             </button>

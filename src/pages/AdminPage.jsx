@@ -118,37 +118,37 @@ export default function AdminPage() {
             </header>
 
             {/* Formulario de Invitación / Edición de rol */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                    <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                         <Mail size={20} className="text-blue-500" />
                         {editingEmail ? 'Editar rol de usuario' : 'Invitar Nuevo Usuario'}
                     </h2>
                     {editingEmail && (
-                        <button type="button" onClick={cancelEdit} className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
+                        <button type="button" onClick={cancelEdit} className="text-sm text-gray-400 hover:text-white flex items-center gap-1">
                             <X size={16} /> Cancelar
                         </button>
                     )}
                 </div>
                 <form onSubmit={handleInvite} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Correo Electrónico</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             disabled={!!editingEmail}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-100 disabled:text-gray-500"
+                            className="bg-surface-base text-white placeholder:text-gray-500 w-full px-3 py-2 border border-surface-border rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-surface-hover disabled:text-gray-500"
                             placeholder="correo@empresa.com"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de acceso</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Tipo de acceso</label>
                         <select
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
+                            className="bg-surface-base text-white placeholder:text-gray-500 w-full px-3 py-2 border border-surface-border rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
                         >
                             <option value="USER">Colaborador — Operador (USER)</option>
                             <option value="ADMIN">Colaborador — Administrador (ADMIN)</option>
@@ -157,12 +157,12 @@ export default function AdminPage() {
                     </div>
                     {role === 'CLIENT' ? (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Empresa cliente</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-1">Empresa cliente</label>
                             <select
                                 value={clientId}
                                 onChange={(e) => setClientId(e.target.value)}
                                 required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                className="bg-surface-base text-white placeholder:text-gray-500 w-full px-3 py-2 border border-surface-border rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
                             >
                                 <option value="">Selecciona una empresa...</option>
                                 {clients.map((c) => (
@@ -181,21 +181,21 @@ export default function AdminPage() {
                     </button>
                 </form>
                 {role === 'CLIENT' && clients.length === 0 && (
-                    <p className="text-xs text-amber-600 mt-2">No hay clientes registrados todavía — crea uno primero en la sección Clientes.</p>
+                    <p className="text-xs text-amber-400 mt-2">No hay clientes registrados todavía — crea uno primero en la sección Clientes.</p>
                 )}
             </div>
 
             {/* Equipo interno */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="p-6 border-b border-gray-100">
-                    <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+            <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
+                <div className="p-6 border-b border-surface-border">
+                    <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                         <ShieldCheck size={20} className="text-green-500" />
                         Equipo interno
                     </h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
-                        <thead className="bg-gray-50 text-gray-600 uppercase text-xs font-bold">
+                        <thead className="bg-surface-base text-gray-300 uppercase text-xs font-bold">
                             <tr>
                                 <th className="px-6 py-4">Usuario</th>
                                 <th className="px-6 py-4">Rol</th>
@@ -203,7 +203,7 @@ export default function AdminPage() {
                                 <th className="px-6 py-4 text-center">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-surface-border">
                             {fetching ? (
                                 <tr><td colSpan="4" className="text-center py-10 text-gray-400">Cargando lista...</td></tr>
                             ) : staffUsers.length === 0 ? (
@@ -219,30 +219,30 @@ export default function AdminPage() {
             </div>
 
             {/* Clientes, agrupados por empresa */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="p-6 border-b border-gray-100">
-                    <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+            <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
+                <div className="p-6 border-b border-surface-border">
+                    <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                         <Building2 size={20} className="text-orange-500" />
                         Clientes con acceso al portal
                     </h2>
-                    <p className="text-sm text-gray-500 mt-1">Una misma empresa puede tener más de una persona con acceso — solo invita otro correo con la misma empresa seleccionada.</p>
+                    <p className="text-sm text-gray-400 mt-1">Una misma empresa puede tener más de una persona con acceso — solo invita otro correo con la misma empresa seleccionada.</p>
                 </div>
                 {fetching ? (
                     <div className="text-center py-10 text-gray-400">Cargando lista...</div>
                 ) : clientGroups.length === 0 ? (
                     <div className="text-center py-10 text-gray-400">Todavía no hay clientes con acceso al portal.</div>
                 ) : (
-                    <div className="divide-y divide-gray-100">
+                    <div className="divide-y divide-surface-border">
                         {clientGroups.map(({ clientName, users }) => (
                             <div key={clientName}>
-                                <div className="px-6 py-3 bg-gray-50 flex items-center gap-2">
+                                <div className="px-6 py-3 bg-surface-base flex items-center gap-2">
                                     <Building2 size={14} className="text-gray-400" />
-                                    <span className="font-semibold text-gray-700 text-sm">{clientName}</span>
+                                    <span className="font-semibold text-gray-200 text-sm">{clientName}</span>
                                     <span className="text-xs text-gray-400">({users.length} persona{users.length === 1 ? '' : 's'})</span>
                                 </div>
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left border-collapse">
-                                        <tbody className="divide-y divide-gray-100">
+                                        <tbody className="divide-y divide-surface-border">
                                             {users.map((user) => (
                                                 <UserRow key={user.email} user={user} onEdit={startEdit} onDelete={handleDelete} hideRole />
                                             ))}
@@ -260,41 +260,41 @@ export default function AdminPage() {
 
 function UserRow({ user, onEdit, onDelete, hideRole = false }) {
     return (
-        <tr className="hover:bg-gray-50 transition-colors">
+        <tr className="hover:bg-surface-hover transition-colors">
             <td className="px-6 py-4 w-1/3">
                 <div className="flex items-center gap-3">
-                    <div className="bg-gray-100 p-2 rounded-full">
-                        <UserIcon size={16} className="text-gray-500" />
+                    <div className="bg-surface-hover p-2 rounded-full">
+                        <UserIcon size={16} className="text-gray-400" />
                     </div>
-                    <span className="font-medium text-gray-700">{user.email}</span>
+                    <span className="font-medium text-gray-200">{user.email}</span>
                 </div>
             </td>
             {!hideRole && (
                 <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                        user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700'
-                        : user.role === 'CLIENT' ? 'bg-orange-100 text-orange-700'
-                        : 'bg-blue-100 text-blue-700'
+                        user.role === 'ADMIN' ? 'bg-purple-500/15 text-purple-400'
+                        : user.role === 'CLIENT' ? 'bg-orange-500/15 text-orange-400'
+                        : 'bg-blue-500/15 text-blue-400'
                         }`}>
                         {user.role}
                     </span>
                 </td>
             )}
-            <td className="px-6 py-4 text-sm text-gray-500">
+            <td className="px-6 py-4 text-sm text-gray-400">
                 {new Date(user.invitedAt).toLocaleDateString()}
             </td>
             <td className="px-6 py-4 text-center">
                 <div className="flex items-center justify-center gap-1">
                     <button
                         onClick={() => onEdit(user)}
-                        className="text-blue-400 hover:text-blue-600 transition-colors p-2 hover:bg-blue-50 rounded-lg"
+                        className="text-blue-400 hover:text-blue-300 transition-colors p-2 hover:bg-blue-500/10 rounded-lg"
                         title="Editar rol"
                     >
                         <Pencil size={18} />
                     </button>
                     <button
                         onClick={() => onDelete(user.email)}
-                        className="text-red-400 hover:text-red-600 transition-colors p-2 hover:bg-red-50 rounded-lg"
+                        className="text-red-400 hover:text-red-300 transition-colors p-2 hover:bg-red-500/10 rounded-lg"
                         title="Revocar acceso"
                     >
                         <Trash2 size={18} />
