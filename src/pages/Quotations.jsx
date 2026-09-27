@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Plus, Pencil, Trash2, Eye, Search, ChevronDown, Building2 } from "lucide-react";
 import { quotationService } from "../services/quotation.service";
 import { formatQuotationId, formatCurrency, formatDate } from "../utils/formatters";
+import ValidityPill from "../components/ValidityPill";
 import Swal from "sweetalert2";
 
 export default function Quotations() {
@@ -152,12 +153,13 @@ export default function Quotations() {
 
                                 {isOpen && (
                                     <div className="overflow-x-auto border-t border-surface-border">
-                                        <table className="w-full text-left min-w-[700px]">
+                                        <table className="w-full text-left min-w-[820px]">
                                             <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
                                                 <tr>
                                                     <th className="px-6 py-3">Correlativo</th>
                                                     <th className="px-6 py-3">Referencia</th>
                                                     <th className="px-6 py-3">Fecha</th>
+                                                    <th className="px-6 py-3">Vigencia</th>
                                                     <th className="px-6 py-3">Total</th>
                                                     <th className="px-6 py-3 text-right">Acciones</th>
                                                 </tr>
@@ -173,6 +175,9 @@ export default function Quotations() {
                                                         </td>
                                                         <td className="px-6 py-4 text-gray-400">
                                                             {formatDate(q.createdAt)}
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <ValidityPill validUntil={q.validUntil} />
                                                         </td>
                                                         <td className="px-6 py-4 font-bold text-white">
                                                             {formatCurrency(q.total)}

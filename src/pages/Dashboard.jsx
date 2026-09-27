@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { formatQuotationId, formatCurrency, formatDate } from "../utils/formatters";
 import { useAuth } from "../context/AuthContext";
+import ValidityPill from "../components/ValidityPill";
 
 const AXIS_TICK = { fontSize: 12, fill: "#8B93B8" };
 const GRID_STROKE = "#2A355F";
@@ -73,10 +74,10 @@ const SERVICE_LINES = [
 ];
 
 const STAT_CARDS = [
-    { key: "quotations", title: "Cotizaciones", icon: FileText, iconBg: "bg-brand-blue", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(0,123,255,0.6)]" },
-    { key: "clients", title: "Clientes", icon: Users, iconBg: "bg-purple-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(168,85,247,0.55)]" },
-    { key: "requests", title: "Solicitudes", icon: ClipboardList, iconBg: "bg-brand-orange", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(255,138,0,0.6)]" },
-    { key: "warranties", title: "Garantías", icon: ShieldCheck, iconBg: "bg-emerald-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(16,185,129,0.55)]" },
+    { key: "quotations", title: "Cotizaciones", icon: FileText, iconBg: "bg-brand-blue", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(0,123,255,0.6)]", to: "/app/quotations" },
+    { key: "clients", title: "Clientes", icon: Users, iconBg: "bg-purple-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(168,85,247,0.55)]", to: "/app/clients" },
+    { key: "requests", title: "Solicitudes", icon: ClipboardList, iconBg: "bg-brand-orange", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(255,138,0,0.6)]", to: "/app/requests" },
+    { key: "warranties", title: "Garantías", icon: ShieldCheck, iconBg: "bg-emerald-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(16,185,129,0.55)]", to: "/app/warranties" },
 ];
 
 // Tendencia real: este mes vs. el mes anterior (conteos del servidor)
@@ -102,9 +103,9 @@ function TrendBadge({ thisMonth, lastMonth }) {
     );
 }
 
-function StatCard({ title, stat, icon: Icon, iconBg, iconColor, glow, loading }) {
+function StatCard({ title, stat, icon: Icon, iconBg, iconColor, glow, loading, to }) {
     return (
-        <div className="bg-surface-card p-5 rounded-2xl border border-surface-border transition-colors hover:bg-surface-hover">
+        <Link to={to} className="block bg-surface-card p-5 rounded-2xl border border-surface-border transition-colors hover:bg-surface-hover hover:border-surface-border/80 cursor-pointer">
             <div className="flex items-center justify-between gap-3">
                 <p className="text-gray-400 text-sm font-medium">{title}</p>
                 <div className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center ${iconBg} ${glow}`}>
@@ -124,26 +125,12 @@ function StatCard({ title, stat, icon: Icon, iconBg, iconColor, glow, loading })
                     </>
                 )}
             </div>
-        </div>
+        </Link>
     );
 }
 
 // Vigencia derivada del campo real validUntil. Si la cotización no tiene
 // fecha de vencimiento guardada, se dice tal cual -no se asume "vigente".
-function ValidityPill({ validUntil }) {
-    if (!validUntil) {
-        return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-gray-600 text-gray-200 whitespace-nowrap">Sin fecha</span>;
-    }
-    const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0);
-    const expired = new Date(validUntil) < startOfToday;
-    return expired ? (
-        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-500 text-white whitespace-nowrap">Vencida</span>
-    ) : (
-        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500 text-white whitespace-nowrap">Vigente</span>
-    );
-}
-
 export default function Dashboard() {
     const { user } = useAuth();
     const [quotations, setQuotations] = useState([]);
