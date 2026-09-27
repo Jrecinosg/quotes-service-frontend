@@ -167,10 +167,10 @@ export default function QuotationForm() {
         <div className="max-w-5xl mx-auto pb-10">
             {/* Botón Volver */}
             <div className="flex items-center gap-4 mb-6">
-                <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full text-gray-600">
+                <button onClick={() => navigate(-1)} className="p-2 hover:bg-surface-hover rounded-full text-gray-400">
                     <ArrowLeft size={24} />
                 </button>
-                <h1 className="font-display text-2xl font-bold text-gray-800">
+                <h1 className="font-display text-2xl font-bold text-white">
                     {id ? `Editar Cotización` : "Nueva Cotización"}
                 </h1>
             </div>

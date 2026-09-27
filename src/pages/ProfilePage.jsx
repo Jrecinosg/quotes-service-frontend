@@ -40,8 +40,8 @@ export default function ProfilePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <header>
-        <h1 className="font-display text-3xl font-bold text-gray-900">Mi Perfil</h1>
-        <p className="text-gray-600">Gestiona tu información personal en el sistema.</p>
+        <h1 className="font-display text-3xl font-bold text-white">Mi Perfil</h1>
+        <p className="text-gray-400">Gestiona tu información personal en el sistema.</p>
       </header>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">

@@ -234,8 +234,8 @@ export default function Requests() {
     <div>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="font-display text-2xl font-bold text-gray-800">Solicitudes de clientes</h1>
-          <p className="text-gray-500 text-sm">Da seguimiento a los pendientes de cada cliente</p>
+          <h1 className="font-display text-2xl font-bold text-white">Solicitudes de clientes</h1>
+          <p className="text-gray-400 text-sm">Da seguimiento a los pendientes de cada cliente</p>
         </div>
         <div className="flex gap-3">
           <button

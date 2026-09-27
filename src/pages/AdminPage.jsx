@@ -113,8 +113,8 @@ export default function AdminPage() {
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <header>
-                <h1 className="font-display text-3xl font-bold text-gray-900">Configuración del Sistema</h1>
-                <p className="text-gray-600">Gestiona quién tiene acceso al cotizador y sus permisos.</p>
+                <h1 className="font-display text-3xl font-bold text-white">Configuración del Sistema</h1>
+                <p className="text-gray-400">Gestiona quién tiene acceso al cotizador y sus permisos.</p>
             </header>
 
             {/* Formulario de Invitación / Edición de rol */}

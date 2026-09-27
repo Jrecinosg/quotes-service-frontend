@@ -93,8 +93,8 @@ export default function Quotations() {
             {/* 1. Cabecera (Título e Izquierda, Botón Derecha) */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h1 className="font-display text-2xl font-bold text-gray-800">Cotizaciones</h1>
-                    <p className="text-gray-500 text-sm">Gestiona y genera tus presupuestos</p>
+                    <h1 className="font-display text-2xl font-bold text-white">Cotizaciones</h1>
+                    <p className="text-gray-400 text-sm">Gestiona y genera tus presupuestos</p>
                 </div>
                 <Link
                     to="/app/quotations/new"

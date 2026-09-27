@@ -151,13 +151,13 @@ export default function WarrantyProjectForm() {
         <button
           type="button"
           onClick={() => navigate("/app/warranties")}
-          className="p-2 hover:bg-gray-100 rounded-full text-gray-600 shrink-0"
+          className="p-2 hover:bg-surface-hover rounded-full text-gray-400 shrink-0"
           aria-label="Volver"
         >
           <ArrowLeft size={22} />
         </button>
         <div>
-          <h1 className="font-display text-2xl font-bold text-gray-800">
+          <h1 className="font-display text-2xl font-bold text-white">
             {isEditing ? "Editar proyecto de garantía" : "Nuevo proyecto de garantía"}
           </h1>
           <p className="text-gray-500 text-sm">

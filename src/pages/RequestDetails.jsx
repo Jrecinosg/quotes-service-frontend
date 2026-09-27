@@ -82,7 +82,7 @@ export default function RequestDetails() {
 
   return (
     <div className="max-w-3xl mx-auto pb-10">
-      <button onClick={() => navigate("/app/requests")} className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-6">
+      <button onClick={() => navigate("/app/requests")} className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors mb-6">
         <ArrowLeft size={20} /> Volver al listado
       </button>
 

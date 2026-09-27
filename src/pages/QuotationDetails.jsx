@@ -90,7 +90,7 @@ export default function QuotationDetails() {
 
             {/* Cabecera de Navegación */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <button onClick={() => navigate("/app/quotations")} className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                <button onClick={() => navigate("/app/quotations")} className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors">
                     <ArrowLeft size={20} /> Volver al listado
                 </button>
 
