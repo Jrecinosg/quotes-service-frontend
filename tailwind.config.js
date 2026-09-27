@@ -7,24 +7,37 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['"Archivo Expanded"', 'Arial Narrow', 'sans-serif'],
+        sans: ['Poppins', 'sans-serif'],
+        display: ['Poppins', 'sans-serif'],
       },
       colors: {
+        // Paleta Pantone entregada por el usuario -valores exactos, no aproximados.
         brand: {
-          navy: '#182454',
-          blue: '#1F8CFF',
-          orange: '#FF6A00',
+          navy: '#0A1A2F',
+          blue: '#007BFF',
+          cyan: '#00C2FF',
+          orange: '#FF8A00',
+          orangeDeep: '#FF5A1F',
         },
         surface: {
-          base: '#0D1330',
-          card: '#161F45',
-          hover: '#1C2650',
-          border: '#2A355F',
+          base: '#0A1A2F',
+          card: '#10263F',
+          hover: '#15304D',
+          border: '#2A3B4C',
+        },
+        ink: {
+          secondary: '#5B6B7C',
+          light: '#D9E6F2',
         },
       },
       backgroundImage: {
-        'brand-gradient': 'linear-gradient(90deg, #1F8CFF 0%, #FF6A00 100%)',
-        'brand-glow': 'radial-gradient(circle at 100% 0%, rgba(31,140,255,0.35), transparent 55%), radial-gradient(circle at 0% 100%, rgba(255,106,0,0.25), transparent 55%)',
+        'brand-gradient': 'linear-gradient(90deg, #007BFF 0%, #FF8A00 100%)',
+        'brand-glow': 'radial-gradient(circle at 105% -10%, rgba(0,194,255,0.55), transparent 45%), radial-gradient(circle at 100% 30%, rgba(0,123,255,0.4), transparent 50%), radial-gradient(circle at -5% 110%, rgba(255,138,0,0.45), transparent 50%)',
+      },
+      dropShadow: {
+        glowBlue: '0 0 18px rgba(0,123,255,0.65)',
+        glowCyan: '0 0 18px rgba(0,194,255,0.65)',
+        glowOrange: '0 0 18px rgba(255,138,0,0.65)',
       },
     },
   },

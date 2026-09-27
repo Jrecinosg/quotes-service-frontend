@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 import { formatQuotationId, formatCurrency, formatDate } from "../utils/formatters";
 
 const PAYMENT_TYPE_LABEL = { ANTICIPO: "Anticipo", FINAL: "Pago final" };
-const PAYMENT_TYPE_STYLE = { ANTICIPO: "bg-blue-500/15 text-blue-400", FINAL: "bg-green-500/15 text-green-400" };
+const PAYMENT_TYPE_STYLE = { ANTICIPO: "bg-blue-500 text-white", FINAL: "bg-emerald-500 text-white" };
 
 export default function QuotationDetails() {
     const { id } = useParams();
@@ -131,7 +131,7 @@ export default function QuotationDetails() {
                             )}
                         </div>
                         <div className="text-right">
-                            <span className="bg-green-500/15 text-green-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            <span className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                                 Registrada
                             </span>
                         </div>
@@ -191,7 +191,7 @@ export default function QuotationDetails() {
                                             {/* % Descuento (Con un badge resaltado) */}
                                             <td className="px-4 py-4 text-center text-gray-400">
                                                 {discount > 0 ? (
-                                                    <span className="bg-orange-500/15 text-orange-400 px-2 py-1 rounded text-xs font-bold">
+                                                    <span className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-bold">
                                                         -{discount}%
                                                     </span>
                                                 ) : '-'}

@@ -58,25 +58,25 @@ function WeekTooltip({ active, payload }) {
 }
 
 const QUICK_ACTIONS = [
-    { to: "/app/quotations/new", icon: Plus, label: "Nueva Cotización", iconBg: "bg-blue-500/15", iconColor: "text-blue-400" },
-    { to: "/app/clients", icon: Users, label: "Clientes", iconBg: "bg-purple-500/15", iconColor: "text-purple-400" },
-    { to: "/app/requests", icon: ClipboardList, label: "Solicitudes", iconBg: "bg-orange-500/15", iconColor: "text-orange-400" },
-    { to: "/app/warranties", icon: ShieldCheck, label: "Garantías", iconBg: "bg-emerald-500/15", iconColor: "text-emerald-400" },
+    { to: "/app/quotations/new", icon: Plus, label: "Nueva Cotización", iconBg: "bg-brand-blue", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(0,123,255,0.6)]" },
+    { to: "/app/clients", icon: Users, label: "Clientes", iconBg: "bg-purple-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(168,85,247,0.55)]" },
+    { to: "/app/requests", icon: ClipboardList, label: "Solicitudes", iconBg: "bg-brand-orange", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(255,138,0,0.6)]" },
+    { to: "/app/warranties", icon: ShieldCheck, label: "Garantías", iconBg: "bg-emerald-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(16,185,129,0.55)]" },
 ];
 
 // Líneas de servicio reales de Grupo AC (texto fijo, no es un dato)
 const SERVICE_LINES = [
-    { icon: Video, label: "Videovigilancia", sub: "Mayor seguridad", color: "text-blue-400", bg: "bg-blue-500/15" },
-    { icon: KeyRound, label: "Control de acceso", sub: "Protege lo importante", color: "text-purple-400", bg: "bg-purple-500/15" },
-    { icon: Wifi, label: "Enlaces y conectividad", sub: "Sin límites", color: "text-orange-400", bg: "bg-orange-500/15" },
-    { icon: Network, label: "Redes estructuradas", sub: "Tu infraestructura", color: "text-emerald-400", bg: "bg-emerald-500/15" },
+    { icon: Video, label: "Videovigilancia", sub: "Mayor seguridad", color: "text-white", bg: "bg-brand-blue", glow: "shadow-[0_0_16px_rgba(0,123,255,0.6)]" },
+    { icon: KeyRound, label: "Control de acceso", sub: "Protege lo importante", color: "text-white", bg: "bg-purple-500", glow: "shadow-[0_0_16px_rgba(168,85,247,0.55)]" },
+    { icon: Wifi, label: "Enlaces y conectividad", sub: "Sin límites", color: "text-white", bg: "bg-brand-orange", glow: "shadow-[0_0_16px_rgba(255,138,0,0.6)]" },
+    { icon: Network, label: "Redes estructuradas", sub: "Tu infraestructura", color: "text-white", bg: "bg-emerald-500", glow: "shadow-[0_0_16px_rgba(16,185,129,0.55)]" },
 ];
 
 const STAT_CARDS = [
-    { key: "quotations", title: "Cotizaciones", icon: FileText, iconBg: "bg-blue-500/15", iconColor: "text-blue-400" },
-    { key: "clients", title: "Clientes", icon: Users, iconBg: "bg-purple-500/15", iconColor: "text-purple-400" },
-    { key: "requests", title: "Solicitudes", icon: ClipboardList, iconBg: "bg-orange-500/15", iconColor: "text-orange-400" },
-    { key: "warranties", title: "Garantías", icon: ShieldCheck, iconBg: "bg-emerald-500/15", iconColor: "text-emerald-400" },
+    { key: "quotations", title: "Cotizaciones", icon: FileText, iconBg: "bg-brand-blue", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(0,123,255,0.6)]" },
+    { key: "clients", title: "Clientes", icon: Users, iconBg: "bg-purple-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(168,85,247,0.55)]" },
+    { key: "requests", title: "Solicitudes", icon: ClipboardList, iconBg: "bg-brand-orange", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(255,138,0,0.6)]" },
+    { key: "warranties", title: "Garantías", icon: ShieldCheck, iconBg: "bg-emerald-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(16,185,129,0.55)]" },
 ];
 
 // Tendencia real: este mes vs. el mes anterior (conteos del servidor)
@@ -84,30 +84,30 @@ function TrendBadge({ thisMonth, lastMonth }) {
     if (!thisMonth && !lastMonth) return null;
     if (!lastMonth) {
         return (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-500/15 text-blue-400">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-blue-500 text-white">
                 <Sparkles size={12} /> Nuevo
             </span>
         );
     }
     const pct = Math.round(((thisMonth - lastMonth) / lastMonth) * 100);
     if (pct === 0) {
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-500/15 text-gray-300">Igual que el mes pasado</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-gray-600 text-gray-200">Igual que el mes pasado</span>;
     }
     const up = pct > 0;
     const Icon = up ? ArrowUpRight : ArrowDownRight;
     return (
-        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold ${up ? "bg-emerald-500/15 text-emerald-400" : "bg-red-500/15 text-red-400"}`}>
+        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold ${up ? "bg-emerald-500 text-white" : "bg-red-500 text-white"}`}>
             <Icon size={13} /> {up ? "+" : ""}{pct}%
         </span>
     );
 }
 
-function StatCard({ title, stat, icon: Icon, iconBg, iconColor, loading }) {
+function StatCard({ title, stat, icon: Icon, iconBg, iconColor, glow, loading }) {
     return (
         <div className="bg-surface-card p-5 rounded-2xl border border-surface-border transition-colors hover:bg-surface-hover">
             <div className="flex items-center justify-between gap-3">
                 <p className="text-gray-400 text-sm font-medium">{title}</p>
-                <div className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center ${iconBg}`}>
+                <div className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center ${iconBg} ${glow}`}>
                     <Icon className={`w-5 h-5 ${iconColor}`} />
                 </div>
             </div>
@@ -132,15 +132,15 @@ function StatCard({ title, stat, icon: Icon, iconBg, iconColor, loading }) {
 // fecha de vencimiento guardada, se dice tal cual -no se asume "vigente".
 function ValidityPill({ validUntil }) {
     if (!validUntil) {
-        return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-gray-500/15 text-gray-300 whitespace-nowrap">Sin fecha</span>;
+        return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-gray-600 text-gray-200 whitespace-nowrap">Sin fecha</span>;
     }
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
     const expired = new Date(validUntil) < startOfToday;
     return expired ? (
-        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/15 text-red-400 whitespace-nowrap">Vencida</span>
+        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-500 text-white whitespace-nowrap">Vencida</span>
     ) : (
-        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 whitespace-nowrap">Vigente</span>
+        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500 text-white whitespace-nowrap">Vigente</span>
     );
 }
 
@@ -194,39 +194,61 @@ export default function Dashboard() {
         <div>
             {/* Hero de bienvenida + acciones rápidas */}
             <div className="grid grid-cols-1 xl:grid-cols-[1.6fr_1fr] gap-6 mb-8">
-                <div className="relative overflow-hidden rounded-3xl bg-surface-card border border-surface-border p-6 md:p-8 bg-brand-glow">
-                    {/* Silueta decorativa de fondo (ícono, no foto) */}
-                    <ShieldCheck
+                <div className="relative overflow-hidden rounded-3xl bg-surface-card border border-surface-border min-h-[420px] bg-brand-glow">
+                    {/* Línea de energía diagonal -mismo recurso visual que la referencia */}
+                    <svg
                         aria-hidden="true"
-                        strokeWidth={1}
-                        className="absolute -right-10 -bottom-12 w-64 h-64 text-white opacity-[0.04] pointer-events-none"
-                    />
+                        viewBox="0 0 800 420"
+                        preserveAspectRatio="none"
+                        className="absolute inset-0 w-full h-full pointer-events-none mix-blend-screen"
+                    >
+                        <defs>
+                            <linearGradient id="heroStreak1" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#00C2FF" stopOpacity="0" />
+                                <stop offset="20%" stopColor="#00C2FF" stopOpacity="1" />
+                                <stop offset="55%" stopColor="#007BFF" stopOpacity="1" />
+                                <stop offset="85%" stopColor="#FF8A00" stopOpacity="1" />
+                                <stop offset="100%" stopColor="#FF5A1F" stopOpacity="0" />
+                            </linearGradient>
+                            <filter id="heroGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="7" result="blur" />
+                                <feMerge>
+                                    <feMergeNode in="blur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <g filter="url(#heroGlow)" strokeLinecap="round" fill="none">
+                            <path d="M -80 460 C 200 420, 380 340, 520 260 S 780 60, 900 -40" stroke="url(#heroStreak1)" strokeWidth="4.5" opacity="0.95" />
+                            <path d="M -80 500 C 220 470, 400 380, 540 300 S 800 100, 920 0" stroke="url(#heroStreak1)" strokeWidth="2" opacity="0.5" />
+                        </g>
+                    </svg>
 
-                    <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-center">
-                        <div>
-                            <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">Plataforma Grupo AC</p>
+                    <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center p-6 md:p-8 min-h-[420px]">
+                        <div className="max-w-md">
+                            <p className="text-brand-cyan text-xs font-bold uppercase tracking-widest mb-2 drop-shadow-[0_0_8px_rgba(0,194,255,0.6)]">Plataforma Grupo AC</p>
                             <h1 className="font-display text-3xl md:text-4xl font-bold text-white">
                                 {firstName ? `Hola, ${firstName}` : "Resumen General"}
                             </h1>
-                            <p className="text-gray-300 mt-2 max-w-md">Esto es lo que está pasando en tu operación hoy.</p>
+                            <p className="text-gray-300 mt-2">Esto es lo que está pasando en tu operación hoy.</p>
                             <Link
                                 to="/app/quotations/new"
-                                className="inline-flex items-center gap-2 mt-6 w-fit px-5 py-2.5 rounded-full text-white text-sm font-semibold bg-brand-gradient shadow-lg shadow-blue-500/10 hover:brightness-105 transition-all"
+                                className="inline-flex items-center gap-2 mt-6 w-fit px-5 py-2.5 rounded-full text-white text-sm font-semibold bg-brand-gradient shadow-[0_0_24px_rgba(0,123,255,0.55)] hover:brightness-110 hover:shadow-[0_0_32px_rgba(255,138,0,0.55)] transition-all"
                             >
                                 <Plus size={16} />
                                 Nueva Cotización
                             </Link>
                         </div>
 
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
-                            {SERVICE_LINES.map(({ icon: Icon, label, sub, color, bg }) => (
-                                <li key={label} className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-surface-base/60 border border-surface-border">
-                                    <div className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center ${bg}`}>
-                                        <Icon size={17} className={color} />
+                        <ul className="relative grid grid-cols-2 lg:grid-cols-1 gap-3 lg:gap-4 lg:w-44 lg:justify-self-end lg:self-start lg:mt-0">
+                            {SERVICE_LINES.map(({ icon: Icon, label, sub, color, bg, glow }) => (
+                                <li key={label} className="flex items-center gap-2.5">
+                                    <div className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center ${bg} ${glow}`}>
+                                        <Icon size={15} className={color} />
                                     </div>
-                                    <div className="leading-tight">
-                                        <p className="text-sm font-semibold text-white">{label}</p>
-                                        <p className="text-xs text-gray-400">{sub}</p>
+                                    <div className="leading-tight min-w-0">
+                                        <p className="text-xs font-semibold text-white truncate">{label}</p>
+                                        <p className="text-[10px] text-gray-400 truncate">{sub}</p>
                                     </div>
                                 </li>
                             ))}
@@ -237,13 +259,13 @@ export default function Dashboard() {
                 <div className="bg-surface-card border border-surface-border rounded-3xl p-6">
                     <p className="text-white font-semibold mb-4">Acciones rápidas</p>
                     <div className="grid grid-cols-2 gap-3">
-                        {QUICK_ACTIONS.map(({ to, icon: Icon, label, iconBg, iconColor }) => (
+                        {QUICK_ACTIONS.map(({ to, icon: Icon, label, iconBg, iconColor, glow }) => (
                             <Link
                                 key={to}
                                 to={to}
                                 className="flex flex-col gap-2 p-4 rounded-2xl bg-surface-base border border-surface-border hover:bg-surface-hover transition-colors"
                             >
-                                <div className={`w-9 h-9 rounded-full flex items-center justify-center ${iconBg}`}>
+                                <div className={`w-9 h-9 rounded-full flex items-center justify-center ${iconBg} ${glow}`}>
                                     <Icon size={18} className={iconColor} />
                                 </div>
                                 <span className="text-sm text-gray-200 font-medium leading-tight">{label}</span>
@@ -269,8 +291,8 @@ export default function Dashboard() {
                     <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
                         <div>
                             <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-orange-500/15 flex items-center justify-center shrink-0">
-                                    <Activity size={16} className="text-orange-400" />
+                                <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center shrink-0">
+                                    <Activity size={16} className="text-white" />
                                 </div>
                                 <h2 className="text-lg font-semibold text-white">Cotizaciones y clientes de los últimos 7 días</h2>
                             </div>
@@ -328,8 +350,8 @@ export default function Dashboard() {
                 {/* Decorativo: frase fija, no es un dato */}
                 <div className="relative overflow-hidden rounded-2xl border border-surface-border bg-surface-card p-6 flex flex-col">
                     <div className="absolute inset-x-0 top-0 h-1 bg-brand-gradient" />
-                    <div className="w-10 h-10 rounded-full bg-blue-500/15 flex items-center justify-center mb-4">
-                        <Quote size={18} className="text-blue-400" />
+                    <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mb-4">
+                        <Quote size={18} className="text-white" />
                     </div>
                     <p className="text-xs font-bold uppercase tracking-widest text-orange-400 mb-2">Recuerda</p>
                     <p className="text-white text-lg font-semibold leading-snug">
@@ -350,8 +372,8 @@ export default function Dashboard() {
             {/* Rendimiento de solicitudes */}
             <div className="bg-surface-card rounded-2xl border border-surface-border p-6 mb-8">
                 <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-blue-500/15 flex items-center justify-center shrink-0">
-                        <TrendingUp size={16} className="text-blue-400" />
+                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
+                        <TrendingUp size={16} className="text-white" />
                     </div>
                     <h2 className="text-lg font-semibold text-white">Rendimiento de solicitudes</h2>
                 </div>

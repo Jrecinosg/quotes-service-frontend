@@ -187,7 +187,7 @@ export default function Clients() {
                                     >
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 shrink-0 rounded-full bg-blue-500/15 flex items-center justify-center text-blue-400 font-bold">
+                                                <div className="w-10 h-10 shrink-0 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
                                                     {client.name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>

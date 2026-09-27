@@ -272,9 +272,9 @@ function UserRow({ user, onEdit, onDelete, hideRole = false }) {
             {!hideRole && (
                 <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                        user.role === 'ADMIN' ? 'bg-purple-500/15 text-purple-400'
-                        : user.role === 'CLIENT' ? 'bg-orange-500/15 text-orange-400'
-                        : 'bg-blue-500/15 text-blue-400'
+                        user.role === 'ADMIN' ? 'bg-purple-500 text-white'
+                        : user.role === 'CLIENT' ? 'bg-orange-500 text-white'
+                        : 'bg-blue-500 text-white'
                         }`}>
                         {user.role}
                     </span>
