@@ -33,9 +33,6 @@ export default function QuotationForm() {
         deliveryTime: "1-2 DÍAS HÁBILES",
         paymentMethod: "50% Anticipo - 50% Contra entrega",
         validity: "15 días hábiles o hasta agotar existencias.",
-        // Por defecto, hoy + 15 días -coincide con el texto de "Validez" de arriba,
-        // el usuario puede ajustarlo si la cotización real vence distinto.
-        validUntil: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
         elaboratedBy: user?.name || "Nombre del Vendedor",
         observations: "No se cubre garantía por daños provocados por energía eléctrica si no cuenta con la protección adecuada, vandalismo, mal manejo de los equipos, o intervención de personal ajeno a Grupo AC. INCLUYE INSTALACIÓN DE EQUIPOS."
     });
@@ -74,7 +71,6 @@ export default function QuotationForm() {
                         deliveryTime: data.deliveryTime || "",
                         paymentMethod: data.paymentMethod || "",
                         validity: data.validity || "",
-                        validUntil: data.validUntil ? data.validUntil.slice(0, 10) : "",
                         elaboratedBy: data.elaboratedBy || "",
                         observations: data.observations || ""
                     });
@@ -372,18 +368,6 @@ export default function QuotationForm() {
                                 className="bg-transparent placeholder:text-gray-500 w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-gray-300"
                                 value={terms.validity}
                                 onChange={(e) => setTerms({ ...terms, validity: e.target.value })}
-                            />
-                        </div>
-
-                        {/* Fecha real de vencimiento -alimenta la etiqueta Vigente/Vencida
-                            del listado y el dashboard. Separado de "Validez" (texto libre del PDF). */}
-                        <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                            <label className="font-bold text-white">Válido hasta:</label>
-                            <input
-                                type="date"
-                                className="bg-transparent w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-gray-300 [color-scheme:dark]"
-                                value={terms.validUntil}
-                                onChange={(e) => setTerms({ ...terms, validUntil: e.target.value })}
                             />
                         </div>
 
