@@ -3,7 +3,7 @@ import  Sidebar from "./Sidebar"
 
 export default function Layout() {
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-50">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-surface-base">
 
       {/* Sidebar: barra+cajon en celular, fijo a la izquierda en escritorio */}
       <Sidebar />

@@ -26,14 +26,14 @@ export default function Sidebar() {
     return (
         <>
             {/* Barra superior -solo celular: logo + boton de menu */}
-            <div className="md:hidden flex items-center justify-between h-14 px-4 bg-white border-b border-gray-200 shadow-sm shrink-0">
+            <div className="md:hidden flex items-center justify-between h-14 px-4 bg-surface-card border-b border-surface-border shadow-sm shrink-0">
                 <div className="flex items-center gap-2">
                     <img src={appLogo} alt="Grupo AC" className="h-7 w-auto" />
-                    <span className="font-display font-extrabold text-sm text-gray-900">GRUPO AC</span>
+                    <span className="font-display font-extrabold text-sm text-white">GRUPO AC</span>
                 </div>
                 <button
                     onClick={() => setMobileOpen(true)}
-                    className="p-2 -mr-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                    className="p-2 -mr-2 text-gray-300 hover:bg-surface-hover rounded-lg"
                     aria-label="Abrir menú"
                 >
                     <Menu size={24} />
@@ -48,15 +48,15 @@ export default function Sidebar() {
                 />
             )}
 
-            <aside className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 h-screen flex flex-col shadow-sm transform transition-transform duration-200 ease-in-out ${mobileOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
+            <aside className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-surface-card border-r border-surface-border h-screen flex flex-col shadow-sm transform transition-transform duration-200 ease-in-out ${mobileOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
                 {/* Logo (encabezado del menu -visible siempre en escritorio, dentro del cajon en celular) */}
-                <div className="flex items-center justify-between border-b border-gray-100">
+                <div className="flex items-center justify-between border-b border-surface-border">
                     {isClientAccount ? (
                         <div className="h-16 flex-1 flex items-center justify-center gap-2 px-3">
                             <img src={appLogo} alt="Grupo AC" className="h-8 w-auto" />
                             {user?.client?.logoBase64 && (
                                 <>
-                                    <span className="text-gray-300">+</span>
+                                    <span className="text-gray-500">+</span>
                                     <img src={user.client.logoBase64} alt={user.client.name} className="h-8 w-auto object-contain" />
                                 </>
                             )}
@@ -65,14 +65,14 @@ export default function Sidebar() {
                         <div className="h-16 flex-1 flex items-center gap-2 px-4">
                             <img src={appLogo} alt="Grupo AC" className="h-8 w-auto" />
                             <div className="flex flex-col leading-none">
-                                <span className="font-display font-extrabold text-sm tracking-wide text-gray-900">GRUPO AC</span>
+                                <span className="font-display font-extrabold text-sm tracking-wide text-white">GRUPO AC</span>
                                 <span className="text-[10px] font-semibold text-transparent bg-clip-text bg-brand-gradient uppercase tracking-wider">Plataforma</span>
                             </div>
                         </div>
                     )}
                     <button
                         onClick={() => setMobileOpen(false)}
-                        className="md:hidden p-2 mr-2 text-gray-400 hover:bg-gray-100 rounded-lg"
+                        className="md:hidden p-2 mr-2 text-gray-400 hover:bg-surface-hover rounded-lg"
                         aria-label="Cerrar menú"
                     >
                         <X size={22} />
@@ -91,8 +91,8 @@ export default function Sidebar() {
                                 to={item.path}
                                 onClick={() => setMobileOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors border-l-4 ${isActive
-                                    ? "bg-blue-50 text-blue-700 font-medium border-brand-blue"
-                                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-transparent"
+                                    ? "bg-blue-500/15 text-blue-400 font-medium border-brand-blue"
+                                    : "text-gray-400 hover:bg-surface-hover hover:text-white border-transparent"
                                     }`}
                             >
                                 <Icon size={20} />
@@ -107,8 +107,8 @@ export default function Sidebar() {
                             to="/app/admin"
                             onClick={() => setMobileOpen(false)}
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${location.pathname === '/app/admin'
-                                ? "bg-purple-50 text-purple-600 font-medium"
-                                : "text-gray-600 hover:bg-purple-50 hover:text-purple-700"
+                                ? "bg-purple-500/15 text-purple-400 font-medium"
+                                : "text-gray-400 hover:bg-surface-hover hover:text-purple-300"
                                 }`}
                         >
                             <Settings size={20} />
@@ -118,17 +118,17 @@ export default function Sidebar() {
                 </nav>
 
                 {/* Perfil del Usuario y Logout */}
-                <div className="p-4 border-t border-gray-100 space-y-2">
+                <div className="p-4 border-t border-surface-border space-y-2">
                     {/* Info de Usuario */}
-                    <Link to="/app/profile" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-3 py-4 mb-2 bg-gray-50 rounded-xl border border-gray-100">
+                    <Link to="/app/profile" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-3 py-4 mb-2 bg-surface-hover rounded-xl border border-surface-border">
                         <div className="w-10 h-10 rounded-full bg-brand-gradient flex items-center justify-center text-white font-bold shrink-0 shadow-sm">
                             {getInitial(user?.name)}
                         </div>
                         <div className="flex flex-col min-w-0">
-                            <span className="text-sm font-semibold text-gray-900 truncate">
+                            <span className="text-sm font-semibold text-white truncate">
                                 {user?.name || "Cargando..."}
                             </span>
-                            <span className="text-[10px] font-bold text-blue-500 uppercase tracking-wider">
+                            <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">
                                 {user?.role}
                             </span>
                         </div>
@@ -137,7 +137,7 @@ export default function Sidebar() {
                     {/* Logout Button */}
                     <button
                         onClick={logout}
-                        className="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 w-full rounded-lg transition-colors font-medium"
+                        className="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 w-full rounded-lg transition-colors font-medium"
                     >
                         <LogOut size={20} />
                         <span>Cerrar Sesión</span>
