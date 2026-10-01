@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { userService } from '../services/user.service';
 import { clientService } from '../services/client.service';
+import { quotationService } from '../services/quotation.service';
 import Swal from 'sweetalert2';
-import { Trash2, Pencil, X, ShieldCheck, User as UserIcon, Mail, Building2 } from 'lucide-react';
+import { Trash2, Pencil, X, ShieldCheck, User as UserIcon, Mail, Building2, CalendarClock } from 'lucide-react';
 
 export default function AdminPage() {
     const [email, setEmail] = useState('');
@@ -13,6 +14,24 @@ export default function AdminPage() {
     const [authorizedUsers, setAuthorizedUsers] = useState([]);
     const [fetching, setFetching] = useState(true);
     const [editingEmail, setEditingEmail] = useState(null); // email en edición, o null = invitar nuevo
+    const [backfilling, setBackfilling] = useState(false);
+
+    const handleBackfillValidUntil = async () => {
+        setBackfilling(true);
+        try {
+            const result = await quotationService.backfillValidUntil();
+            Swal.fire({
+                icon: 'success',
+                title: 'Listo',
+                text: `${result.updated} de ${result.scanned} cotizaciones actualizadas con su vigencia real.`,
+                confirmButtonColor: '#3b82f6'
+            });
+        } catch (error) {
+            Swal.fire('Error', 'No se pudo rellenar la vigencia', 'error');
+        } finally {
+            setBackfilling(false);
+        }
+    };
 
     // Cargar lista de usuarios autorizados
     const fetchUsers = async () => {
@@ -253,6 +272,26 @@ export default function AdminPage() {
                         ))}
                     </div>
                 )}
+            </div>
+
+            {/* Acción de una sola vez: cotizaciones creadas antes de que existiera
+                la vigencia real quedaron en "Sin fecha" -esto la calcula para
+                todas usando su propio texto de Validez + fecha de creación. */}
+            <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border p-6">
+                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                    <CalendarClock size={20} className="text-blue-500" />
+                    Rellenar vigencia de cotizaciones antiguas
+                </h2>
+                <p className="text-sm text-gray-400 mt-1 mb-4">
+                    Calcula Vigente/Vencida para las cotizaciones que ya existían antes de este cambio, usando su propio texto de "Validez". Es seguro ejecutarlo varias veces -solo toca las que todavía digan "Sin fecha".
+                </p>
+                <button
+                    onClick={handleBackfillValidUntil}
+                    disabled={backfilling}
+                    className={`py-2 px-4 rounded-md text-white font-medium transition-all ${backfilling ? 'bg-gray-400 cursor-not-allowed' : 'bg-brand-gradient hover:brightness-105 shadow-sm'}`}
+                >
+                    {backfilling ? 'Calculando...' : 'Rellenar ahora'}
+                </button>
             </div>
         </div>
     );

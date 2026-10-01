@@ -49,4 +49,10 @@ export const quotationService = {
     const response = await api.delete(`/quotations/${quotationId}/payments/${paymentId}`);
     return response.data;
   },
+
+  // Relleno de una sola vez para cotizaciones viejas sin validUntil -ADMIN.
+  backfillValidUntil: async () => {
+    const response = await api.post("/quotations/backfill-valid-until");
+    return response.data;
+  },
 };
