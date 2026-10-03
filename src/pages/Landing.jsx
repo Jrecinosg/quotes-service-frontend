@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
+import logoOscuro from "../assets/logo-transparente.webp";
 import "./Landing.css";
 
 export default function Landing() {
@@ -360,7 +361,7 @@ export default function Landing() {
               <div className="glow"></div>
               <div className="ring r1"></div>
               <div className="ring r2"></div>
-              <img src={logo} alt="Grupo AC" />
+              <img src={logoOscuro} alt="Grupo AC" />
             </div>
           </div>
         </section>
