@@ -92,10 +92,32 @@ export function AuthProvider({ children }) {
 
         } catch (error) {
           console.error("Error al sincronizar db", error);
+
+          // Correo sin verificar: se envía el enlace mientras aún hay sesión y luego se cierra.
+          const sinVerificar = error.response?.status === 403 && error.response?.data?.code === 'EMAIL_NO_VERIFICADO';
+          let enlaceEnviado = false;
+          if (sinVerificar) {
+            try {
+              await authService.sendVerification();
+              enlaceEnviado = true;
+            } catch (envioErr) {
+              console.error("No se pudo enviar el enlace de verificación", envioErr);
+            }
+          }
+
           await signOut(auth);
           setUser(null);
 
-          if (error.response?.status === 403) {
+          if (sinVerificar) {
+            Swal.fire({
+              icon: 'info',
+              title: 'Verifica tu correo',
+              text: enlaceEnviado
+                ? `Te enviamos un enlace a ${currentUser.email}. Ábrelo para verificar tu correo y luego inicia sesión de nuevo. Revisa también la carpeta de spam.`
+                : 'Tu correo aún no está verificado y no pudimos enviar el enlace ahora. Intenta iniciar sesión de nuevo en unos minutos.',
+              confirmButtonColor: '#2563eb'
+            });
+          } else if (error.response?.status === 403) {
             Swal.fire({
               icon: 'error',
               title: 'Acceso Denegado',

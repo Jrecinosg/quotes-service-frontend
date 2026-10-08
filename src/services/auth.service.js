@@ -19,5 +19,12 @@ export const authService = {
   forgotPassword: async (email) => {
     const response = await api.post("/auth/forgot-password", { email });
     return response.data;
+  },
+
+  // Verificación de correo: el backend envía el enlace al correo de la sesión actual
+  // (hay que llamarlo mientras la persona aún tiene sesión).
+  sendVerification: async () => {
+    const response = await api.post("/auth/send-verification");
+    return response.data;
   }
 };
