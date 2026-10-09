@@ -1,12 +1,15 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import logo from '../assets/logo.png';
 import { formatQuotationId, formatCurrency, formatDate } from '../utils/formatters';
 
+// Sin cortar palabras con guion al final de línea (se veía desordenado en descripciones largas)
+Font.registerHyphenationCallback((word) => [word]);
+
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 40,
-    paddingBottom: 50,
+    paddingTop: 30,
+    paddingBottom: 45,
     paddingHorizontal: 40,
     fontSize: 10,
     fontFamily: 'Helvetica'
@@ -29,17 +32,17 @@ const styles = StyleSheet.create({
   },
   rowInfo: {
     flexDirection: 'row',
-    marginBottom: 6,
+    marginBottom: 4,
     alignItems: 'center'
   },
   label: {
     fontWeight: 'bold',
-    width: 80,
-    fontSize: 13,
+    width: 92,
+    fontSize: 12,
   },
   value: {
     flex: 1,
-    fontSize: 13,
+    fontSize: 12,
     textAlign: 'center',
     fontWeight: 'bold',
     color: '#0070C0'
@@ -92,45 +95,67 @@ const styles = StyleSheet.create({
 
   // --- ANCHOS DE COLUMNA (Cant, Descripción, P.Lista, %Desc, P.Oferta, Total) ---
   colCant: {
-    width: '8%',
+    width: '7%',
     borderRightWidth: 1,
     borderRightColor: '#F46B20',
     justifyContent: 'center',
     textAlign: 'center'
   },
   colDesc: {
-    width: '34%',
+    width: '44%',
     borderRightWidth: 1,
     borderRightColor: '#F46B20',
-    paddingLeft: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 6,
     justifyContent: 'center'
   },
   colDescrip: {
-    fontSize: 10,
+    fontSize: 9,
+    lineHeight: 1.35,
+  },
+  descTitle: {
+    fontSize: 9.5,
+    lineHeight: 1.35,
+    fontWeight: 'bold',
+    marginBottom: 3,
+  },
+  bulletRow: {
+    flexDirection: 'row',
+    marginTop: 2,
+  },
+  bulletDot: {
+    width: 9,
+    fontSize: 9,
+    lineHeight: 1.35,
+  },
+  bulletText: {
+    flex: 1,
+    fontSize: 9,
+    lineHeight: 1.35,
   },
   colLista: {
-    width: '15%',
+    width: '14%',
     borderRightWidth: 1,
     borderRightColor: '#F46B20',
     textAlign: 'center',
     justifyContent: 'center'
   },
   colDescPct: {
-    width: '10%',
+    width: '8%',
     borderRightWidth: 1,
     borderRightColor: '#F46B20',
     textAlign: 'center',
     justifyContent: 'center'
   },
   colUni: {
-    width: '15%',
+    width: '14%',
     borderRightWidth: 1,
     borderRightColor: '#F46B20',
     textAlign: 'center',
     justifyContent: 'center'
   },
   colTot: {
-    width: '18%',
+    width: '13%',
     textAlign: 'center',
     justifyContent: 'center'
   },
@@ -209,6 +234,26 @@ const styles = StyleSheet.create({
   },
 });
 
+// Las descripciones largas traen sus funciones separadas con "•": la primera frase
+// va como título y cada viñeta en su propia línea -mucho más fácil de leer que un
+// solo párrafo corrido.
+const DescriptionBlock = ({ text }) => {
+  const parts = String(text || '').split(/\s*•\s*/).map((t) => t.trim()).filter(Boolean);
+  if (parts.length <= 1) return <Text style={styles.colDescrip}>{parts[0] || ''}</Text>;
+  const [title, ...bullets] = parts;
+  return (
+    <View>
+      <Text style={styles.descTitle}>{title}</Text>
+      {bullets.map((b, i) => (
+        <View style={styles.bulletRow} key={i}>
+          <Text style={styles.bulletDot}>•</Text>
+          <Text style={styles.bulletText}>{b}</Text>
+        </View>
+      ))}
+    </View>
+  );
+};
+
 export const QuotationDocument = ({ quotation }) => {
   const { client, items, subtotal, tax, total, correlativo, createdAt, elaboratedBy, validity } = quotation;
 
@@ -219,7 +264,7 @@ export const QuotationDocument = ({ quotation }) => {
         {/* --- ENCABEZADO QUE SE REPITE --- */}
         <View style={styles.headerContainer} fixed>
           <View style={styles.infoSection}>
-            <View style={[styles.rowInfo, { marginBottom: 30 }]}>
+            <View style={[styles.rowInfo, { marginBottom: 14 }]}>
               <Text style={styles.noLabel}>No.</Text>
               <Text style={styles.noValue}>{formatQuotationId(correlativo)}</Text>
             </View>
@@ -254,7 +299,7 @@ export const QuotationDocument = ({ quotation }) => {
           </View>
 
           <View style={styles.logoSection}>
-            <Image src={logo} style={{ width: 140 }} />
+            <Image src={logo} style={{ width: 115 }} />
           </View>
         </View>
 
@@ -282,7 +327,7 @@ export const QuotationDocument = ({ quotation }) => {
                 </View>
 
                 <View style={styles.colDesc}>
-                  <Text style={styles.colDescrip}>{item.description}</Text>
+                  <DescriptionBlock text={item.description} />
                 </View>
 
                 <View style={styles.colLista}>
@@ -337,13 +382,13 @@ export const QuotationDocument = ({ quotation }) => {
         </View>
 
         {/* --- CONDICIONES --- */}
-        <View style={{ marginTop: 15 }}>
+        <View style={{ marginTop: 10 }}>
           <View style={styles.rowInfo}><Text style={styles.label}>Garantía:</Text><Text style={styles.valueFooter}>{quotation.warranty}</Text></View>
           <View style={styles.rowInfo}><Text style={styles.label}>Entrega:</Text><Text style={styles.valueFooter}>{quotation.deliveryTime}</Text></View>
           <View style={styles.rowInfo}><Text style={styles.label}>Forma pago:</Text><Text style={styles.valueFooter}>{quotation.paymentMethod}</Text></View>
           <View style={styles.rowInfo}><Text style={styles.label}>Validez:</Text><Text style={styles.valueFooter}>{validity}</Text></View>
           <View style={styles.rowInfo}><Text style={styles.label}>Elaborado:</Text><Text style={styles.valueFooter}>{elaboratedBy}</Text></View>
-          <Text style={{ marginTop: 10, fontSize: 9, lineHeight: 1.4 }}>{quotation.observations}</Text>
+          <Text style={{ marginTop: 6, fontSize: 8.5, lineHeight: 1.35, color: '#444' }}>{quotation.observations}</Text>
         </View>
 
         {/* --- FOOTER --- */}
