@@ -108,9 +108,8 @@ export default function QuotationForm() {
     };
 
     // --- GUARDAR ---
-    // inPlace=true: actualiza ESTA cotización (mismo correlativo). Por defecto, al
-    // editar se genera una nueva versión con nuevo correlativo (comportamiento original).
-    const handleSubmit = async (e, inPlace = false) => {
+    // Editar actualiza la MISMA cotización (mismo correlativo): nunca se duplica.
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!client) return Swal.fire("Error", "Debes seleccionar un cliente", "error");
         if (totals.total === 0) return Swal.fire("Error", "La cotización no puede estar vacía", "error");
@@ -140,7 +139,7 @@ export default function QuotationForm() {
                 await quotationService.create(payload);
                 Swal.fire("¡Creado!", "Cotización guardada exitosamente", "success");
             }*/
-            if (id && inPlace) {
+            if (id) {
                 await quotationService.update(id, payload);
             } else {
                 await quotationService.create(payload);
@@ -148,9 +147,7 @@ export default function QuotationForm() {
 
             Swal.fire(
                 "¡Cotización Guardada!",
-                id && inPlace
-                    ? "Se actualizó la misma cotización (mismo correlativo)."
-                    : id ? "Se ha generado una nueva versión con un nuevo correlativo." : "Cotización creada exitosamente",
+                id ? "Se actualizó la misma cotización (mismo correlativo)." : "Cotización creada exitosamente",
                 "success"
             );
             navigate("/app/quotations");
@@ -423,20 +420,9 @@ export default function QuotationForm() {
                             className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 px-4 rounded-lg flex items-center justify-center gap-2 shadow-lg transition-all"
                         >
                             <Save size={20} />
-                            {loading ? "Generando..." : id ? "Guardar como nueva versión" : "Guardar Cotización"}
+                            {loading ? "Guardando..." : id ? "Guardar cambios" : "Guardar Cotización"}
                         </button>
 
-                        {id && (
-                            <button
-                                type="button"
-                                disabled={loading}
-                                onClick={(e) => handleSubmit(e, true)}
-                                className="w-full mt-3 bg-brand-gradient hover:brightness-105 text-white font-bold py-4 px-4 rounded-lg flex items-center justify-center gap-2 shadow-lg transition-all"
-                            >
-                                <Save size={20} />
-                                Guardar en esta misma cotización
-                            </button>
-                        )}
                     </div>
 
                 </div>
