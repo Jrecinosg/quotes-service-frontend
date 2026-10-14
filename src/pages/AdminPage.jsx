@@ -112,7 +112,8 @@ export default function AdminPage() {
                 Swal.fire('Eliminado', 'Acceso revocado correctamente', 'success');
                 fetchUsers();
             } catch (error) {
-                Swal.fire('Error', 'No se pudo eliminar el acceso', 'error');
+                // El servidor explica el motivo (p. ej. no se puede revocar al único administrador)
+                Swal.fire('Error', error.response?.data?.error || 'No se pudo eliminar el acceso', 'error');
             }
         }
     };
