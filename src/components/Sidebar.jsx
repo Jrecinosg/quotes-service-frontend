@@ -43,7 +43,7 @@ export default function Sidebar() {
             {/* Fondo oscuro detras del menu -solo celular, mientras esta abierto */}
             {mobileOpen && (
                 <div
-                    className="md:hidden fixed inset-0 bg-black/40 z-40"
+                    className="md:hidden fixed inset-0 bg-black/40 z-40 animate-fade-in"
                     onClick={() => setMobileOpen(false)}
                 />
             )}

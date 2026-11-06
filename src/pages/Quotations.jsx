@@ -99,7 +99,7 @@ export default function Quotations() {
                 </div>
                 <Link
                     to="/app/quotations/new"
-                    className="bg-brand-gradient hover:brightness-105 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm transition-all text-center justify-center"
+                    className="btn-primary px-4 py-2 flex items-center gap-2 text-center justify-center"
                 >
                     <Plus size={20} />
                     Nueva Cotización
@@ -183,7 +183,7 @@ export default function Quotations() {
                                                             {formatCurrency(q.total)}
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
-                                                            <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                                                            <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 transition-opacity duration-small">
                                                                 <Link
                                                                     to={`/app/quotations/${q.id}`}
                                                                     className="p-2 text-gray-400 hover:bg-surface-hover hover:text-blue-300 rounded-lg shadow-sm border border-transparent hover:border-surface-border transition-all"

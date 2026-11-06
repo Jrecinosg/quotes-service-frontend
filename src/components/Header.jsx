@@ -117,7 +117,7 @@ function GlobalSearch() {
             />
 
             {open && (
-                <div className="absolute left-0 right-0 mt-2 z-40 bg-surface-card border border-surface-border rounded-2xl shadow-2xl shadow-black/40 overflow-hidden">
+                <div className="animate-pop-in origin-top absolute left-0 right-0 mt-2 z-40 bg-surface-card border border-surface-border rounded-2xl shadow-2xl shadow-black/40 overflow-hidden">
                     {loading && !hasResults ? (
                         <div className="flex items-center gap-2 px-4 py-4 text-sm text-gray-400">
                             <Loader2 size={16} className="animate-spin" /> Buscando...
@@ -211,7 +211,7 @@ function ProfileMenu() {
             </button>
 
             {open && (
-                <div role="menu" className="absolute right-0 mt-2 w-52 z-40 bg-surface-card border border-surface-border rounded-2xl shadow-2xl shadow-black/40 py-2">
+                <div role="menu" className="animate-pop-in origin-top-right absolute right-0 mt-2 w-52 z-40 bg-surface-card border border-surface-border rounded-2xl shadow-2xl shadow-black/40 py-2">
                     <Link
                         to="/app/profile"
                         role="menuitem"

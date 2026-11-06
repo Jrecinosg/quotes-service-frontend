@@ -1,8 +1,9 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 
 export default function Layout() {
+  const { pathname } = useLocation();
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-surface-base text-gray-200 [color-scheme:dark]">
 
@@ -15,7 +16,10 @@ export default function Layout() {
 
         {/*SOLO esto scroll */}
         <main className="flex-1 min-w-0 overflow-y-auto p-4 md:p-8">
-          <Outlet />
+          {/* Entrada suave al cambiar de pagina (solo visual, 240 ms; respeta prefers-reduced-motion) */}
+          <div key={pathname} className="animate-route-in">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

@@ -109,7 +109,7 @@ export default function Login() {
                   required={isRegistering}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue outline-none transition-all"
                   placeholder="Juan Pérez"
                 />
               </div>
@@ -126,7 +126,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 readOnly={!!invitedEmail}
-                className={`w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${invitedEmail ? "bg-gray-100 text-gray-600 cursor-not-allowed" : ""}`}
+                className={`w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue outline-none transition-all ${invitedEmail ? "bg-gray-100 text-gray-600 cursor-not-allowed" : ""}`}
                 placeholder="ejemplo@empresa.com"
               />
             </div>
@@ -156,7 +156,7 @@ export default function Login() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue outline-none transition-all"
                 placeholder="••••••"
               />
             </div>
@@ -164,7 +164,7 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-brand-gradient hover:brightness-105 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md mt-2"
+            className="btn-primary w-full py-3 px-4 mt-2"
           >
             {isRegistering ? "Registrarse" : "Iniciar Sesión"}
           </button>
