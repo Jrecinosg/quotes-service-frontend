@@ -18,7 +18,7 @@ const STATUS_STYLE = {
 
 function StatTile({ label, value, icon: Icon, colorClass }) {
   return (
-    <div className="bg-surface-card rounded-xl border border-surface-border shadow-sm p-4 flex items-center gap-3">
+    <div className="card p-4 flex items-center gap-3">
       <div className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 ${colorClass}`}>
         <Icon size={20} />
       </div>
@@ -108,7 +108,7 @@ export default function Requests() {
     : null;
 
   const StatusFilterChips = () => (
-    <div className="bg-surface-card p-4 rounded-xl shadow-sm border border-surface-border mb-6 flex gap-2">
+    <div className="card p-4 mb-6 flex gap-2">
       {["", "PENDING", "IN_PROGRESS", "DONE"].map((s) => (
         <button
           key={s || 'ALL'}
@@ -124,7 +124,7 @@ export default function Requests() {
   );
 
   const EmptyState = () => (
-    <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-14 text-gray-400">
+    <div className="card text-center py-14 text-gray-400">
       <ClipboardList className="mx-auto mb-2 text-gray-300" size={32} />
       {isClient ? "Todavía no tienes solicitudes. Crea la primera con el botón de arriba." : "No hay solicitudes registradas."}
     </div>
@@ -187,11 +187,11 @@ export default function Requests() {
         <StatusFilterChips />
 
         {loading ? (
-          <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-10 text-gray-400">Cargando...</div>
+          <div className="card text-center py-10 text-gray-400">Cargando...</div>
         ) : requests.length === 0 ? (
           <EmptyState />
         ) : visibleRequests.length === 0 ? (
-          <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-14 text-gray-400">
+          <div className="card text-center py-14 text-gray-400">
             No hay solicitudes con este estado.
           </div>
         ) : (
@@ -200,7 +200,7 @@ export default function Requests() {
               <Link
                 key={r.id}
                 to={`/app/requests/${r.id}`}
-                className="group bg-surface-card rounded-xl border border-surface-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all p-5 flex flex-col gap-3"
+                className="card group hover:shadow-lg hover:-translate-y-0.5 transition-all p-5 flex flex-col gap-3"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs text-gray-400">{formatRequestId(r.correlativo)}</span>
@@ -247,7 +247,7 @@ export default function Requests() {
           </button>
           <button
             onClick={() => openNewRequest()}
-            className="btn-primary px-4 py-2 flex items-center gap-2"
+            className="btn btn-primary px-4 py-2 flex items-center gap-2"
           >
             <Plus size={20} /> Nueva solicitud
           </button>
@@ -257,13 +257,13 @@ export default function Requests() {
       <StatusFilterChips />
 
       {loading ? (
-        <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-10 text-gray-400">Cargando...</div>
+        <div className="card text-center py-10 text-gray-400">Cargando...</div>
       ) : requests.length === 0 ? (
         <EmptyState />
       ) : (
         <div className="space-y-6">
           {groups.map(({ client, items }) => (
-            <div key={client?.id} className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
+            <div key={client?.id} className="card overflow-hidden">
               <div className="px-6 py-4 border-b border-surface-border flex items-center justify-between bg-surface-base">
                 <div>
                   <h2 className="font-semibold text-white">{client?.name}</h2>

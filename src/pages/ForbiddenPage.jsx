@@ -32,7 +32,7 @@ export default function ForbiddenPage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/app"
-            className="btn-primary flex items-center justify-center gap-2 px-6 py-3"
+            className="btn btn-primary flex items-center justify-center gap-2 px-6 py-3"
           >
             <ArrowLeft className="w-4 h-4" />
             Volver al Inicio

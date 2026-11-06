@@ -44,7 +44,7 @@ export default function ProfilePage() {
         <p className="text-gray-400">Gestiona tu información personal en el sistema.</p>
       </header>
 
-      <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="p-8">
           <form onSubmit={handleUpdate} className="space-y-6">
             
@@ -59,7 +59,7 @@ export default function ProfilePage() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="bg-surface-base text-white placeholder:text-gray-500 w-full pl-10 pr-4 py-2.5 border border-surface-border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                  className="field w-full pl-10 pr-4 py-2.5"
                   placeholder="Tu nombre"
                   required
                 />

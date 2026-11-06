@@ -99,7 +99,7 @@ export default function Quotations() {
                 </div>
                 <Link
                     to="/app/quotations/new"
-                    className="btn-primary px-4 py-2 flex items-center gap-2 text-center justify-center"
+                    className="btn btn-primary px-4 py-2 flex items-center gap-2 text-center justify-center"
                 >
                     <Plus size={20} />
                     Nueva Cotización
@@ -107,13 +107,13 @@ export default function Quotations() {
             </div>
 
             {/* 2. Barra de Búsqueda (Ancho Completo como en Clientes) */}
-            <div className="bg-surface-card p-4 rounded-xl shadow-sm border border-surface-border mb-6">
+            <div className="card p-4 mb-6">
                 <div className="relative">
                     <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
                     <input
                         type="text"
                         placeholder="Buscar por cliente, correlativo o referencia de proyecto..."
-                        className="bg-surface-base text-white placeholder:text-gray-500 w-full pl-10 pr-4 py-2 border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        className="field w-full pl-10 pr-4 py-2"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -122,15 +122,15 @@ export default function Quotations() {
 
             {/* 3. Empresas agrupadas (acordeón) */}
             {loading ? (
-                <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-10 text-gray-400">Cargando cotizaciones...</div>
+                <div className="card text-center py-10 text-gray-400">Cargando cotizaciones...</div>
             ) : groups.length === 0 ? (
-                <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border text-center py-10 text-gray-400">No hay cotizaciones que coincidan con la búsqueda.</div>
+                <div className="card text-center py-10 text-gray-400">No hay cotizaciones que coincidan con la búsqueda.</div>
             ) : (
                 <div className="space-y-3">
                     {groups.map(({ client, items }) => {
                         const isOpen = isSearching || expanded.has(client?.id);
                         return (
-                            <div key={client?.id || 'sin-cliente'} className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
+                            <div key={client?.id || 'sin-cliente'} className="card overflow-hidden">
                                 <button
                                     type="button"
                                     onClick={() => toggleExpanded(client?.id)}

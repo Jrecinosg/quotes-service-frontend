@@ -190,7 +190,7 @@ export default function QuotationForm() {
             <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-6">
 
                 {/* === SECCIÓN 1: ENCABEZADO (Estructura de la Imagen 1) === */}
-                <div className="bg-surface-card p-8 rounded-xl shadow-sm border border-surface-border">
+                <div className="card p-8">
                     <div className="flex flex-col md:flex-row justify-between gap-8">
 
                         {/* Izquierda: Datos del Cliente */}
@@ -227,7 +227,7 @@ export default function QuotationForm() {
                             <input
                                 type="text"
                                 placeholder="Ej. Bodega Zona 4 -para ubicarla más rápido"
-                                className="bg-surface-base text-white placeholder:text-gray-500 w-full border border-surface-border rounded-md p-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                                className="field w-full focus:ring-orange-500 focus:border-orange-500"
                                 value={projectReference}
                                 onChange={(e) => setProjectReference(e.target.value)}
                             />
@@ -242,7 +242,7 @@ export default function QuotationForm() {
                             rows={4}
                             maxLength={5000}
                             placeholder="Ej. Instalación de sistema de videovigilancia en bodega de 800 m², con cableado estructurado y grabación en la nube..."
-                            className="bg-surface-base text-white placeholder:text-gray-500 w-full border border-surface-border rounded-md p-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none resize-y"
+                            className="field w-full focus:ring-orange-500 focus:border-orange-500 resize-y"
                             value={projectDescription}
                             onChange={(e) => setProjectDescription(e.target.value)}
                         />
@@ -251,7 +251,7 @@ export default function QuotationForm() {
                 </div>
 
                 {/* === SECCIÓN 2: TABLA DE ÍTEMS (Cantidad Primero) === */}
-                <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
+                <div className="card overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left min-w-[800px]">
                             <thead className="bg-orange-600 text-white">
@@ -278,7 +278,7 @@ export default function QuotationForm() {
                                             <td className="p-2">
                                                 <input
                                                     type="number" min="1"
-                                                    className="bg-surface-base text-white placeholder:text-gray-500 w-full p-2 border border-surface-border rounded text-center focus:ring-2 focus:ring-orange-500 outline-none"
+                                                    className="field w-full rounded text-center focus:ring-orange-500"
                                                     value={item.quantity}
                                                     onChange={(e) => handleItemChange(index, 'quantity', Number(e.target.value))}
                                                 />
@@ -288,7 +288,7 @@ export default function QuotationForm() {
                                             <td className="p-2">
                                                 <input
                                                     type="text"
-                                                    className="bg-surface-base text-white placeholder:text-gray-500 w-full p-2 border border-surface-border rounded focus:ring-2 focus:ring-orange-500 outline-none"
+                                                    className="field w-full rounded focus:ring-orange-500"
                                                     placeholder="Descripción del producto..."
                                                     value={item.description}
                                                     onChange={(e) => handleItemChange(index, 'description', e.target.value)}
@@ -299,7 +299,7 @@ export default function QuotationForm() {
                                             <td className="p-2">
                                                 <input
                                                     type="number" min="0" step="0.01"
-                                                    className="bg-surface-base text-white placeholder:text-gray-500 w-full p-2 border border-surface-border rounded text-right focus:ring-2 focus:ring-orange-500 outline-none"
+                                                    className="field w-full rounded text-right focus:ring-orange-500"
                                                     value={item.listPrice}
                                                     onChange={(e) => handleItemChange(index, 'listPrice', Number(e.target.value))}
                                                 />
@@ -358,7 +358,7 @@ export default function QuotationForm() {
                 <div className="flex flex-col md:flex-row gap-6">
 
                     {/* Izquierda: Términos y Condiciones (Editable) */}
-                    <div className="flex-1 bg-surface-card p-6 rounded-xl shadow-sm border border-surface-border space-y-3 text-sm">
+                    <div className="card flex-1 p-6 space-y-3 text-sm">
 
                         <div className="grid grid-cols-[120px_1fr] items-center gap-2">
                             <label className="font-bold text-white">Garantía:</label>
@@ -419,7 +419,7 @@ export default function QuotationForm() {
 
                     {/* Derecha: Totales y Botón Guardar */}
                     <div className="flex flex-col gap-3">
-                        <div className="bg-surface-card p-4 rounded-xl shadow-sm border border-surface-border">
+                        <div className="card p-4">
                             <div className="flex justify-between py-2 text-gray-300">
                                 <span>Subtotal:</span>
                                 <span>{formatCurrency(totals.subtotal)}</span>

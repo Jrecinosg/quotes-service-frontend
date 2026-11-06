@@ -169,7 +169,7 @@ export default function WarrantyProjectForm() {
       <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-6">
 
         {/* Datos del proyecto */}
-        <div className="bg-surface-card p-6 rounded-2xl shadow-sm border border-surface-border">
+        <div className="card p-6">
           <div className="flex items-center gap-2 mb-5">
             <div className="w-9 h-9 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center">
               <FileText size={18} />
@@ -221,7 +221,7 @@ export default function WarrantyProjectForm() {
         </div>
 
         {/* Equipos */}
-        <div className="bg-surface-card p-6 rounded-2xl shadow-sm border border-surface-border">
+        <div className="card p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
@@ -361,7 +361,7 @@ export default function WarrantyProjectForm() {
           <button
             type="submit"
             disabled={saving}
-            className="btn-primary px-6 py-3 flex items-center justify-center gap-2"
+            className="btn btn-primary px-6 py-3 flex items-center justify-center gap-2"
           >
             <Save size={18} />
             {saving ? "Guardando..." : isEditing ? "Guardar cambios" : "Registrar garantía"}

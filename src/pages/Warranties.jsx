@@ -138,7 +138,7 @@ export default function Warranties() {
         {tab === "projects" ? (
           <Link
             to="/app/warranties/new"
-            className="btn-primary px-4 py-2 flex items-center justify-center gap-2"
+            className="btn btn-primary px-4 py-2 flex items-center justify-center gap-2"
           >
             <Plus size={20} />
             Nuevo proyecto
@@ -146,7 +146,7 @@ export default function Warranties() {
         ) : (
           <button
             onClick={() => { setEditingSupplier(null); setIsSupplierModalOpen(true); }}
-            className="btn-primary px-4 py-2 flex items-center justify-center gap-2"
+            className="btn btn-primary px-4 py-2 flex items-center justify-center gap-2"
           >
             <Plus size={20} />
             Nuevo proveedor
@@ -178,13 +178,13 @@ export default function Warranties() {
       {tab === "projects" ? (
         <>
           {/* Buscador */}
-          <div className="bg-surface-card p-4 rounded-xl shadow-sm border border-surface-border mb-6">
+          <div className="card p-4 mb-6">
             <div className="relative">
               <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Buscar por folio, cliente, título, factura o número de serie..."
-                className="bg-surface-base text-white placeholder:text-gray-500 w-full pl-10 pr-4 py-2 border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="field w-full pl-10 pr-4 py-2"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -192,7 +192,7 @@ export default function Warranties() {
           </div>
 
           {/* Tabla de proyectos */}
-          <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
+          <div className="card overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left min-w-[820px]">
                 <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
@@ -278,20 +278,20 @@ export default function Warranties() {
       ) : (
         <>
           {/* Buscador de proveedores */}
-          <div className="bg-surface-card p-4 rounded-xl shadow-sm border border-surface-border mb-6">
+          <div className="card p-4 mb-6">
             <div className="relative">
               <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Buscar proveedor por nombre, contacto o teléfono..."
-                className="bg-surface-base text-white placeholder:text-gray-500 w-full pl-10 pr-4 py-2 border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="field w-full pl-10 pr-4 py-2"
                 value={supplierSearch}
                 onChange={(e) => setSupplierSearch(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
+          <div className="card overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left min-w-[620px]">
                 <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">

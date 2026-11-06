@@ -140,7 +140,7 @@ export default function Clients() {
                 </div>
                 <button
                     onClick={handleCreate}
-                    className="btn-primary px-4 py-2 flex items-center gap-2"
+                    className="btn btn-primary px-4 py-2 flex items-center gap-2"
                 >
                     <Plus size={20} />
                     Nuevo Cliente
@@ -148,13 +148,13 @@ export default function Clients() {
             </div>
 
             {/* Barra de Búsqueda */}
-            <div className="bg-surface-card p-4 rounded-2xl border border-surface-border mb-6">
+            <div className="card p-4 mb-6">
                 <div className="relative">
                     <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
                     <input
                         type="text"
                         placeholder="Buscar por nombre o NIT..."
-                        className="w-full pl-10 pr-4 py-2 bg-surface-base border border-surface-border text-white placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="field w-full pl-10 pr-4 py-2"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -162,7 +162,7 @@ export default function Clients() {
             </div>
 
             {/* Tabla */}
-            <div className="bg-surface-card rounded-2xl border border-surface-border overflow-hidden">
+            <div className="card overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left min-w-[800px]">
                         <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">

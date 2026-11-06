@@ -47,7 +47,7 @@ export default function WarrantyProjectDetails() {
       </button>
 
       {/* Encabezado del proyecto */}
-      <div className="bg-surface-card rounded-2xl shadow-sm border border-surface-border overflow-hidden mb-6">
+      <div className="card overflow-hidden mb-6">
         <div className="bg-brand-gradient px-5 md:px-8 py-6 text-white">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="min-w-0">
@@ -82,7 +82,7 @@ export default function WarrantyProjectDetails() {
       </div>
 
       {/* Equipos */}
-      <div className="bg-surface-card rounded-2xl shadow-sm border border-surface-border overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="px-5 md:px-8 py-5 border-b border-surface-border flex items-center gap-2">
           <div className="w-9 h-9 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
             <Package size={18} />

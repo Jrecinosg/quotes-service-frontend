@@ -113,11 +113,11 @@ function GlobalSearch() {
                 onKeyDown={handleKeyDown}
                 placeholder="Buscar cotizaciones o clientes..."
                 aria-label="Buscar cotizaciones o clientes"
-                className="w-full pl-11 pr-4 py-2.5 rounded-full bg-surface-card border border-surface-border text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-transparent transition"
+                className="field !rounded-full !pl-11 !pr-4 !py-2.5 !text-sm"
             />
 
             {open && (
-                <div className="animate-pop-in origin-top absolute left-0 right-0 mt-2 z-40 bg-surface-card border border-surface-border rounded-2xl shadow-2xl shadow-black/40 overflow-hidden">
+                <div className="card animate-pop-in origin-top absolute left-0 right-0 mt-2 z-40 shadow-black/40 overflow-hidden">
                     {loading && !hasResults ? (
                         <div className="flex items-center gap-2 px-4 py-4 text-sm text-gray-400">
                             <Loader2 size={16} className="animate-spin" /> Buscando...
@@ -198,7 +198,7 @@ function ProfileMenu() {
                 onClick={() => setOpen((v) => !v)}
                 aria-haspopup="menu"
                 aria-expanded={open}
-                className="flex items-center gap-3 pl-1.5 pr-3 py-1.5 rounded-full bg-surface-card border border-surface-border hover:bg-surface-hover transition-colors"
+                className="btn btn-secondary !rounded-full !pl-1.5 !pr-3 !py-1.5 gap-3"
             >
                 <div className="w-8 h-8 rounded-full bg-brand-gradient flex items-center justify-center text-white text-sm font-bold shrink-0">
                     {initial}
@@ -249,7 +249,7 @@ export default function Header() {
     const { day, time } = formatNow(now);
 
     return (
-        <header className="hidden md:flex items-center gap-4 h-[72px] px-8 border-b border-surface-border bg-surface-base shrink-0 relative z-30">
+        <header style={{ viewTransitionName: "header" }} className="hidden md:flex items-center gap-4 h-[72px] px-8 border-b border-white/5 bg-surface-base/60 backdrop-blur-md shrink-0 relative z-30">
             <div className="flex-1 min-w-0">
                 {!isClientAccount && <GlobalSearch />}
             </div>
@@ -265,7 +265,7 @@ export default function Header() {
                 type="button"
                 title="Notificaciones (próximamente)"
                 aria-label="Notificaciones (próximamente)"
-                className="w-10 h-10 rounded-full bg-surface-card border border-surface-border flex items-center justify-center text-gray-400 hover:text-white hover:bg-surface-hover transition-colors"
+                className="btn btn-secondary btn-icon !w-10 !h-10 !rounded-full"
             >
                 <Bell size={18} />
             </button>

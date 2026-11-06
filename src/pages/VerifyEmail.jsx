@@ -59,7 +59,7 @@ export default function VerifyEmail() {
             </div>
             <Link
               to="/login"
-              className="inline-block w-full btn-primary py-3 px-4"
+              className="inline-block w-full btn btn-primary py-3 px-4"
             >
               Ir a iniciar sesión
             </Link>
@@ -74,7 +74,7 @@ export default function VerifyEmail() {
             </div>
             <Link
               to="/login"
-              className="inline-block w-full btn-primary py-3 px-4"
+              className="inline-block w-full btn btn-primary py-3 px-4"
             >
               Ir a iniciar sesión
             </Link>

@@ -103,17 +103,59 @@ function TrendBadge({ thisMonth, lastMonth }) {
     );
 }
 
-function StatCard({ title, stat, icon: Icon, iconBg, iconColor, glow, loading, to }) {
+// Contador que sube hasta el valor (ease-out); sin animación si el sistema pide menos movimiento
+function useCountUp(target, duration = 1000) {
+    const [v, setV] = useState(0);
+    useEffect(() => {
+        const to = Number(target) || 0;
+        if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) { setV(to); return undefined; }
+        let raf; let start;
+        const tick = (t) => {
+            if (start === undefined) start = t;
+            const p = Math.min((t - start) / duration, 1);
+            setV(Math.round(to * (1 - Math.pow(1 - p, 4))));
+            if (p < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(raf);
+    }, [target, duration]);
+    return v;
+}
+
+// Mini gráfica de la semana: la línea se dibuja sola al entrar
+function Sparkline({ data, color }) {
+    if (!data || data.length < 2) return null;
+    const max = Math.max(...data, 1);
+    const pts = data.map((v, i) => [(i / (data.length - 1)) * 100, 30 - (v / max) * 26]);
+    const d = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
     return (
-        <Link to={to} className="block bg-surface-card p-5 rounded-2xl border border-surface-border transition-colors hover:bg-surface-hover hover:border-surface-border/80 cursor-pointer">
+        <svg viewBox="0 0 100 34" preserveAspectRatio="none" className="w-full h-9 overflow-visible" aria-hidden="true">
+            <defs>
+                <linearGradient id={`spk-${color.replace("#", "")}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={color} stopOpacity="0.28" />
+                    <stop offset="100%" stopColor={color} stopOpacity="0" />
+                </linearGradient>
+            </defs>
+            <path d={`${d} L100 34 L0 34 Z`} fill={`url(#spk-${color.replace("#", "")})`} style={{ animation: "fadeIn 700ms ease-out 500ms backwards" }} />
+            <path d={d} fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                  pathLength="1" strokeDasharray="1" vectorEffect="non-scaling-stroke"
+                  style={{ "--len": 1, animation: "draw 1100ms var(--ease-out) 250ms backwards" }} />
+        </svg>
+    );
+}
+
+function StatCard({ title, stat, icon: Icon, iconBg, iconColor, glow, loading, to, spark, sparkColor, index = 0 }) {
+    const count = useCountUp(stat?.total);
+    return (
+        <Link to={to} style={{ "--i": index }} className="group card card-hover stagger-item block p-5">
             <div className="flex items-center justify-between gap-3">
                 <p className="text-gray-400 text-sm font-medium">{title}</p>
-                <div className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center ${iconBg} ${glow}`}>
+                <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center transition-transform duration-500 ease-[var(--spring-bounce)] group-hover:scale-110 group-hover:-rotate-6 ${iconBg} ${glow}`}>
                     <Icon className={`w-5 h-5 ${iconColor}`} />
                 </div>
             </div>
-            <h3 className="text-3xl font-bold text-white tracking-tight mt-2">
-                {loading ? <span className="inline-block w-16 h-8 rounded-lg bg-surface-hover animate-pulse align-middle" /> : stat ? stat.total : "—"}
+            <h3 className="text-[34px] leading-none font-bold text-white tracking-tight mt-3 tabular">
+                {loading ? <span className="skeleton inline-block w-16 h-8 align-middle" /> : stat ? count.toLocaleString("es-GT") : "—"}
             </h3>
             <div className="mt-3 flex flex-wrap items-center gap-2 min-h-[22px]">
                 {!loading && stat && (
@@ -125,6 +167,7 @@ function StatCard({ title, stat, icon: Icon, iconBg, iconColor, glow, loading, t
                     </>
                 )}
             </div>
+            {spark && !loading && <div className="mt-3 -mb-1"><Sparkline data={spark} color={sparkColor} /></div>}
         </Link>
     );
 }
@@ -181,7 +224,7 @@ export default function Dashboard() {
         <div>
             {/* Hero de bienvenida + acciones rápidas */}
             <div className="grid grid-cols-1 xl:grid-cols-[1.6fr_1fr] gap-6 mb-8">
-                <div className="relative overflow-hidden rounded-3xl bg-surface-card border border-surface-border min-h-[420px] bg-gradient-to-br from-brand-blue/10 via-transparent to-brand-orange/10">
+                <div className="card !rounded-3xl relative overflow-hidden min-h-[300px] bg-gradient-to-br from-brand-blue/10 via-transparent to-brand-orange/10">
                     {/* Línea de energía diagonal -mismo recurso visual que la referencia */}
                     <svg
                         aria-hidden="true"
@@ -211,7 +254,7 @@ export default function Dashboard() {
                         </g>
                     </svg>
 
-                    <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center p-6 md:p-8 min-h-[420px]">
+                    <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center p-6 md:p-8 min-h-[300px]">
                         <div className="max-w-md">
                             <p className="text-brand-cyan text-xs font-bold uppercase tracking-widest mb-2">Plataforma Grupo AC</p>
                             <h1 className="font-display text-3xl md:text-4xl font-bold text-white">
@@ -220,7 +263,7 @@ export default function Dashboard() {
                             <p className="text-gray-300 mt-2">Esto es lo que está pasando en tu operación hoy.</p>
                             <Link
                                 to="/app/quotations/new"
-                                className="btn-primary inline-flex items-center gap-2 mt-6 w-fit px-5 py-2.5 text-sm !rounded-full"
+                                className="btn btn-primary inline-flex items-center gap-2 mt-6 w-fit px-5 py-2.5 text-sm !rounded-full"
                             >
                                 <Plus size={16} />
                                 Nueva Cotización
@@ -243,16 +286,16 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                <div className="bg-surface-card border border-surface-border rounded-3xl p-6">
+                <div className="card !rounded-3xl p-6">
                     <p className="text-white font-semibold mb-4">Acciones rápidas</p>
                     <div className="grid grid-cols-2 gap-3">
                         {QUICK_ACTIONS.map(({ to, icon: Icon, label, iconBg, iconColor, glow }) => (
                             <Link
                                 key={to}
                                 to={to}
-                                className="flex flex-col gap-2 p-4 rounded-2xl bg-surface-base border border-surface-border hover:bg-surface-hover transition-colors"
+                                className="group card card-hover flex flex-col gap-2 p-4"
                             >
-                                <div className={`w-9 h-9 rounded-full flex items-center justify-center ${iconBg} ${glow}`}>
+                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-transform duration-500 ease-[var(--spring-bounce)] group-hover:scale-110 group-hover:-rotate-6 ${iconBg} ${glow}`}>
                                     <Icon size={18} className={iconColor} />
                                 </div>
                                 <span className="text-sm text-gray-200 font-medium leading-tight">{label}</span>
@@ -267,14 +310,16 @@ export default function Dashboard() {
                 <p className="mb-4 text-sm text-red-400">No se pudieron cargar las estadísticas en este momento. Recarga la página para intentarlo de nuevo.</p>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 mb-8">
-                {STAT_CARDS.map(({ key, ...card }) => (
-                    <StatCard key={key} {...card} stat={stats?.[key]} loading={loading} />
+                {STAT_CARDS.map(({ key, ...card }, idx) => (
+                    <StatCard key={key} {...card} index={idx} stat={stats?.[key]} loading={loading}
+                        spark={key === "quotations" ? weekData.map((d) => d.quotations) : key === "clients" ? weekData.map((d) => d.clients) : null}
+                        sparkColor={key === "quotations" ? "#1F8CFF" : "#FF8A00"} />
                 ))}
             </div>
 
             {/* Últimos 7 días + tarjeta "Recuerda" */}
             <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-6 mb-8">
-                <div className="bg-surface-card rounded-2xl border border-surface-border p-6">
+                <div className="card p-6">
                     <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
                         <div>
                             <div className="flex items-center gap-2">
@@ -335,7 +380,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Decorativo: frase fija, no es un dato */}
-                <div className="relative overflow-hidden rounded-2xl border border-surface-border bg-surface-card p-6 flex flex-col">
+                <div className="card relative overflow-hidden p-6 flex flex-col">
                     <div className="absolute inset-x-0 top-0 h-1 bg-brand-gradient" />
                     <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mb-4">
                         <Quote size={18} className="text-white" />
@@ -357,7 +402,7 @@ export default function Dashboard() {
             </div>
 
             {/* Rendimiento de solicitudes */}
-            <div className="bg-surface-card rounded-2xl border border-surface-border p-6 mb-8">
+            <div className="card p-6 mb-8">
                 <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
                         <TrendingUp size={16} className="text-white" />
@@ -398,7 +443,7 @@ export default function Dashboard() {
             </div>
 
             {/* Últimas Cotizaciones (las más recientes primero) */}
-            <div className="bg-surface-card rounded-2xl border border-surface-border overflow-hidden">
+            <div className="card overflow-hidden">
                 <div className="p-6 border-b border-surface-border flex justify-between items-center gap-3">
                     <h2 className="text-lg font-semibold text-white">Últimas Cotizaciones</h2>
                     <Link

@@ -86,7 +86,7 @@ export default function RequestDetails() {
         <ArrowLeft size={20} /> Volver al listado
       </button>
 
-      <div className="bg-surface-card rounded-xl shadow-xl border border-surface-border overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="bg-surface-base px-4 md:px-8 py-6 border-b border-surface-border flex justify-between items-start flex-wrap gap-4">
           <div>
             <h1 className="font-display text-2xl font-extrabold text-white">{formatRequestId(request.correlativo)} — {request.title}</h1>
@@ -109,7 +109,7 @@ export default function RequestDetails() {
               <button
                 disabled={changingStatus || request.status === 'IN_PROGRESS'}
                 onClick={() => handleStatusChange('IN_PROGRESS')}
-                className="btn-primary flex items-center gap-2 px-4 py-2"
+                className="btn btn-primary flex items-center gap-2 px-4 py-2"
               >
                 <PlayCircle size={18} /> Marcar en proceso
               </button>
@@ -155,12 +155,12 @@ export default function RequestDetails() {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Agregar una observación o recordatorio..."
-              className="bg-surface-base text-white placeholder:text-gray-500 flex-1 border border-surface-border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="field flex-1 px-4 py-2"
             />
             <button
               type="submit"
               disabled={sending || !note.trim()}
-              className="btn-primary flex items-center gap-2 px-4 py-2"
+              className="btn btn-primary flex items-center gap-2 px-4 py-2"
             >
               <Send size={18} />
             </button>

@@ -68,7 +68,7 @@ export default function ClientSearch({ onSelect, selectedClient }) {
         <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
         <input
           type="text"
-          className="bg-surface-base text-white placeholder:text-gray-500 w-full pl-10 pr-4 py-3 border border-surface-border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+          className="field w-full pl-10 pr-4 py-3"
           placeholder="Buscar cliente por nombre o NIT..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -77,7 +77,7 @@ export default function ClientSearch({ onSelect, selectedClient }) {
 
       {/* Dropdown de Resultados */}
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-surface-card border border-surface-border rounded-lg shadow-xl max-h-60 overflow-y-auto">
+        <div className="card absolute z-10 w-full mt-1 max-h-60 overflow-y-auto">
           {results.map((client) => (
             <div
               key={client.id}

@@ -60,7 +60,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
 
   return createPortal(
     <div className="modal-overlay animate-overlay-in fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-surface-card rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="card w-full max-w-md max-h-[90vh] overflow-y-auto">
 
         <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
           <h2 className="text-white font-bold text-lg">Registrar pago recibido</h2>
@@ -74,7 +74,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
             <label className="block text-sm font-medium text-gray-300">Tipo de pago *</label>
             <select
               required
-              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="field mt-1 w-full"
               value={formData.type}
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
             >
@@ -89,7 +89,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
               <input
                 type="date"
                 required
-                className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="field mt-1 w-full"
                 value={formData.receivedDate}
                 onChange={(e) => setFormData({ ...formData, receivedDate: e.target.value })}
               />
@@ -102,7 +102,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
                 step="0.01"
                 required
                 placeholder="Ej. 5000.00"
-                className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="field mt-1 w-full"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               />
@@ -121,7 +121,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
                   max="100"
                   step="0.01"
                   placeholder="Ej. 5"
-                  className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="field mt-1 w-full"
                   value={formData.taxWithholdingPercent}
                   onChange={(e) => handlePercentChange(e.target.value)}
                 />
@@ -133,7 +133,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
                   min="0"
                   step="0.01"
                   placeholder="Se calcula solo"
-                  className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="field mt-1 w-full"
                   value={formData.taxWithholdingAmount}
                   onChange={(e) => setFormData({ ...formData, taxWithholdingAmount: e.target.value })}
                 />
@@ -146,7 +146,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
             <input
               type="text"
               placeholder="Opcional -ej. número de depósito"
-              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="field mt-1 w-full"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
             />
@@ -163,7 +163,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
             <button
               type="submit"
               disabled={saving}
-              className="btn-primary px-4 py-2 flex items-center gap-2"
+              className="btn btn-primary px-4 py-2 flex items-center gap-2"
             >
               <Save size={18} />
               {saving ? "Guardando..." : "Guardar"}

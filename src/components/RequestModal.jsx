@@ -47,7 +47,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
 
   return createPortal(
     <div className="modal-overlay animate-overlay-in fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-surface-card rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in">
+      <div className="card w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in">
         <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
           <h2 className="text-white font-bold text-lg">Nueva solicitud</h2>
           <button type="button" onClick={onClose} className="text-blue-100 hover:text-white">
@@ -61,7 +61,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
               <label className="block text-sm font-medium text-gray-300">Empresa cliente *</label>
               <select
                 required
-                className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+                className="field mt-1 w-full"
                 value={clientId}
                 onChange={(e) => setClientId(e.target.value)}
               >
@@ -78,7 +78,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
             <input
               type="text"
               required
-              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+              className="field mt-1 w-full"
               placeholder="Ej. Cámara sin señal en bodega 2"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -90,7 +90,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
             <textarea
               required
               rows={4}
-              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+              className="field mt-1 w-full"
               placeholder="Cuéntanos qué necesita con el mayor detalle posible."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -104,7 +104,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
             <button
               type="submit"
               disabled={saving}
-              className="btn-primary px-4 py-2 flex items-center gap-2"
+              className="btn btn-primary px-4 py-2 flex items-center gap-2"
             >
               <Send size={18} />
               {saving ? "Enviando..." : "Enviar solicitud"}

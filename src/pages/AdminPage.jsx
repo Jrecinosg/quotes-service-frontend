@@ -138,7 +138,7 @@ export default function AdminPage() {
             </header>
 
             {/* Formulario de Invitación / Edición de rol */}
-            <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border p-6">
+            <div className="card p-6">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                         <Mail size={20} className="text-blue-500" />
@@ -159,7 +159,7 @@ export default function AdminPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             disabled={!!editingEmail}
-                            className="bg-surface-base text-white placeholder:text-gray-500 w-full px-3 py-2 border border-surface-border rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-surface-hover disabled:text-gray-500"
+                            className="field w-full py-2 disabled:bg-surface-hover disabled:text-gray-500"
                             placeholder="correo@empresa.com"
                         />
                     </div>
@@ -168,7 +168,7 @@ export default function AdminPage() {
                         <select
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="bg-surface-base text-white placeholder:text-gray-500 w-full px-3 py-2 border border-surface-border rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
+                            className="field w-full py-2"
                         >
                             <option value="USER">Colaborador — Operador (USER)</option>
                             <option value="ADMIN">Colaborador — Administrador (ADMIN)</option>
@@ -182,7 +182,7 @@ export default function AdminPage() {
                                 value={clientId}
                                 onChange={(e) => setClientId(e.target.value)}
                                 required
-                                className="bg-surface-base text-white placeholder:text-gray-500 w-full px-3 py-2 border border-surface-border rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                className="field w-full py-2"
                             >
                                 <option value="">Selecciona una empresa...</option>
                                 {clients.map((c) => (
@@ -206,7 +206,7 @@ export default function AdminPage() {
             </div>
 
             {/* Equipo interno */}
-            <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
+            <div className="card overflow-hidden">
                 <div className="p-6 border-b border-surface-border">
                     <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                         <ShieldCheck size={20} className="text-green-500" />
@@ -239,7 +239,7 @@ export default function AdminPage() {
             </div>
 
             {/* Clientes, agrupados por empresa */}
-            <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
+            <div className="card overflow-hidden">
                 <div className="p-6 border-b border-surface-border">
                     <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                         <Building2 size={20} className="text-orange-500" />
@@ -278,7 +278,7 @@ export default function AdminPage() {
             {/* Acción de una sola vez: cotizaciones creadas antes de que existiera
                 la vigencia real quedaron en "Sin fecha" -esto la calcula para
                 todas usando su propio texto de Validez + fecha de creación. */}
-            <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border p-6">
+            <div className="card p-6">
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                     <CalendarClock size={20} className="text-blue-500" />
                     Rellenar vigencia de cotizaciones antiguas

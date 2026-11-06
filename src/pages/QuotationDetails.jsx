@@ -112,7 +112,7 @@ export default function QuotationDetails() {
             </div>
 
             {/* --- VISTA DE SOLO LECTURA --- */}
-            <div className="bg-surface-card rounded-xl shadow-xl border border-surface-border overflow-hidden">
+            <div className="card overflow-hidden">
                 
                 {/* Encabezado Documento */}
                 <div className="bg-surface-base px-4 md:px-8 py-6 border-b border-surface-border">
@@ -263,7 +263,7 @@ export default function QuotationDetails() {
             </div>
 
             {/* --- PAGOS RECIBIDOS (solo dentro del sistema, no sale en el PDF) --- */}
-            <div className="bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden mt-6">
+            <div className="card overflow-hidden mt-6">
                 <div className="px-4 md:px-8 py-5 border-b border-surface-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
                         <div className="w-9 h-9 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center">
@@ -276,7 +276,7 @@ export default function QuotationDetails() {
                     </div>
                     <button
                         onClick={() => setIsPaymentModalOpen(true)}
-                        className="btn-primary inline-flex items-center justify-center gap-2 px-4 py-2 text-sm"
+                        className="btn btn-primary inline-flex items-center justify-center gap-2 px-4 py-2 text-sm"
                     >
                         <Plus size={16} /> Registrar pago
                     </button>

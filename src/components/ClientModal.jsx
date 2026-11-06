@@ -77,7 +77,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
 
   return createPortal(
     <div className="modal-overlay animate-overlay-in fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-surface-card rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in">
+      <div className="card w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in">
 
         {/* Header */}
         <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
@@ -96,7 +96,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
             <input
               type="text"
               required
-              className="bg-surface-base text-white placeholder:text-gray-500 mt-1 w-full border border-surface-border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+              className="field mt-1 w-full"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
@@ -185,7 +185,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
             </button>
             <button
               type="submit"
-              className="btn-primary px-4 py-2 flex items-center gap-2"
+              className="btn btn-primary px-4 py-2 flex items-center gap-2"
             >
               <Save size={18} />
               Guardar

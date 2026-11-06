@@ -57,7 +57,7 @@ export default function ResetPassword() {
             </div>
             <Link
               to="/login"
-              className="inline-block w-full btn-primary py-3 px-4 mt-2"
+              className="inline-block w-full btn btn-primary py-3 px-4 mt-2"
             >
               Ir a Iniciar Sesión
             </Link>
@@ -89,7 +89,7 @@ export default function ResetPassword() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full btn-primary py-3 px-4 mt-2 disabled:opacity-60"
+                className="w-full btn btn-primary py-3 px-4 mt-2 disabled:opacity-60"
               >
                 {submitting ? "Guardando..." : "Guardar nueva contraseña"}
               </button>

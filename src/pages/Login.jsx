@@ -164,7 +164,7 @@ export default function Login() {
 
           <button
             type="submit"
-            className="btn-primary w-full py-3 px-4 mt-2"
+            className="btn btn-primary w-full py-3 px-4 mt-2"
           >
             {isRegistering ? "Registrarse" : "Iniciar Sesión"}
           </button>
