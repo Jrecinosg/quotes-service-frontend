@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, FileDown, ClipboardList, Clock, PlayCircle, CheckCircle2 } from "lucide-react";
+import { Plus, FileDown, ClipboardList, Clock, PlayCircle, CheckCircle2, LayoutGrid, List } from "lucide-react";
+import Swal from "sweetalert2";
 import { requestService } from "../services/request.service";
 import RequestModal from "../components/RequestModal";
+import RequestsBoard from "../components/RequestsBoard";
 import { useAuth } from "../context/AuthContext";
 import { formatRequestId, formatDate } from "../utils/formatters";
 import { pdf } from '@react-pdf/renderer';
@@ -41,6 +43,9 @@ export default function Requests() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalDefaultClientId, setModalDefaultClientId] = useState("");
   const [downloading, setDownloading] = useState(false);
+  // Vista del personal: lista agrupada por cliente (la de siempre) o tablero por estados.
+  const [view, setView] = useState(() => (localStorage.getItem("requests-view") === "board" ? "board" : "list"));
+  const changeView = (v) => { setView(v); localStorage.setItem("requests-view", v); };
 
   // Se trae todo sin filtrar una sola vez: los tarjetones de conteo
   // necesitan ver el total real, y el filtro de estado se aplica aqui
@@ -86,6 +91,32 @@ export default function Requests() {
       console.error(error);
     } finally {
       setDownloading(false);
+    }
+  };
+
+  // Pasar una solicitud a otro estado desde el tablero. Es el MISMO flujo del detalle:
+  // confirmación + nota opcional, y el servidor avisa al cliente por correo (por eso se confirma siempre).
+  const handleBoardMove = async (r, status) => {
+    const result = await Swal.fire({
+      title: `¿Pasar ${formatRequestId(r.correlativo)} a "${STATUS_LABEL[status]}"?`,
+      text: "Se avisará al cliente por correo.",
+      input: "text",
+      inputLabel: "Nota para el cliente (opcional)",
+      inputPlaceholder: "Ej. Técnico agendado para mañana 9am",
+      showCancelButton: true,
+      confirmButtonText: "Confirmar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#2563eb",
+    });
+    if (!result.isConfirmed) return false;
+    try {
+      await requestService.updateStatus(r.id, status, result.value || undefined);
+      setRequests((prev) => prev.map((x) => (x.id === r.id ? { ...x, status, updatedAt: new Date().toISOString() } : x)));
+      return true;
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "No se pudo actualizar el estado.", "error");
+      return false;
     }
   };
 
@@ -237,7 +268,17 @@ export default function Requests() {
           <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-white">Solicitudes de clientes</h1>
           <p className="text-gray-400 text-sm">Da seguimiento a los pendientes de cada cliente</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
+          <div className="seg" role="group" aria-label="Vista de solicitudes">
+            <button type="button" aria-pressed={view === "list"} onClick={() => changeView("list")}
+              className={`seg-item flex items-center gap-1.5 ${view === "list" ? "bg-white/10" : ""}`}>
+              <List size={15} /> Lista
+            </button>
+            <button type="button" aria-pressed={view === "board"} onClick={() => changeView("board")}
+              className={`seg-item flex items-center gap-1.5 ${view === "board" ? "bg-white/10" : ""}`}>
+              <LayoutGrid size={15} /> Tablero
+            </button>
+          </div>
           <button
             onClick={handleDownloadPdf}
             disabled={downloading || requests.length === 0}
@@ -254,12 +295,14 @@ export default function Requests() {
         </div>
       </div>
 
-      <StatusFilterChips />
+      {view === "list" && <StatusFilterChips />}
 
       {loading ? (
         <div className="card text-center py-10 text-gray-400">Cargando...</div>
       ) : requests.length === 0 ? (
         <EmptyState />
+      ) : view === "board" ? (
+        <RequestsBoard requests={requests} onMove={handleBoardMove} />
       ) : (
         <div className="space-y-6">
           {groups.map(({ client, items }) => (

@@ -175,3 +175,8 @@
 .swal2-styled:hover { filter: brightness(1.1) !important; transform: translateY(-1px); }
 .swal2-styled:active { transform: scale(0.95) !important; }
 .swal2-show { animation: pop 420ms var(--spring-bounce) !important; }
+
+/* Tarjeta que se lleva en el tablero de solicitudes: al recogerla crece y se inclina con rebote. */
+.board-ghost { transform: scale(1.04) rotate(2deg); animation: board-pick 320ms var(--spring-bounce); }
+@keyframes board-pick { from { transform: scale(1) rotate(0deg); box-shadow: 0 0 0 rgba(0, 0, 0, 0); } }
+@media (prefers-reduced-motion: reduce) { .board-ghost { animation: none; } }
