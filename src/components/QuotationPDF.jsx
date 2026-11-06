@@ -159,6 +159,26 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center'
   },
+  // --- DESCRIPCIÓN DEL PROYECTO (solo si se ingresó) ---
+  projectBox: {
+    marginTop: 10,
+    borderLeftWidth: 3,
+    borderLeftColor: '#F46B20',
+    backgroundColor: '#FFF4EC',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  projectTitle: {
+    fontSize: 9.5,
+    fontWeight: 'bold',
+    color: '#F46B20',
+    marginBottom: 3,
+  },
+  projectText: {
+    fontSize: 9,
+    lineHeight: 1.4,
+    color: '#333',
+  },
   discountText: {
     color: '#F46B20',
     fontWeight: 'bold',
@@ -255,7 +275,7 @@ const DescriptionBlock = ({ text }) => {
 };
 
 export const QuotationDocument = ({ quotation }) => {
-  const { client, items, subtotal, tax, total, correlativo, createdAt, elaboratedBy, validity } = quotation;
+  const { client, items, projectDescription, subtotal, tax, total, correlativo, createdAt, elaboratedBy, validity } = quotation;
 
   return (
     <Document>
@@ -302,6 +322,14 @@ export const QuotationDocument = ({ quotation }) => {
             <Image src={logo} style={{ width: 115 }} />
           </View>
         </View>
+
+        {/* --- DESCRIPCIÓN DEL PROYECTO (solo si existe) --- */}
+        {projectDescription && String(projectDescription).trim() && (
+          <View style={styles.projectBox}>
+            <Text style={styles.projectTitle}>Descripción del proyecto</Text>
+            <Text style={styles.projectText}>{String(projectDescription).trim()}</Text>
+          </View>
+        )}
 
         {/* --- TABLA --- */}
         <View style={styles.table}>

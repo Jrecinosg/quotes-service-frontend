@@ -18,6 +18,8 @@ export default function QuotationForm() {
     // Solo para ubicar la cotizacion mas rapido dentro del modulo -nunca se
     // manda al PDF.
     const [projectReference, setProjectReference] = useState("");
+    // Descripción general del proyecto: SÍ sale en el PDF (solo si se llena).
+    const [projectDescription, setProjectDescription] = useState("");
 
     // 2. Orden de columnas cambiado: Cantidad primero
     const [items, setItems] = useState([
@@ -56,6 +58,7 @@ export default function QuotationForm() {
                 .then(data => {
                     setClient(data.client);
                     setProjectReference(data.projectReference || "");
+                    setProjectDescription(data.projectDescription || "");
 
                     const formattedItems = data.items.map(i => ({
                         quantity: Number(i.quantity),
@@ -119,6 +122,7 @@ export default function QuotationForm() {
         const payload = {
             clientId: client.id,
             projectReference: projectReference.trim(),
+            projectDescription: projectDescription.trim(),
             items: items.map(item => ({
                 quantity: item.quantity,
                 description: item.description,
@@ -229,6 +233,20 @@ export default function QuotationForm() {
                             />
                             <p className="text-xs text-gray-400">Solo se ve aquí dentro del sistema, no sale en el PDF.</p>
                         </div>
+                    </div>
+
+                    {/* Descripción del proyecto -sí sale en el PDF si se llena */}
+                    <div className="mt-4 flex flex-col gap-1">
+                        <label className="font-bold text-gray-200">Descripción del proyecto o servicio <span className="font-normal text-gray-400">(opcional)</span></label>
+                        <textarea
+                            rows={4}
+                            maxLength={5000}
+                            placeholder="Ej. Instalación de sistema de videovigilancia en bodega de 800 m², con cableado estructurado y grabación en la nube..."
+                            className="bg-surface-base text-white placeholder:text-gray-500 w-full border border-surface-border rounded-md p-2 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none resize-y"
+                            value={projectDescription}
+                            onChange={(e) => setProjectDescription(e.target.value)}
+                        />
+                        <p className="text-xs text-gray-400">Sí se imprime en el PDF, antes de la tabla de ítems. Si lo dejas vacío, el PDF no cambia. {projectDescription.length}/5000</p>
                     </div>
                 </div>
 

@@ -244,6 +244,13 @@ export default function QuotationDetails() {
                                 <p><span className="font-bold text-gray-200">Validez:</span> <span className="text-gray-300">{quotation.validity || 'No especificada'}</span></p>
                             </div>
                         </div>
+                        {quotation.projectDescription && (
+                            <div className="mt-4 pt-4 border-t border-surface-border">
+                                <p className="text-gray-300 text-sm whitespace-pre-line">
+                                    <span className="font-bold text-gray-200">Descripción del proyecto:</span> {quotation.projectDescription}
+                                </p>
+                            </div>
+                        )}
                         {quotation.observations && (
                             <div className="mt-4 pt-4 border-t border-surface-border">
                                 <p className="text-gray-300 text-sm italic">
