@@ -157,7 +157,7 @@ export default function WarrantyProjectForm() {
           <ArrowLeft size={22} />
         </button>
         <div>
-          <h1 className="font-display text-2xl font-bold text-white">
+          <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-white">
             {isEditing ? "Editar proyecto de garantía" : "Nuevo proyecto de garantía"}
           </h1>
           <p className="text-gray-400 text-sm">
@@ -361,7 +361,7 @@ export default function WarrantyProjectForm() {
           <button
             type="submit"
             disabled={saving}
-            className="px-6 py-3 bg-brand-gradient hover:brightness-105 text-white font-semibold rounded-lg flex items-center justify-center gap-2 shadow-sm disabled:opacity-60 transition-all"
+            className="btn-primary px-6 py-3 flex items-center justify-center gap-2"
           >
             <Save size={18} />
             {saving ? "Guardando..." : isEditing ? "Guardar cambios" : "Registrar garantía"}

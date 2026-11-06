@@ -109,7 +109,7 @@ export default function RequestDetails() {
               <button
                 disabled={changingStatus || request.status === 'IN_PROGRESS'}
                 onClick={() => handleStatusChange('IN_PROGRESS')}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold"
+                className="btn-primary flex items-center gap-2 px-4 py-2"
               >
                 <PlayCircle size={18} /> Marcar en proceso
               </button>
@@ -160,7 +160,7 @@ export default function RequestDetails() {
             <button
               type="submit"
               disabled={sending || !note.trim()}
-              className="flex items-center gap-2 px-4 py-2 bg-brand-gradient text-white rounded-lg hover:brightness-105 disabled:opacity-50 transition-all"
+              className="btn-primary flex items-center gap-2 px-4 py-2"
             >
               <Send size={18} />
             </button>

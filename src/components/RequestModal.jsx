@@ -104,7 +104,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
             <button
               type="submit"
               disabled={saving}
-              className="px-4 py-2 bg-brand-gradient text-white rounded-md hover:brightness-105 flex items-center gap-2 disabled:opacity-60"
+              className="btn-primary px-4 py-2 flex items-center gap-2"
             >
               <Send size={18} />
               {saving ? "Enviando..." : "Enviar solicitud"}

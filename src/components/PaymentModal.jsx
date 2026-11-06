@@ -163,7 +163,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
             <button
               type="submit"
               disabled={saving}
-              className="px-4 py-2 bg-brand-gradient text-white rounded-lg hover:brightness-105 disabled:opacity-50 flex items-center gap-2"
+              className="btn-primary px-4 py-2 flex items-center gap-2"
             >
               <Save size={18} />
               {saving ? "Guardando..." : "Guardar"}

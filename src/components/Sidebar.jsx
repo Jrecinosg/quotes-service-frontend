@@ -91,7 +91,7 @@ export default function Sidebar() {
                                 to={item.path}
                                 onClick={() => setMobileOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors border-l-4 ${isActive
-                                    ? "bg-brand-blue text-white font-medium border-brand-cyan shadow-[0_0_18px_rgba(0,123,255,0.55)]"
+                                    ? "bg-brand-blue/15 text-brand-cyan font-medium border-brand-cyan"
                                     : "text-gray-400 hover:bg-surface-hover hover:text-white border-transparent"
                                     }`}
                             >
@@ -107,7 +107,7 @@ export default function Sidebar() {
                             to="/app/admin"
                             onClick={() => setMobileOpen(false)}
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${location.pathname === '/app/admin'
-                                ? "bg-purple-500 text-white font-medium shadow-[0_0_18px_rgba(168,85,247,0.5)]"
+                                ? "bg-purple-500/15 text-purple-300 font-medium"
                                 : "text-gray-400 hover:bg-surface-hover hover:text-purple-300"
                                 }`}
                         >

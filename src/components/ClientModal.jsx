@@ -185,7 +185,7 @@ export default function ClientModal({ isOpen, onClose, clientToEdit, onSuccess }
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-brand-gradient text-white rounded-md hover:brightness-105 flex items-center gap-2"
+              className="btn-primary px-4 py-2 flex items-center gap-2"
             >
               <Save size={18} />
               Guardar

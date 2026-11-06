@@ -59,25 +59,25 @@ function WeekTooltip({ active, payload }) {
 }
 
 const QUICK_ACTIONS = [
-    { to: "/app/quotations/new", icon: Plus, label: "Nueva Cotización", iconBg: "bg-brand-blue", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(0,123,255,0.6)]" },
-    { to: "/app/clients", icon: Users, label: "Clientes", iconBg: "bg-purple-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(168,85,247,0.55)]" },
-    { to: "/app/requests", icon: ClipboardList, label: "Solicitudes", iconBg: "bg-brand-orange", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(255,138,0,0.6)]" },
-    { to: "/app/warranties", icon: ShieldCheck, label: "Garantías", iconBg: "bg-emerald-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(16,185,129,0.55)]" },
+    { to: "/app/quotations/new", icon: Plus, label: "Nueva Cotización", iconBg: "bg-brand-blue/15", iconColor: "text-brand-cyan", glow: "" },
+    { to: "/app/clients", icon: Users, label: "Clientes", iconBg: "bg-purple-500/15", iconColor: "text-purple-300", glow: "" },
+    { to: "/app/requests", icon: ClipboardList, label: "Solicitudes", iconBg: "bg-brand-orange/15", iconColor: "text-brand-orange", glow: "" },
+    { to: "/app/warranties", icon: ShieldCheck, label: "Garantías", iconBg: "bg-emerald-500/15", iconColor: "text-emerald-300", glow: "" },
 ];
 
 // Líneas de servicio reales de Grupo AC (texto fijo, no es un dato)
 const SERVICE_LINES = [
-    { icon: Video, label: "Videovigilancia", sub: "Mayor seguridad", color: "text-white", bg: "bg-brand-blue", glow: "shadow-[0_0_16px_rgba(0,123,255,0.6)]" },
-    { icon: KeyRound, label: "Control de acceso", sub: "Protege lo importante", color: "text-white", bg: "bg-purple-500", glow: "shadow-[0_0_16px_rgba(168,85,247,0.55)]" },
-    { icon: Wifi, label: "Enlaces y conectividad", sub: "Sin límites", color: "text-white", bg: "bg-brand-orange", glow: "shadow-[0_0_16px_rgba(255,138,0,0.6)]" },
-    { icon: Network, label: "Redes estructuradas", sub: "Tu infraestructura", color: "text-white", bg: "bg-emerald-500", glow: "shadow-[0_0_16px_rgba(16,185,129,0.55)]" },
+    { icon: Video, label: "Videovigilancia", sub: "Mayor seguridad", color: "text-brand-cyan", bg: "bg-brand-blue/15", glow: "" },
+    { icon: KeyRound, label: "Control de acceso", sub: "Protege lo importante", color: "text-purple-300", bg: "bg-purple-500/15", glow: "" },
+    { icon: Wifi, label: "Enlaces y conectividad", sub: "Sin límites", color: "text-brand-orange", bg: "bg-brand-orange/15", glow: "" },
+    { icon: Network, label: "Redes estructuradas", sub: "Tu infraestructura", color: "text-emerald-300", bg: "bg-emerald-500/15", glow: "" },
 ];
 
 const STAT_CARDS = [
-    { key: "quotations", title: "Cotizaciones", icon: FileText, iconBg: "bg-brand-blue", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(0,123,255,0.6)]", to: "/app/quotations" },
-    { key: "clients", title: "Clientes", icon: Users, iconBg: "bg-purple-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(168,85,247,0.55)]", to: "/app/clients" },
-    { key: "requests", title: "Solicitudes", icon: ClipboardList, iconBg: "bg-brand-orange", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(255,138,0,0.6)]", to: "/app/requests" },
-    { key: "warranties", title: "Garantías", icon: ShieldCheck, iconBg: "bg-emerald-500", iconColor: "text-white", glow: "shadow-[0_0_16px_rgba(16,185,129,0.55)]", to: "/app/warranties" },
+    { key: "quotations", title: "Cotizaciones", icon: FileText, iconBg: "bg-brand-blue/15", iconColor: "text-brand-cyan", glow: "", to: "/app/quotations" },
+    { key: "clients", title: "Clientes", icon: Users, iconBg: "bg-purple-500/15", iconColor: "text-purple-300", glow: "", to: "/app/clients" },
+    { key: "requests", title: "Solicitudes", icon: ClipboardList, iconBg: "bg-brand-orange/15", iconColor: "text-brand-orange", glow: "", to: "/app/requests" },
+    { key: "warranties", title: "Garantías", icon: ShieldCheck, iconBg: "bg-emerald-500/15", iconColor: "text-emerald-300", glow: "", to: "/app/warranties" },
 ];
 
 // Tendencia real: este mes vs. el mes anterior (conteos del servidor)
@@ -85,7 +85,7 @@ function TrendBadge({ thisMonth, lastMonth }) {
     if (!thisMonth && !lastMonth) return null;
     if (!lastMonth) {
         return (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-blue-500 text-white">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-blue-500/15 text-blue-300">
                 <Sparkles size={12} /> Nuevo
             </span>
         );
@@ -97,7 +97,7 @@ function TrendBadge({ thisMonth, lastMonth }) {
     const up = pct > 0;
     const Icon = up ? ArrowUpRight : ArrowDownRight;
     return (
-        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold ${up ? "bg-emerald-500 text-white" : "bg-red-500 text-white"}`}>
+        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold ${up ? "bg-emerald-500/15 text-emerald-300" : "bg-red-500/15 text-red-300"}`}>
             <Icon size={13} /> {up ? "+" : ""}{pct}%
         </span>
     );
@@ -181,7 +181,7 @@ export default function Dashboard() {
         <div>
             {/* Hero de bienvenida + acciones rápidas */}
             <div className="grid grid-cols-1 xl:grid-cols-[1.6fr_1fr] gap-6 mb-8">
-                <div className="relative overflow-hidden rounded-3xl bg-surface-card border border-surface-border min-h-[420px] bg-brand-glow">
+                <div className="relative overflow-hidden rounded-3xl bg-surface-card border border-surface-border min-h-[420px] bg-gradient-to-br from-brand-blue/10 via-transparent to-brand-orange/10">
                     {/* Línea de energía diagonal -mismo recurso visual que la referencia */}
                     <svg
                         aria-hidden="true"
@@ -205,7 +205,7 @@ export default function Dashboard() {
                                 </feMerge>
                             </filter>
                         </defs>
-                        <g filter="url(#heroGlow)" strokeLinecap="round" fill="none">
+                        <g strokeLinecap="round" fill="none">
                             <path d="M -80 460 C 200 420, 380 340, 520 260 S 780 60, 900 -40" stroke="url(#heroStreak1)" strokeWidth="4.5" opacity="0.95" />
                             <path d="M -80 500 C 220 470, 400 380, 540 300 S 800 100, 920 0" stroke="url(#heroStreak1)" strokeWidth="2" opacity="0.5" />
                         </g>
@@ -213,14 +213,14 @@ export default function Dashboard() {
 
                     <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center p-6 md:p-8 min-h-[420px]">
                         <div className="max-w-md">
-                            <p className="text-brand-cyan text-xs font-bold uppercase tracking-widest mb-2 drop-shadow-[0_0_8px_rgba(0,194,255,0.6)]">Plataforma Grupo AC</p>
+                            <p className="text-brand-cyan text-xs font-bold uppercase tracking-widest mb-2">Plataforma Grupo AC</p>
                             <h1 className="font-display text-3xl md:text-4xl font-bold text-white">
                                 {firstName ? `Hola, ${firstName}` : "Resumen General"}
                             </h1>
                             <p className="text-gray-300 mt-2">Esto es lo que está pasando en tu operación hoy.</p>
                             <Link
                                 to="/app/quotations/new"
-                                className="inline-flex items-center gap-2 mt-6 w-fit px-5 py-2.5 rounded-full text-white text-sm font-semibold bg-brand-gradient shadow-[0_0_24px_rgba(0,123,255,0.55)] hover:brightness-110 hover:shadow-[0_0_32px_rgba(255,138,0,0.55)] transition-all"
+                                className="btn-primary inline-flex items-center gap-2 mt-6 w-fit px-5 py-2.5 text-sm !rounded-full"
                             >
                                 <Plus size={16} />
                                 Nueva Cotización

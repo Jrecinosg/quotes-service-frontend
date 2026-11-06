@@ -130,7 +130,7 @@ export default function Warranties() {
       {/* Cabecera */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="font-display text-2xl font-bold text-white">Garantías</h1>
+          <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-white">Garantías</h1>
           <p className="text-gray-400 text-sm">
             Rastrea qué equipo se compró, a qué proveedor y contra qué factura
           </p>
@@ -138,7 +138,7 @@ export default function Warranties() {
         {tab === "projects" ? (
           <Link
             to="/app/warranties/new"
-            className="bg-brand-gradient hover:brightness-105 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 shadow-sm transition-all"
+            className="btn-primary px-4 py-2 flex items-center justify-center gap-2"
           >
             <Plus size={20} />
             Nuevo proyecto
@@ -146,7 +146,7 @@ export default function Warranties() {
         ) : (
           <button
             onClick={() => { setEditingSupplier(null); setIsSupplierModalOpen(true); }}
-            className="bg-brand-gradient hover:brightness-105 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 shadow-sm transition-all"
+            className="btn-primary px-4 py-2 flex items-center justify-center gap-2"
           >
             <Plus size={20} />
             Nuevo proveedor

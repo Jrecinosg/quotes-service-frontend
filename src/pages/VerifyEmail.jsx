@@ -59,7 +59,7 @@ export default function VerifyEmail() {
             </div>
             <Link
               to="/login"
-              className="inline-block w-full bg-brand-gradient hover:brightness-105 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md"
+              className="inline-block w-full btn-primary py-3 px-4"
             >
               Ir a iniciar sesión
             </Link>
@@ -74,7 +74,7 @@ export default function VerifyEmail() {
             </div>
             <Link
               to="/login"
-              className="inline-block w-full bg-brand-gradient hover:brightness-105 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md"
+              className="inline-block w-full btn-primary py-3 px-4"
             >
               Ir a iniciar sesión
             </Link>

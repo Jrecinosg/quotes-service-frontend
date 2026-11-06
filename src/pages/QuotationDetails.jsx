@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 import { formatQuotationId, formatCurrency, formatDate } from "../utils/formatters";
 
 const PAYMENT_TYPE_LABEL = { ANTICIPO: "Anticipo", FINAL: "Pago final" };
-const PAYMENT_TYPE_STYLE = { ANTICIPO: "bg-blue-500 text-white", FINAL: "bg-emerald-500 text-white" };
+const PAYMENT_TYPE_STYLE = { ANTICIPO: "bg-blue-500/15 text-blue-300", FINAL: "bg-emerald-500/15 text-emerald-300" };
 
 export default function QuotationDetails() {
     const { id } = useParams();
@@ -104,7 +104,7 @@ export default function QuotationDetails() {
 
                     <button
                         onClick={handleOpenPdf}
-                        className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 shadow-md transition-all font-semibold"
+                        className="flex items-center gap-2 px-4 py-2 bg-brand-orangeDeep text-white rounded-xl hover:brightness-110 hover:-translate-y-px active:scale-[0.98] shadow-md transition-all duration-small ease-enter font-semibold"
                     >
                         <FileText size={18} /> Ver PDF
                     </button>
@@ -131,7 +131,7 @@ export default function QuotationDetails() {
                             )}
                         </div>
                         <div className="text-right">
-                            <span className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            <span className="bg-emerald-500/15 text-emerald-300 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                                 Registrada
                             </span>
                         </div>
@@ -191,7 +191,7 @@ export default function QuotationDetails() {
                                             {/* % Descuento (Con un badge resaltado) */}
                                             <td className="px-4 py-4 text-center text-gray-400">
                                                 {discount > 0 ? (
-                                                    <span className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-bold">
+                                                    <span className="bg-orange-500/15 text-orange-300 px-2 py-1 rounded-md text-xs font-bold">
                                                         -{discount}%
                                                     </span>
                                                 ) : '-'}
@@ -276,7 +276,7 @@ export default function QuotationDetails() {
                     </div>
                     <button
                         onClick={() => setIsPaymentModalOpen(true)}
-                        className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-brand-gradient hover:brightness-105 text-white rounded-lg font-semibold text-sm shadow-sm transition-all"
+                        className="btn-primary inline-flex items-center justify-center gap-2 px-4 py-2 text-sm"
                     >
                         <Plus size={16} /> Registrar pago
                     </button>
