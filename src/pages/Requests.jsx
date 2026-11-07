@@ -38,6 +38,7 @@ export default function Requests() {
   const isStaff = !isClient;
 
   const [requests, setRequests] = useState([]);
+  const [totalReal, setTotalReal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,6 +56,7 @@ export default function Requests() {
     try {
       const data = await requestService.getAll(1, isStaff ? 300 : 100, "");
       setRequests(data.data || []);
+      setTotalReal(data.totalItems ?? (data.data || []).length);
     } catch (error) {
       console.error(error);
     } finally {
@@ -206,6 +208,13 @@ export default function Requests() {
             </div>
           </div>
         </div>
+
+        {totalReal > requests.length && (
+          <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
+            Se muestran las {requests.length} solicitudes más recientes de {totalReal}. Los conteos
+            cubren solo las mostradas.
+          </div>
+        )}
 
         {/* Tarjetones de conteo */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
