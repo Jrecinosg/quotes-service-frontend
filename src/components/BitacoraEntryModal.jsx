@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, ImagePlus, Trash2, AlertTriangle } from "lucide-react";
 import { bitacoraService } from "../services/bitacora.service";
@@ -8,13 +8,19 @@ import { todayIso, toIsoDay } from "../utils/bitacora";
 const MAX_PHOTOS_PER_ENTRY = 60;
 
 function PickedPhoto({ item, error, onCaption, onRemove, disabled }) {
-  const url = useMemo(() => URL.createObjectURL(item.file), [item.file]);
+  // La URL se crea y se libera en el MISMO efecto y se asigna directo al <img>: así StrictMode
+  // (monta, desmonta y vuelve a montar) nunca deja una URL ya revocada.
+  const imgRef = useRef(null);
   const [broken, setBroken] = useState(false);
-  useEffect(() => () => URL.revokeObjectURL(url), [url]);
+  useEffect(() => {
+    const objectUrl = URL.createObjectURL(item.file);
+    if (imgRef.current) imgRef.current.src = objectUrl;
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [item.file]);
   return (
     <li className="flex gap-3 items-start">
       <div className="w-20 h-[60px] rounded-lg overflow-hidden bg-white/5 shrink-0 flex items-center justify-center text-[10px] text-gray-400 text-center">
-        {broken ? "Sin vista previa" : <img src={url} alt="" className="w-full h-full object-cover" onError={() => setBroken(true)} />}
+        {broken ? "Sin vista previa" : <img ref={imgRef} alt="" className="w-full h-full object-cover" onError={() => setBroken(true)} />}
       </div>
       <div className="flex-1 min-w-0">
         <input

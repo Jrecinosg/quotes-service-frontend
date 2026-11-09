@@ -107,12 +107,12 @@ export default function Bitacora() {
         </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-3 mb-8">
-        <div className="relative flex-1">
+      <div className="flex flex-wrap gap-3 mb-8">
+        <div className="relative flex-1 min-w-[260px]">
           <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" aria-hidden="true" />
           <input type="search" className="field w-full pl-10 pr-4 h-11" placeholder="Buscar proyecto o cliente…" aria-label="Buscar proyecto o cliente" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
-        <select className="field h-11 lg:w-60" aria-label="Filtrar por cliente" value={clientId} onChange={(e) => setClientId(e.target.value)}>
+        <select className="field h-11 w-full sm:w-60" aria-label="Filtrar por cliente" value={clientId} onChange={(e) => setClientId(e.target.value)}>
           <option value="">Todos los clientes</option>
           {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>

@@ -21,7 +21,8 @@ export async function downloadInformePdf(project, onProgress = () => {}) {
     const photos = [];
     for (const ph of entry.photos || []) {
       onProgress({ step: "Preparando fotos", done: loaded, total: allPhotos.length });
-      const raw = await bitacoraService.getPhotoBlob(ph.id);
+      const raw = await bitacoraService.getPhotoBlob(ph.id, ({ waitMs }) =>
+        onProgress({ step: `Servidor ocupado, reintentando (${Math.ceil(waitMs / 1000)} s)`, done: loaded, total: allPhotos.length }));
       const { blob, width, height } = await resizeImage(raw, { maxSide: 1200, quality: 0.8 });
       number += 1;
       photos.push({ number, src: await blobToDataUrl(blob), width, height, caption: ph.caption || "" });

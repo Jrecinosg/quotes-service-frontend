@@ -88,9 +88,9 @@ export default function BitacoraPendings({ project, onChanged }) {
 
       <form onSubmit={add} className="mt-3 pt-3 border-t border-white/10 space-y-2">
         <input className="field w-full text-sm" placeholder="Nuevo pendiente…" maxLength={1000} aria-label="Nuevo pendiente" value={text} onChange={(e) => setText(e.target.value)} />
-        <div className="grid grid-cols-2 gap-2">
-          <input className="field text-sm" placeholder="Responsable" maxLength={120} aria-label="Responsable" value={assignee} onChange={(e) => setAssignee(e.target.value)} />
-          <input type="date" className="field text-sm" aria-label="Fecha límite" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+        <div className="grid grid-cols-1 gap-2">
+          <input className="field text-sm w-full min-w-0" placeholder="Responsable" maxLength={120} aria-label="Responsable" value={assignee} onChange={(e) => setAssignee(e.target.value)} />
+          <input type="date" className="field text-sm w-full min-w-0" aria-label="Fecha límite" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
         </div>
         <button type="submit" className="btn btn-secondary px-4 py-2 w-full flex items-center justify-center gap-2" disabled={busy || !text.trim()}><Plus size={16} /> Agregar</button>
       </form>

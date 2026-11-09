@@ -82,16 +82,16 @@ const styles = StyleSheet.create({
   daySep: { borderBottomWidth: 0.75, borderBottomColor: LINE, marginTop: 4 },
 
   closing: { fontSize: 10.5, lineHeight: 1.5, color: INK },
-  signRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 40 },
+  signRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 30 },
   signLine: { minWidth: 160, maxWidth: 300, borderTopWidth: 0.75, borderTopColor: NAVY, paddingTop: 5 },
   signName: { fontSize: 10, fontWeight: 'bold', color: NAVY },
   signRole: { fontSize: 9, color: MUTED, marginTop: 1 },
   signLogo: { width: 56 },
-  limits: { fontSize: 9, color: MUTED, marginTop: 18 },
+  limits: { fontSize: 9, color: MUTED, marginTop: 12 },
 });
 
 // Texto -> párrafos; las líneas que empiezan con "- ", "* " o "• " son viñetas.
-const renderBody = (body) => {
+const renderBody = (body, tail) => {
   const lines = String(body || '').split(/\r?\n/);
   const out = [];
   lines.forEach((raw, i) => {
@@ -109,6 +109,11 @@ const renderBody = (body) => {
       out.push(<Text key={i} style={styles.para}>{line}</Text>);
     }
   });
+  // El cierre viaja pegado al último párrafo: nunca queda solo en una hoja casi vacía.
+  if (tail) {
+    const last = out.pop();
+    out.push(<View key="tail" wrap={false}>{last || null}{tail}</View>);
+  }
   return out;
 };
 
@@ -151,13 +156,14 @@ const PhotoCell = ({ photo, h, last }) => {
 };
 
 // El encabezado viaja dentro de la primera fila: nunca queda solo al final de una hoja.
-const PhotoGrid = ({ photos, heading }) =>
-  buildRows(photos).map(({ row, h }, idx) => (
+const PhotoGrid = ({ photos, heading, tail }) =>
+  buildRows(photos).map(({ row, h }, idx, all) => (
     <View key={idx} style={styles.photoRow} wrap={false}>
       {idx === 0 ? heading : null}
       <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
         {row.map((p, j) => <PhotoCell key={p.number} photo={p} h={h} last={j === row.length - 1} />)}
       </View>
+      {idx === all.length - 1 ? tail : null}
     </View>
   ));
 
@@ -181,6 +187,21 @@ export const BitacoraInformeDocument = ({ report }) => {
   const personnel = report.personnel || [];
   const technician = String(report.technicianName || '').trim();
   const cellStyle = technician && personnel.length ? styles.dataCellWrap : styles.dataCell;
+
+  const closingBlock = (
+        <View style={{ marginTop: 16 }} wrap={false}>
+          <Text style={styles.sectionTitle}>CIERRE</Text>
+          <Text style={styles.closing}>{closing}</Text>
+          <View style={styles.signRow}>
+            <View style={styles.signLine}>
+              <Text style={styles.signName}>{technician || 'Grupo AC'}</Text>
+              <Text style={styles.signRole}>{technician ? 'Grupo AC · Tecnoseguridad e Informática' : 'Tecnoseguridad e Informática'}</Text>
+            </View>
+            <Image src={logo} style={styles.signLogo} />
+          </View>
+          <Text style={styles.limits}>Este informe resume los trabajos realizados en las fechas indicadas.</Text>
+        </View>
+  );
 
   return (
     <Document title={`Informe final - ${report.clientName}`} author="Grupo AC">
@@ -276,28 +297,16 @@ export const BitacoraInformeDocument = ({ report }) => {
                 <Text style={styles.dayCount}>Día {idx + 1} de {total}</Text>
               </View>
             </View>
-            {renderBody(d.body)}
+            {renderBody(d.body, idx === total - 1 && !(d.photos && d.photos.length) ? closingBlock : null)}
             {d.photos && d.photos.length ? (
-              <PhotoGrid photos={d.photos} heading={<Text style={styles.photosTitle}>REGISTRO FOTOGRÁFICO · {formatShortDate(d.date)}</Text>} />
+              <PhotoGrid photos={d.photos} heading={<Text style={styles.photosTitle}>REGISTRO FOTOGRÁFICO · {formatShortDate(d.date)}</Text>} tail={idx === total - 1 ? closingBlock : null} />
             ) : null}
             {idx < total - 1 ? <View style={[styles.daySep, { marginBottom: 18 }]} /> : null}
           </React.Fragment>
         ))}
         {days.length === 0 ? <View><Text style={styles.sectionTitle}>TRABAJO REALIZADO POR DÍA</Text><Text style={styles.para}>Aún no hay trabajos registrados.</Text></View> : null}
+        {days.length === 0 ? closingBlock : null}
 
-        {/* E. Cierre */}
-        <View style={{ marginTop: 6 }} wrap={false}>
-          <Text style={styles.sectionTitle}>CIERRE</Text>
-          <Text style={styles.closing}>{closing}</Text>
-          <View style={styles.signRow}>
-            <View style={styles.signLine}>
-              <Text style={styles.signName}>{technician || 'Grupo AC'}</Text>
-              <Text style={styles.signRole}>{technician ? 'Grupo AC · Tecnoseguridad e Informática' : 'Tecnoseguridad e Informática'}</Text>
-            </View>
-            <Image src={logo} style={styles.signLogo} />
-          </View>
-          <Text style={styles.limits}>Este informe resume los trabajos realizados en las fechas indicadas.</Text>
-        </View>
       </Page>
     </Document>
   );
