@@ -45,16 +45,30 @@ export const bitacoraService = {
   deleteEntry: async (id) => (await api.delete(`/bitacora/entries/${id}`)).data,
 
   // Un archivo por petición (el servidor las procesa de una en una)
-  uploadPhoto: async (entryId, blob, { caption, sortOrder } = {}) => {
+  uploadPhoto: async (entryId, blob, { caption, sortOrder, includeInReport, stage } = {}) => {
     const form = new FormData();
     form.append("photo", blob, "foto.jpg");
     if (caption) form.append("caption", caption);
+    if (includeInReport === false) form.append("includeInReport", "false");
+    if (stage) form.append("stage", stage);
     if (sortOrder !== undefined) form.append("sortOrder", String(sortOrder));
     return (await api.post(`/bitacora/entries/${entryId}/photos`, form)).data;
   },
   getPhotoBlob: (photoId, onRetry) => fetchPhotoBlob(photoId, onRetry),
   updatePhoto: async (id, payload) => (await api.put(`/bitacora/photos/${id}`, payload)).data,
   deletePhoto: async (id) => (await api.delete(`/bitacora/photos/${id}`)).data,
+
+  // Pendientes V2 (por cliente, con o sin proyecto). status: abiertos | hechos | todos; projectId: id | "none" (sueltos)
+  getPendings: async ({ clientId, projectId, status = "abiertos", origin } = {}) => {
+    const response = await api.get("/bitacora/pendings", {
+      params: { ...(clientId ? { clientId } : {}), ...(projectId ? { projectId } : {}), status, ...(origin ? { origin } : {}) }
+    });
+    const data = response.data;
+    return Array.isArray(data) ? data : data?.data || [];
+  },
+  createPendingV2: async (payload) => (await api.post("/bitacora/pendings", payload)).data,
+  resolvePending: async (id, { resolvedInEntryId } = {}) =>
+    (await api.post(`/bitacora/pendings/${id}/resolve`, resolvedInEntryId ? { resolvedInEntryId } : {})).data,
 
   createPending: async (projectId, payload) => (await api.post(`/bitacora/projects/${projectId}/pendings`, payload)).data,
   updatePending: async (id, payload) => (await api.put(`/bitacora/pendings/${id}`, payload)).data,

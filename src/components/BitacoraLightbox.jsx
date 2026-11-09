@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, ChevronLeft, ChevronRight, Trash2, Save } from "lucide-react";
 import BitacoraPhoto from "./BitacoraPhoto";
+import BitacoraPhotoFlags from "./BitacoraPhotoFlags";
 import { bitacoraService } from "../services/bitacora.service";
 import Swal from "sweetalert2";
 
@@ -43,6 +44,18 @@ export default function BitacoraLightbox({ photos, startIndex, onClose, onChange
     }
   };
 
+  const saveFlags = async (patch) => {
+    setBusy(true);
+    try {
+      await bitacoraService.updatePhoto(photo.id, patch);
+      await onChanged();
+    } catch (error) {
+      Swal.fire("Error", error.response?.data?.error || "No se pudo guardar el cambio de la foto.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const remove = async () => {
     const r = await Swal.fire({ title: "¿Quitar esta foto?", icon: "warning", showCancelButton: true, confirmButtonColor: "#ef4444", cancelButtonColor: "#6b7280", confirmButtonText: "Sí, quitar", cancelButtonText: "Cancelar" });
     if (!r.isConfirmed) return;
@@ -64,6 +77,9 @@ export default function BitacoraLightbox({ photos, startIndex, onClose, onChange
         {photos.length > 1 && <button type="button" onClick={() => go(-1)} className="btn btn-secondary btn-icon w-11 h-11 absolute left-0 z-10" aria-label="Foto anterior"><ChevronLeft size={22} /></button>}
         <BitacoraPhoto key={photo.id} photoId={photo.id} alt={photo.caption} eager contain className="w-full h-full max-h-[68vh] rounded-lg" />
         {photos.length > 1 && <button type="button" onClick={() => go(1)} className="btn btn-secondary btn-icon w-11 h-11 absolute right-0 z-10" aria-label="Foto siguiente"><ChevronRight size={22} /></button>}
+      </div>
+      <div className="w-full max-w-4xl -mb-1">
+        <BitacoraPhotoFlags key={photo.id} idPrefix={`lb-${photo.id}`} stage={photo.stage} includeInReport={photo.includeInReport !== false} disabled={busy} onChange={saveFlags} />
       </div>
       <div className="w-full max-w-4xl flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
         <span className="text-xs text-gray-300 tabular-nums shrink-0">Foto {index + 1} de {photos.length}</span>

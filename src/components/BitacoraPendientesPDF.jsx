@@ -1,7 +1,7 @@
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet, Image, Font, Svg, Path } from '@react-pdf/renderer';
 import logo from '../assets/logo.png';
-import { formatRange, formatShortDate, isOverdue, toIsoDay } from '../utils/bitacora';
+import { formatShortDate, isOverdue, toIsoDay, ORIGINS } from '../utils/bitacora';
 
 Font.registerHyphenationCallback((word) => [word]);
 
@@ -31,13 +31,17 @@ const buildStyles = (k) => {
     infoCell: { flex: 1, paddingRight: 10 },
     infoLabel: { fontSize: 7.5, fontWeight: 'bold', color: MUTED, letterSpacing: 1.2 },
     infoValue: { fontSize: 10, fontWeight: 'bold', color: NAVY, marginTop: 2 },
-    thead: { marginTop: s(14), flexDirection: 'row', alignItems: 'center', backgroundColor: NAVY, height: 22, borderTopLeftRadius: 5, borderTopRightRadius: 5 },
+    thead: { marginTop: s(6), flexDirection: 'row', alignItems: 'center', backgroundColor: NAVY, height: 22, borderTopLeftRadius: 5, borderTopRightRadius: 5 },
     th: { fontSize: 8, fontWeight: 'bold', color: '#FFFFFF', letterSpacing: 0.8 },
     tr: { flexDirection: 'row', alignItems: 'center', minHeight: s(34), paddingVertical: s(4), borderBottomWidth: 0.75, borderBottomColor: LINE },
-    cBox: { width: 36, alignItems: 'center' },
-    cText: { width: 255, paddingRight: 8 },
-    cWho: { width: 120, paddingRight: 8 },
-    cDue: { width: 104 },
+    cBox: { width: 30, alignItems: 'center' },
+    cText: { width: 215, paddingRight: 8 },
+    cWho: { width: 90, paddingRight: 8 },
+    cDue: { width: 90, paddingRight: 6 },
+    cOrigin: { width: 90 },
+    group: { marginTop: s(14), flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#E6F1FA', borderRadius: 5, paddingVertical: 5, paddingHorizontal: 10 },
+    groupName: { fontSize: s(10.5), fontWeight: 'bold', color: NAVY, flex: 1, paddingRight: 8 },
+    groupMeta: { fontSize: 8, color: MUTED },
     box: { width: 13, height: 13, borderWidth: 1.25, borderColor: NAVY, borderRadius: 3 },
     boxDone: { width: 13, height: 13, borderRadius: 3, backgroundColor: BLUE, alignItems: 'center', justifyContent: 'center' },
     task: { fontSize: 10.5, fontWeight: 'bold', color: NAVY, lineHeight: 1.3 },
@@ -62,17 +66,21 @@ const Check = () => (
 
 const fmtDue = (p) => (p.dueDate ? formatShortDate(p.dueDate, false) : '—');
 
+const KIND_LABEL = { PROYECTO: 'PROYECTO', SOPORTE: 'SOPORTE MENSUAL', SUELTOS: 'SIN PROYECTO' };
+const byDue = (a, b) => ((toIsoDay(a.dueDate) || '9999') < (toIsoDay(b.dueDate) || '9999') ? -1 : 1);
+
 /**
- * Hoja de PENDIENTES PARA EL PERSONAL (uso interno).
- * data = { clientName, projectName, startDate, endDate, pendings: [{text, assignee, dueDate, done}],
- *          generatedAt (Date), includeDone? }
+ * PENDIENTES PARA EL PERSONAL por cliente (uso interno), agrupados por proyecto / soporte / sueltos.
+ * data = { clientName, filterLabel?, groups: [{ title, kind: PROYECTO|SOPORTE|SUELTOS, quotationNumber?,
+ *          pendings: [{ text, assignee, dueDate, origin, done }] }], generatedAt (Date), includeDone? }
  */
 export const BitacoraPendientesDocument = ({ data }) => {
-  const all = data.pendings || [];
-  const open = all.filter((p) => !p.done).sort((a, b) => (toIsoDay(a.dueDate) || '9999') < (toIsoDay(b.dueDate) || '9999') ? -1 : 1);
-  const done = data.includeDone ? all.filter((p) => p.done) : [];
-  const rows = [...open, ...done];
-  const k = rows.length > 14 ? 0.9 : 1;
+  const groups = (data.groups || [])
+    .map((g) => ({ ...g, rows: [...(g.pendings || []).filter((p) => !p.done).sort(byDue), ...(data.includeDone ? (g.pendings || []).filter((p) => p.done) : [])] }))
+    .filter((g) => g.rows.length > 0);
+  const total = groups.reduce((n, g) => n + g.rows.length, 0);
+  const openCount = groups.reduce((n, g) => n + g.rows.filter((p) => !p.done).length, 0);
+  const k = total > 14 ? 0.9 : 1;
   const styles = buildStyles(k);
   const gen = data.generatedAt || new Date();
   const genText = gen.toLocaleString('es-GT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -87,39 +95,51 @@ export const BitacoraPendientesDocument = ({ data }) => {
         <View style={styles.head}>
           <View style={styles.headText}>
             <Text style={styles.kicker}>PENDIENTES · SOLO PERSONAL</Text>
-            <Text style={styles.title}>Pendientes — {data.clientName}: {data.projectName}</Text>
+            <Text style={styles.title}>Pendientes — {data.clientName}{data.filterLabel ? `: ${data.filterLabel}` : ''}</Text>
           </View>
           <Image src={logo} style={styles.logo} />
         </View>
 
         <View style={styles.info}>
-          <View style={styles.infoCell}><Text style={styles.infoLabel}>FECHAS DEL PROYECTO</Text><Text style={styles.infoValue}>{formatRange(data.startDate, data.endDate)}</Text></View>
+          <View style={styles.infoCell}><Text style={styles.infoLabel}>CLIENTE</Text><Text style={styles.infoValue}>{data.clientName}</Text></View>
           <View style={styles.infoCell}><Text style={styles.infoLabel}>GENERADO EL</Text><Text style={styles.infoValue}>{genText}</Text></View>
-          <View style={styles.infoCell}><Text style={styles.infoLabel}>PENDIENTES ABIERTOS</Text><Text style={styles.infoValue}>{open.length} de {all.length}</Text></View>
+          <View style={styles.infoCell}><Text style={styles.infoLabel}>PENDIENTES ABIERTOS</Text><Text style={styles.infoValue}>{openCount}</Text></View>
         </View>
 
-        <View style={styles.thead} fixed={false}>
-          <View style={styles.cBox} />
-          <Text style={[styles.th, styles.cText]}>PENDIENTE</Text>
-          <Text style={[styles.th, styles.cWho]}>RESPONSABLE</Text>
-          <Text style={[styles.th, styles.cDue]}>FECHA LÍMITE</Text>
-        </View>
-        {rows.length === 0 ? <Text style={styles.empty}>No hay pendientes abiertos.</Text> : null}
-        {rows.map((p, i) => {
-          const over = isOverdue(p, today);
-          return (
-            <View key={i} style={styles.tr} wrap={false}>
-              <View style={styles.cBox}>
-                {p.done ? <View style={styles.boxDone}><Check /></View> : <View style={styles.box} />}
+        {groups.length === 0 ? <Text style={styles.empty}>No hay pendientes abiertos.</Text> : null}
+        {groups.map((g, gi) => (
+          <View key={gi}>
+            <View wrap={false} minPresenceAhead={90}>
+              <View style={styles.group}>
+                <Text style={styles.groupName}>{KIND_LABEL[g.kind] || 'PROYECTO'} · {g.title}{g.quotationNumber ? ` · ${g.quotationNumber}` : ''}</Text>
+                <Text style={styles.groupMeta}>{g.rows.length} {g.rows.length === 1 ? 'pendiente' : 'pendientes'}</Text>
               </View>
-              <View style={styles.cText}><Text style={p.done ? styles.taskDone : styles.task}>{p.text}</Text></View>
-              <View style={styles.cWho}><Text style={styles.cell}>{p.assignee || '—'}</Text></View>
-              <View style={styles.cDue}>
-                {over ? <Text style={styles.overdue}>{fmtDue(p)} (vencido)</Text> : <Text style={styles.cell}>{fmtDue(p)}</Text>}
+              <View style={styles.thead}>
+                <View style={styles.cBox} />
+                <Text style={[styles.th, styles.cText]}>PENDIENTE</Text>
+                <Text style={[styles.th, styles.cWho]}>RESPONSABLE</Text>
+                <Text style={[styles.th, styles.cDue]}>FECHA LÍMITE</Text>
+                <Text style={[styles.th, styles.cOrigin]}>ORIGEN</Text>
               </View>
             </View>
-          );
-        })}
+            {g.rows.map((p, i) => {
+              const over = isOverdue(p, today);
+              return (
+                <View key={i} style={styles.tr} wrap={false}>
+                  <View style={styles.cBox}>
+                    {p.done ? <View style={styles.boxDone}><Check /></View> : <View style={styles.box} />}
+                  </View>
+                  <View style={styles.cText}><Text style={p.done ? styles.taskDone : styles.task}>{p.text}</Text></View>
+                  <View style={styles.cWho}><Text style={styles.cell}>{p.assignee || '—'}</Text></View>
+                  <View style={styles.cDue}>
+                    {over ? <Text style={styles.overdue}>{fmtDue(p)} (vencido)</Text> : <Text style={styles.cell}>{fmtDue(p)}</Text>}
+                  </View>
+                  <View style={styles.cOrigin}><Text style={styles.cell}>{ORIGINS[p.origin] || '—'}</Text></View>
+                </View>
+              );
+            })}
+          </View>
+        ))}
 
         <View style={styles.notes} wrap={false}>
           <Text style={styles.notesLabel}>NOTAS</Text>

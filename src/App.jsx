@@ -20,6 +20,7 @@ import ForbiddenPage from "./pages/ForbiddenPage";
 import ProfilePage from "./pages/ProfilePage";
 import Bitacora from "./pages/Bitacora";
 import BitacoraDetail from "./pages/BitacoraDetail";
+import BitacoraPendientes from "./pages/BitacoraPendientes";
 
 // (Guard): Si no hay usuario, manda Login
 function PrivateRoute({ children }) {
@@ -92,6 +93,7 @@ export default function App() {
           <Route path="warranties/:id" element={<StaffRoute><WarrantyProjectDetails /></StaffRoute>} />
           {/* Bitácora de proyectos: módulo interno (el servidor también responde 403 a un CLIENT) */}
           <Route path="bitacora" element={<StaffRoute><Bitacora /></StaffRoute>} />
+          <Route path="bitacora/pendientes" element={<StaffRoute><BitacoraPendientes /></StaffRoute>} />
           <Route path="bitacora/:id" element={<StaffRoute><BitacoraDetail /></StaffRoute>} />
           <Route path="requests" element={<Requests />} />
           <Route path="requests/:id" element={<RequestDetails />} />

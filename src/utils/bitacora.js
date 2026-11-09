@@ -18,6 +18,12 @@ export const formatLongDate = (value) => {
   return p ? cap(`${DIAS[p.dow]} ${p.day} de ${MESES[p.month]} de ${p.year}`) : '---';
 };
 
+/** "6 de noviembre de 2026" (sin día de la semana) */
+export const formatDateNoWeekday = (value) => {
+  const p = parts(value);
+  return p ? `${p.day} de ${MESES[p.month]} de ${p.year}` : '---';
+};
+
 /** "vie 6 nov 2026" */
 export const formatShortDate = (value, withYear = true) => {
   const p = parts(value);
@@ -52,10 +58,50 @@ export const formatRange = (start, end) => {
   return `${formatShortDate(start, false)} → ${formatShortDate(end)}`;
 };
 
-export const isOverdue = (pending, today = todayIso()) =>
-  !pending.done && !!pending.dueDate && toIsoDay(pending.dueDate) < today;
+/** Días sin actividad a partir de los cuales un proyecto/soporte EN_CURSO se marca "Sin movimiento". Cámbialo aquí. */
+export const STALE_DAYS = 7;
 
-export const openPendings = (project) => (project?.pendings || []).filter((p) => !p.done);
+const DAY_MS = 86400000;
+
+/** Días enteros desde la última actividad (null si no hay dato: backend viejo => nunca marca). */
+export const daysSinceActivity = (project, now = Date.now()) => {
+  const raw = project?.lastActivityAt;
+  if (!raw) return null;
+  const t = new Date(raw).getTime();
+  return isNaN(t) ? null : Math.floor((now - t) / DAY_MS);
+};
+
+/** "Sin movimiento": EN_CURSO con >= STALE_DAYS días sin actividad. */
+export const isStale = (project, now = Date.now()) => {
+  if (project?.status !== 'EN_CURSO') return false;
+  const d = daysSinceActivity(project, now);
+  return d !== null && d >= STALE_DAYS;
+};
+
+export const isSupport = (project) => project?.kind === 'SOPORTE';
+
+/** Nombre que se muestra del número de cotización ("SO01086"), o '' si el proyecto no tiene. */
+export const quotationNumber = (project) => project?.quotation?.number || '';
+
+/** Hoy como "AAAA-MM-DD" en zona de Guatemala (UTC-6, sin horario de verano), sin depender de la zona del equipo. */
+export const todayGuatemala = (now = new Date()) =>
+  new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Guatemala', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
+
+export const STAGES = { ANTES: 'Antes', DURANTE: 'Durante', DESPUES: 'Después' };
+
+export const ORIGINS = {
+  CLIENTE: 'Cliente',
+  INTERNO: 'Interno',
+  GARANTIA: 'Garantía',
+};
+
+/** Hecho: V1 manda `done`, V2 manda también `doneAt`. */
+export const isDone = (pending) => !!(pending?.done || pending?.doneAt);
+
+export const isOverdue = (pending, today = todayIso()) =>
+  !isDone(pending) && !!pending.dueDate && toIsoDay(pending.dueDate) < today;
+
+export const openPendings = (project) => (project?.pendings || []).filter((p) => !isDone(p));
 
 /**
  * Contadores del proyecto. La lista del servidor trae `counts`; el detalle trae `pendings`/`entries`.
@@ -104,4 +150,22 @@ export const downloadBlob = (blob, filename) => {
   link.click();
   document.body.removeChild(link);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+/**
+ * Agrupa pendientes por proyecto / soporte / sueltos (sin proyecto). Cada pendiente trae `project {id,name,kind}|null`.
+ * Orden: proyectos, soportes mensuales y al final los sueltos.
+ */
+export const groupPendings = (pendings) => {
+  const map = new Map();
+  (pendings || []).forEach((p) => {
+    const key = p.project?.id ?? 'none';
+    if (!map.has(key)) {
+      const kind = !p.project ? 'SUELTOS' : p.project.kind === 'SOPORTE' ? 'SOPORTE' : 'PROYECTO';
+      map.set(key, { key, kind, title: p.project?.name || 'Pendientes del cliente (sin proyecto)', quotationNumber: p.project?.quotation?.number || '', pendings: [] });
+    }
+    map.get(key).pendings.push(p);
+  });
+  const rank = { PROYECTO: 0, SOPORTE: 1, SUELTOS: 2 };
+  return [...map.values()].sort((a, b) => rank[a.kind] - rank[b.kind] || a.title.localeCompare(b.title, 'es'));
 };

@@ -233,3 +233,39 @@ Targets ≥44×44 (casillas, menú ⋯, botones); separación ≥8; alt de cada 
 4. Descarga con nombre correcto; spinner mientras genera; error accionable.
 5. 20 fotos / 14 pendientes: sin texto desbordado ni filas partidas.
 6. Medir en pantalla móvil 375 px: sin scroll horizontal.
+
+---
+
+## 8. V2 (rama `feat/bitacora-v2`, 2026-11-09) — lo que cambia respecto a lo anterior
+
+**Esta sección manda sobre §1.1–§2 y §3 donde haya diferencias** (las decisiones del dueño del 2026-11-09 no se reabren).
+
+### 8.1 Rutas (HashRouter: se abren como `/#/…`)
+| Pantalla | Ruta en la URL | Ruta en código |
+|---|---|---|
+| Lista (proyectos y soportes por cliente) | `/#/app/bitacora` | `/app/bitacora` |
+| Pendientes por cliente | `/#/app/bitacora/pendientes` | `/app/bitacora/pendientes` |
+| Detalle de proyecto o soporte | `/#/app/bitacora/:id` | `/app/bitacora/:id` |
+
+`bitacora/pendientes` va declarada antes que `bitacora/:id` en `App.jsx`.
+
+### 8.2 Bitácora interna (intacta + novedades)
+- Siguen viéndose todas las fechas, horas, personal y tiempos en el detalle.
+- **"Sin movimiento"** (chip naranja): proyecto/soporte `EN_CURSO` con `lastActivityAt` de hace >= `STALE_DAYS` días. Constante única: `STALE_DAYS = 7` en `src/utils/bitacora.js`. Si el servidor no manda `lastActivityAt` no se marca nada.
+- **Crear**: selector Proyecto / Soporte mensual, cliente, cotización del cliente (opcional, se arma con `quotationService.getAll` filtrando por `clientId`), nombre. No guarda sin nombre ni cotización; con solo cotización se manda sin `name` y el servidor lo arma. Varios proyectos abiertos por cliente.
+- **Lista**: chips de tipo (Proyecto / Soporte mensual, más "1 día / Varios días" en proyectos), chip con el número de cotización, filtro Todo/Proyectos/Soportes, búsqueda también por número de cotización.
+- **Soporte mensual**: sin duración 1 día/varios días ni fecha de fin; se llaman "visitas"; no se cierra solo (cierre manual opcional).
+- **Pendientes**: pantalla por cliente (filtros cliente → proyecto / soporte / sueltos, estado, origen; alta con origen, responsable, fecha límite y proyecto opcional). En el detalle, cada pendiente enlaza al reporte donde nació y al que lo cerró; la entrada muestra "nació aquí / se cerró aquí". Al guardar una entrada: bloque «¿Faltó algo? Agregar pendientes» y casillas para marcar qué pendientes abiertos resolvió. Al cerrar un proyecto con pendientes abiertos: paso para dejarlos como pendientes del cliente (sueltos) o resolverlos (se procesan primero; si uno falla el proyecto no se cierra).
+- **Fotos**: casilla «No incluir en el informe al cliente» y etapa Antes/Durante/Después, al subir (modal de entrada) y al editar (visor).
+
+### 8.3 Informe al cliente (PDF) — solo trabajo realizado y fotos
+- Tres variantes con el mismo diseño: **Informe del día** (elige un día; solo esas entradas), **Informe de avance** (portada "INFORME DE AVANCE") e **Informe final** ("INFORME FINAL"). Cada una con su botón «Copiar texto para WhatsApp» (2–4 líneas, sin fechas, horas ni precios).
+- **Prohibido en el PDF**: fecha de inicio/fin, días, horas, tiempos, la franja INICIO/FIN/DÍAS, la sección TIEMPOS, fechas por día, «fechas del servicio», pendientes, personal que participó y cualquier dato de control interno. **Única fecha**: «Fecha del informe: 9 de noviembre de 2026» (día de la descarga, zona America/Guatemala).
+- Contenido: portada (kicker de variante, título = nombre del proyecto, «Cotización SO…» si existe, cliente, fecha del informe, responsable técnico), resumen (solo avance/final y si existe), «TRABAJOS REALIZADOS» como un solo relato continuo sin encabezados de día, «REGISTRO FOTOGRÁFICO» con todas las fotos agrupadas y numeradas (etiqueta ANTES/DURANTE/DESPUÉS sobre la foto; las excluidas no viajan ni se descargan), cierre y firma.
+- Lista blanca estricta en `assembleInformeReport` (`src/utils/bitacoraReport.js`): el objeto que llega al PDF no contiene fechas de entradas ni personal ni pendientes (solo `issuedOn`). Mejoras visuales de la V1 y la regla de no recortar fotos se mantienen.
+
+### 8.4 PDF de pendientes para el personal (por cliente)
+Agrupado por proyecto / soporte mensual / sin proyecto, con responsable, fecha límite, origen y «Uso interno · no entregar al cliente». Filtros cliente (obligatorio) y proyecto desde la pantalla de pendientes.
+
+### 8.5 Contrato con el backend que el frontend asume (campos ausentes se toleran)
+`kind`, `quotation {id, number, projectDescription?}`, `lastActivityAt`, `name` opcional al crear con `quotationId`; pendientes con `clientId, projectId, origin, createdFromEntryId, resolvedInEntryId, doneAt, project`; `GET /bitacora/pendings`, `POST /bitacora/pendings`, `POST /bitacora/pendings/:id/resolve`, `PUT /bitacora/pendings/:id` (`{done:false}` reabre, `{projectId:null}` suelta); fotos `includeInReport` y `stage` (multipart al subir y `PUT /photos/:id`).

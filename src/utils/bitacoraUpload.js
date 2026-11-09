@@ -23,7 +23,7 @@ async function uploadWithRetry(entryId, blob, meta) {
 
 /**
  * Reduce y sube las fotos de una en una.
- * items: [{ id, file, caption }]. onProgress({ done, total, current, step }) para la barra.
+ * items: [{ id, file, caption, includeInReport?, stage? }]. onProgress({ done, total, current, step }) para la barra.
  * Devuelve { uploaded: [id...], failed: [{ id, name, message }] }: nunca falla en silencio.
  */
 export async function uploadPhotosSequentially(entryId, items, onProgress, firstSortOrder = 0) {
@@ -35,7 +35,7 @@ export async function uploadPhotosSequentially(entryId, items, onProgress, first
       onProgress({ done: i, total: items.length, current: it.file.name, step: "Reduciendo" });
       const { blob } = await resizeImage(it.file, { maxSide: 1600, quality: 0.8 });
       onProgress({ done: i, total: items.length, current: it.file.name, step: "Subiendo" });
-      await uploadWithRetry(entryId, blob, { caption: (it.caption || "").trim() || undefined, sortOrder: firstSortOrder + i });
+      await uploadWithRetry(entryId, blob, { caption: (it.caption || "").trim() || undefined, sortOrder: firstSortOrder + i, includeInReport: it.includeInReport !== false, stage: it.stage || undefined });
       uploaded.push(it.id);
     } catch (error) {
       const status = error.response?.status;

@@ -4,64 +4,46 @@ import { BitacoraInformeDocument } from "../components/BitacoraInformePDF";
 import { BitacoraPendientesDocument } from "../components/BitacoraPendientesPDF";
 import { bitacoraService } from "../services/bitacora.service";
 import { resizeImage, blobToDataUrl } from "./imageResize";
-import { downloadBlob, safeFilePart, sortEntries, toIsoDay } from "./bitacora";
+import { downloadBlob, safeFilePart, groupPendings, isDone, todayGuatemala } from "./bitacora";
+import { assembleInformeReport, reportPhotos, selectEntries, VARIANTS } from "./bitacoraReport";
 
 /**
- * INFORME AL CLIENTE. Arma una lista blanca de campos (nunca pasa el proyecto completo):
- * los pendientes y notas internas no llegan al documento.
- * Carga las fotos (una a una, con la sesión), las reduce a <=1200 px / JPEG 0.8 y avisa el avance.
+ * INFORME AL CLIENTE (variante "dia" | "avance" | "final"). El documento se arma con una lista blanca
+ * (assembleInformeReport): sin fechas del servicio, horas, tiempos, pendientes ni notas internas.
+ * Carga solo las fotos que van al informe (una a una, con la sesión), las reduce a <=1200 px / JPEG 0.8 y avisa el avance.
  */
-export async function downloadInformePdf(project, onProgress = () => {}) {
-  const entries = sortEntries(project.entries);
-  const allPhotos = entries.flatMap((e) => e.photos || []);
+export async function downloadInformePdf(project, { variant = "final", day } = {}, onProgress = () => {}) {
+  const entries = selectEntries(project, { variant, day });
+  const wanted = entries.flatMap((e) => reportPhotos(e));
+  const photoData = new Map();
   let loaded = 0;
-  let number = 0;
-  const days = [];
-  for (const entry of entries) {
-    const photos = [];
-    for (const ph of entry.photos || []) {
-      onProgress({ step: "Preparando fotos", done: loaded, total: allPhotos.length });
-      const raw = await bitacoraService.getPhotoBlob(ph.id, ({ waitMs }) =>
-        onProgress({ step: `Servidor ocupado, reintentando (${Math.ceil(waitMs / 1000)} s)`, done: loaded, total: allPhotos.length }));
-      const { blob, width, height } = await resizeImage(raw, { maxSide: 1200, quality: 0.8 });
-      number += 1;
-      photos.push({ number, src: await blobToDataUrl(blob), width, height, caption: ph.caption || "" });
-      loaded += 1;
-    }
-    days.push({ date: entry.date, body: entry.body, photos });
+  for (const ph of wanted) {
+    onProgress({ step: "Preparando fotos", done: loaded, total: wanted.length });
+    const raw = await bitacoraService.getPhotoBlob(ph.id, ({ waitMs }) =>
+      onProgress({ step: `Servidor ocupado, reintentando (${Math.ceil(waitMs / 1000)} s)`, done: loaded, total: wanted.length }));
+    const { blob, width, height } = await resizeImage(raw, { maxSide: 1200, quality: 0.8 });
+    photoData.set(ph.id, { src: await blobToDataUrl(blob), width, height });
+    loaded += 1;
   }
-  onProgress({ step: "Generando PDF", done: allPhotos.length, total: allPhotos.length });
+  onProgress({ step: "Generando PDF", done: wanted.length, total: wanted.length });
 
-  const personnel = [...new Set(entries.flatMap((e) => (Array.isArray(e.personnel) ? e.personnel : [])).map((n) => String(n).trim()).filter(Boolean))];
-  const lastDay = entries.length ? entries[entries.length - 1].date : null;
-  const report = {
-    clientName: project.client?.name || "Cliente",
-    title: project.name,
-    summary: project.finalSummary || "",
-    type: project.type,
-    startDate: project.startDate,
-    endDate: project.endDate || lastDay,
-    finished: project.status === "TERMINADO",
-    issuedAt: new Date().toISOString(),
-    personnel,
-    technicianName: String(project.technicianName || "").trim(),
-    days,
-  };
+  const report = assembleInformeReport({ project, variant, day, photoData });
   const blob = await pdf(React.createElement(BitacoraInformeDocument, { report })).toBlob();
-  downloadBlob(blob, `Informe_${safeFilePart(report.clientName)}_${toIsoDay(project.startDate)}.pdf`);
+  downloadBlob(blob, `Informe_${VARIANTS[variant].short}_${safeFilePart(report.clientName)}_${safeFilePart(project.name).slice(0, 40)}_${report.issuedOn}.pdf`);
 }
 
-/** PENDIENTES PARA EL PERSONAL (una hoja, uso interno). */
-export async function downloadPendientesPdf(project, { includeDone = false } = {}) {
+/** PENDIENTES PARA EL PERSONAL por cliente (uso interno), agrupados por proyecto / soporte / sueltos. */
+export async function downloadPendientesPdf({ clientName, filterLabel, pendings, includeDone = false }) {
   const data = {
-    clientName: project.client?.name || "Cliente",
-    projectName: project.name,
-    startDate: project.startDate,
-    endDate: project.endDate,
-    pendings: (project.pendings || []).map((p) => ({ text: p.text, assignee: p.assignee, dueDate: p.dueDate, done: p.done })),
+    clientName: clientName || "Cliente",
+    filterLabel: filterLabel || "",
+    groups: groupPendings(pendings).map((g) => ({
+      title: g.title, kind: g.kind, quotationNumber: g.quotationNumber,
+      pendings: g.pendings.map((p) => ({ text: p.text, assignee: p.assignee, dueDate: p.dueDate, done: isDone(p), origin: p.origin })),
+    })),
     generatedAt: new Date(),
     includeDone,
   };
   const blob = await pdf(React.createElement(BitacoraPendientesDocument, { data })).toBlob();
-  downloadBlob(blob, `Pendientes_${safeFilePart(data.clientName)}_${toIsoDay(project.startDate)}.pdf`);
+  downloadBlob(blob, `Pendientes_${safeFilePart(data.clientName)}_${todayGuatemala()}.pdf`);
 }

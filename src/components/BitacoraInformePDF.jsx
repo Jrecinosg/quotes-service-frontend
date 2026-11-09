@@ -1,7 +1,8 @@
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import logo from '../assets/logo.png';
-import { formatLongDate, formatShortDate, formatNumericDate, toIsoDay } from '../utils/bitacora';
+import { formatDateNoWeekday } from '../utils/bitacora';
+import { VARIANTS } from '../utils/bitacoraReport';
 
 Font.registerHyphenationCallback((word) => [word]);
 
@@ -51,35 +52,20 @@ const styles = StyleSheet.create({
   section: { marginBottom: 24 },
   summaryBox: { backgroundColor: ORANGE_TINT, borderLeftWidth: 3, borderLeftColor: ORANGE, borderTopRightRadius: 6, borderBottomRightRadius: 6, paddingVertical: 12, paddingHorizontal: 16 },
   summaryText: { fontSize: 11, lineHeight: 1.5, color: INK },
-  kpis: { flexDirection: 'row', marginTop: 16 },
-  kpi: { width: 155, marginRight: 17 },
-  kpiValue: { fontSize: 22, fontWeight: 'bold', color: NAVY },
-  kpiLabel: { fontSize: 8, fontWeight: 'bold', color: MUTED, letterSpacing: 1.2, marginTop: 2 },
 
-  row: { flexDirection: 'row', alignItems: 'center', height: 24, borderBottomWidth: 0.75, borderBottomColor: LINE },
-  rowLabel: { width: 130, fontSize: 9, color: MUTED },
-  rowValue: { fontSize: 10.5, fontWeight: 'bold', color: NAVY },
-  timeline: { marginTop: 16, height: 30, position: 'relative' },
-  timelineLine: { position: 'absolute', top: 4, left: 4, right: 4, height: 1.5, backgroundColor: BLUE },
-  timelineDot: { position: 'absolute', top: 0, width: 8, height: 8, borderRadius: 4, backgroundColor: BLUE },
-  timelineLabel: { position: 'absolute', top: 14, width: 60, fontSize: 8, color: MUTED, textAlign: 'center' },
 
-  dayBlock: { marginBottom: 18 },
-  dayHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  dayChip: { backgroundColor: BLUE_TINT, borderRadius: 999, paddingVertical: 3, paddingHorizontal: 10 },
-  dayChipText: { fontSize: 9, fontWeight: 'bold', color: BLUE },
-  dayCount: { fontSize: 8, color: MUTED },
   para: { fontSize: 10.5, lineHeight: 1.5, color: INK, marginBottom: 6 },
   bulletRow: { flexDirection: 'row', marginBottom: 4 },
   bulletDot: { width: 4, height: 4, borderRadius: 2, backgroundColor: ORANGE, marginTop: 6, marginRight: 8 },
   bulletText: { flex: 1, fontSize: 10.5, lineHeight: 1.5, color: INK },
-  personnel: { fontSize: 9, color: MUTED, marginTop: 2 },
   photosTitle: { fontSize: 9, fontWeight: 'bold', color: ORANGE_TEXT, letterSpacing: 1.8, marginTop: 14, marginBottom: 8 },
   photoRow: { marginBottom: 14 },
+  stagePill: { position: 'absolute', top: 6, left: 6, backgroundColor: '#FFFFFF', borderRadius: 999, paddingVertical: 2, paddingHorizontal: 7 },
+  stageText: { fontSize: 7, fontWeight: 'bold', color: BLUE, letterSpacing: 0.8 },
+  coverQuote: { fontSize: 11, color: MUTED, marginTop: 4 },
   captionRow: { flexDirection: 'row', marginTop: 5 },
   captionNum: { fontSize: 8, fontWeight: 'bold', color: ORANGE_TEXT, marginRight: 4 },
   captionText: { flex: 1, fontSize: 9, color: INK, lineHeight: 1.3 },
-  daySep: { borderBottomWidth: 0.75, borderBottomColor: LINE, marginTop: 4 },
 
   closing: { fontSize: 10.5, lineHeight: 1.5, color: INK },
   signRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 30 },
@@ -142,11 +128,16 @@ const buildRows = (photos) => {
   });
 };
 
+const STAGE_LABEL = { ANTES: 'ANTES', DURANTE: 'DURANTE', DESPUES: 'DESPUÉS' };
+
 const PhotoCell = ({ photo, h, last }) => {
   const w = h * aspectOf(photo);
   return (
     <View style={{ width: w, marginRight: last ? 0 : GAP }} wrap={false}>
-      <Image src={photo.src} style={{ width: w, height: h, objectFit: 'cover', borderRadius: 8, borderWidth: 0.75, borderColor: LINE }} />
+      <View style={{ position: 'relative', width: w, height: h }}>
+        <Image src={photo.src} style={{ width: w, height: h, objectFit: 'cover', borderRadius: 8, borderWidth: 0.75, borderColor: LINE }} />
+        {STAGE_LABEL[photo.stage] ? <View style={styles.stagePill}><Text style={styles.stageText}>{STAGE_LABEL[photo.stage]}</Text></View> : null}
+      </View>
       <View style={styles.captionRow}>
         <Text style={styles.captionNum}>Foto {photo.number}{photo.caption ? ' ·' : ''}</Text>
         {photo.caption ? <Text style={styles.captionText}>{photo.caption}</Text> : null}
@@ -168,68 +159,57 @@ const PhotoGrid = ({ photos, heading, tail }) =>
   ));
 
 /**
- * Informe final AL CLIENTE. Recibe una lista blanca de campos (nunca el proyecto completo):
- * NO existen pendientes ni notas internas en estos datos.
- * report = { clientName, title, summary, type, startDate, endDate, finished, issuedAt,
- *            personnel: [string], technicianName?: string, days: [{ date, body, photos: [{ number, src, width, height, caption }] }],
- *            closing? }
+ * INFORME AL CLIENTE (variantes dia | avance | final, mismo diseño). Recibe una lista blanca ya armada por
+ * assembleInformeReport: NO existen fechas del servicio, horas, tiempos ni pendientes en estos datos.
+ * La única fecha es `issuedOn` ("Fecha del informe").
+ * report = { variant, clientName, title, quotationNumber?, summary?, technicianName?, issuedOn, texts: [string],
+ *            photos: [{ number, src, width, height, caption, stage? }], closing? }
  */
 export const BitacoraInformeDocument = ({ report }) => {
-  const days = report.days || [];
-  const total = days.length;
-  const workedCount = new Set(days.map((d) => toIsoDay(d.date))).size;
-  const firstDate = report.startDate || (days[0] && days[0].date);
-  const lastDate = report.endDate || (days.length ? days[days.length - 1].date : null);
-  const multi = report.type === 'VARIOS_DIAS';
-  const closing = report.closing || `Agradecemos la confianza de ${report.clientName}. Quedamos atentos a cualquier consulta sobre este servicio.`;
-  const dotDays = multi ? days.filter((d, i) => days.findIndex((x) => toIsoDay(x.date) === toIsoDay(d.date)) === i) : [];
-  const showTimeline = multi && dotDays.length > 1 && dotDays.length <= 7;
-  const personnel = report.personnel || [];
+  const variant = VARIANTS[report.variant] ? report.variant : 'final';
+  const { kicker, label } = VARIANTS[variant];
+  const texts = report.texts || [];
+  const photos = report.photos || [];
   const technician = String(report.technicianName || '').trim();
-  const cellStyle = technician && personnel.length ? styles.dataCellWrap : styles.dataCell;
+  const issued = formatDateNoWeekday(`${report.issuedOn}T12:00:00.000Z`);
+  const who = String(report.clientName).replace(/[.\s]+$/, '');
+  const closing = report.closing || (variant === 'avance'
+    ? `Agradecemos la confianza de ${who}. El servicio continúa y compartiremos el siguiente informe cuando haya nuevos avances.`
+    : `Agradecemos la confianza de ${who}. Quedamos atentos a cualquier consulta sobre este servicio.`);
 
   const closingBlock = (
-        <View style={{ marginTop: 16 }} wrap={false}>
-          <Text style={styles.sectionTitle}>CIERRE</Text>
-          <Text style={styles.closing}>{closing}</Text>
-          <View style={styles.signRow}>
-            <View style={styles.signLine}>
-              <Text style={styles.signName}>{technician || 'Grupo AC'}</Text>
-              <Text style={styles.signRole}>{technician ? 'Grupo AC · Tecnoseguridad e Informática' : 'Tecnoseguridad e Informática'}</Text>
-            </View>
-            <Image src={logo} style={styles.signLogo} />
-          </View>
-          <Text style={styles.limits}>Este informe resume los trabajos realizados en las fechas indicadas.</Text>
+    <View style={{ marginTop: 16 }} wrap={false}>
+      <Text style={styles.sectionTitle}>CIERRE</Text>
+      <Text style={styles.closing}>{closing}</Text>
+      <View style={styles.signRow}>
+        <View style={styles.signLine}>
+          <Text style={styles.signName}>{technician || 'Grupo AC'}</Text>
+          <Text style={styles.signRole}>{technician ? 'Grupo AC · Tecnoseguridad e Informática' : 'Tecnoseguridad e Informática'}</Text>
         </View>
+        <Image src={logo} style={styles.signLogo} />
+      </View>
+    </View>
   );
 
   return (
-    <Document title={`Informe final - ${report.clientName}`} author="Grupo AC">
+    <Document title={`${label} - ${report.clientName}`} author="Grupo AC">
       {/* ---------- PORTADA ---------- */}
       <Page size="A4" style={styles.cover}>
         <View style={styles.coverShape} />
         <View style={styles.coverBar}><View style={styles.barOrange} /><View style={styles.barBlue} /></View>
         <Image src={logo} style={styles.coverLogo} />
         <View style={styles.coverTitleBlock}>
-          <Text style={styles.kicker}>INFORME FINAL DE SERVICIO</Text>
+          <Text style={styles.kicker}>{kicker}</Text>
           <Text style={styles.coverTitle}>{report.title}</Text>
+          {report.quotationNumber ? <Text style={styles.coverQuote}>Cotización {report.quotationNumber}</Text> : null}
           <View style={styles.rule} />
           <Text style={styles.coverClient}>{report.clientName}</Text>
-          <Text style={styles.coverDate}>Emitido el {formatLongDate(report.issuedAt).toLowerCase()}</Text>
+          <Text style={styles.coverDate}>Fecha del informe: {issued}</Text>
         </View>
         <View style={styles.coverData}>
-          <View style={cellStyle}><Text style={styles.dataLabel}>CLIENTE</Text><Text style={styles.dataValue}>{report.clientName}</Text></View>
-          <View style={cellStyle}>
-            <Text style={styles.dataLabel}>FECHAS DEL SERVICIO</Text>
-            <Text style={styles.dataValue}>
-              {toIsoDay(firstDate) === toIsoDay(lastDate) || !lastDate ? formatNumericDate(firstDate) : `${formatNumericDate(firstDate)} al ${formatNumericDate(lastDate)}`}
-            </Text>
-          </View>
+          <View style={styles.dataCell}><Text style={styles.dataLabel}>CLIENTE</Text><Text style={styles.dataValue}>{report.clientName}</Text></View>
           {technician ? (
-            <View style={cellStyle}><Text style={styles.dataLabel}>RESPONSABLE TÉCNICO</Text><Text style={styles.dataValue}>{technician}</Text></View>
-          ) : null}
-          {personnel.length ? (
-            <View style={cellStyle}><Text style={styles.dataLabel}>PERSONAL QUE PARTICIPÓ</Text><Text style={styles.dataValue}>{personnel.join(', ')}</Text></View>
+            <View style={styles.dataCell}><Text style={styles.dataLabel}>RESPONSABLE TÉCNICO</Text><Text style={styles.dataValue}>{technician}</Text></View>
           ) : null}
         </View>
         <View style={styles.coverFooter}>
@@ -241,7 +221,7 @@ export const BitacoraInformeDocument = ({ report }) => {
       <Page size="A4" style={styles.page}>
         <View style={styles.header} fixed>
           <Image src={logo} style={styles.headerLogo} />
-          <Text style={styles.headerText}>Informe final · {report.clientName}</Text>
+          <Text style={styles.headerText}>{label} · {report.clientName}</Text>
         </View>
         <View style={styles.footer} fixed>
           <Text style={styles.footerText}>Grupo AC · Tel. 2234-7254</Text>
@@ -249,64 +229,24 @@ export const BitacoraInformeDocument = ({ report }) => {
         </View>
         <View style={styles.footerBar} fixed><View style={styles.barOrange} /><View style={styles.barBlue} /></View>
 
-        {/* A. Resumen */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>RESUMEN EJECUTIVO</Text>
-          {report.summary ? (
+        {report.summary ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>RESUMEN</Text>
             <View style={styles.summaryBox} wrap={false}><Text style={styles.summaryText}>{report.summary}</Text></View>
-          ) : null}
-          <View style={styles.kpis} wrap={false}>
-            <View style={styles.kpi}><Text style={styles.kpiValue}>{formatNumericDate(firstDate)}</Text><Text style={styles.kpiLabel}>INICIO</Text></View>
-            <View style={styles.kpi}><Text style={styles.kpiValue}>{formatNumericDate(lastDate || firstDate)}</Text><Text style={styles.kpiLabel}>FIN</Text></View>
-            <View style={styles.kpi}><Text style={styles.kpiValue}>{workedCount}</Text><Text style={styles.kpiLabel}>DÍAS TRABAJADOS</Text></View>
           </View>
-        </View>
+        ) : null}
 
-        {/* B. Tiempos */}
-        <View style={styles.section} wrap={false}>
-          <Text style={styles.sectionTitle}>TIEMPOS</Text>
-          <View style={styles.row}><Text style={styles.rowLabel}>Fecha de inicio</Text><Text style={styles.rowValue}>{formatLongDate(firstDate)}</Text></View>
-          <View style={styles.row}><Text style={styles.rowLabel}>Fecha de fin</Text><Text style={styles.rowValue}>{formatLongDate(lastDate || firstDate)}</Text></View>
-          <View style={styles.row}><Text style={styles.rowLabel}>Días trabajados</Text><Text style={styles.rowValue}>{workedCount}</Text></View>
-          <View style={styles.row}><Text style={styles.rowLabel}>Tipo de servicio</Text><Text style={styles.rowValue}>{multi ? 'Varios días' : '1 día'}</Text></View>
-          <View style={styles.row}><Text style={styles.rowLabel}>Estado final</Text><Text style={styles.rowValue}>{report.finished ? 'Finalizado' : 'En curso'}</Text></View>
-          {showTimeline ? (
-            <View style={styles.timeline}>
-              <View style={styles.timelineLine} />
-              {dotDays.map((d, i) => {
-                const x = dotDays.length === 1 ? 0 : (i * (499 - 8)) / (dotDays.length - 1);
-                return (
-                  <View key={i}>
-                    <View style={[styles.timelineDot, { left: x }]} />
-                    <Text style={[styles.timelineLabel, { left: x - 26 }]}>{formatShortDate(d.date, false)}</Text>
-                  </View>
-                );
-              })}
-            </View>
-          ) : null}
-        </View>
-
-        {/* C + D. Trabajo por día, con las fotos de ese día justo después */}
-        {days.map((d, idx) => (
-          <React.Fragment key={idx}>
-            {/* minPresenceAhead: el título de sección y la cabecera del día no quedan solos al final de una hoja */}
-            <View wrap={false} minPresenceAhead={70}>
-              {idx === 0 ? <Text style={styles.sectionTitle}>TRABAJO REALIZADO POR DÍA</Text> : null}
-              <View style={styles.dayHead}>
-                <View style={styles.dayChip}><Text style={styles.dayChipText}>{formatLongDate(d.date)}</Text></View>
-                <Text style={styles.dayCount}>Día {idx + 1} de {total}</Text>
-              </View>
-            </View>
-            {renderBody(d.body, idx === total - 1 && !(d.photos && d.photos.length) ? closingBlock : null)}
-            {d.photos && d.photos.length ? (
-              <PhotoGrid photos={d.photos} heading={<Text style={styles.photosTitle}>REGISTRO FOTOGRÁFICO · {formatShortDate(d.date)}</Text>} tail={idx === total - 1 ? closingBlock : null} />
-            ) : null}
-            {idx < total - 1 ? <View style={[styles.daySep, { marginBottom: 18 }]} /> : null}
-          </React.Fragment>
+        {/* Un solo relato continuo: sin fechas ni encabezados de día */}
+        <View minPresenceAhead={70} wrap={false}><Text style={styles.sectionTitle}>TRABAJOS REALIZADOS</Text></View>
+        {texts.length === 0 ? <Text style={styles.para}>Aún no hay trabajos registrados.</Text> : null}
+        {texts.map((t, i) => (
+          <View key={i} style={{ marginBottom: 6 }}>{renderBody(t, !photos.length && i === texts.length - 1 ? closingBlock : null)}</View>
         ))}
-        {days.length === 0 ? <View><Text style={styles.sectionTitle}>TRABAJO REALIZADO POR DÍA</Text><Text style={styles.para}>Aún no hay trabajos registrados.</Text></View> : null}
-        {days.length === 0 ? closingBlock : null}
 
+        {photos.length ? (
+          <PhotoGrid photos={photos} heading={<Text style={styles.photosTitle}>REGISTRO FOTOGRÁFICO</Text>} tail={closingBlock} />
+        ) : null}
+        {texts.length === 0 && !photos.length ? closingBlock : null}
       </Page>
     </Document>
   );
