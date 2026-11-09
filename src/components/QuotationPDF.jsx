@@ -163,7 +163,7 @@ const buildStyles = (k) => {
 // compactación y usa el menos compacto que quepa. Si ni el más compacto cabe (muchas
 // líneas), se deja fluir a varias páginas como antes. Solo cambia el tamaño: nunca los datos.
 const PAGE_H = 841.89;
-const DENSITY_LEVELS = [1, 0.94, 0.88, 0.82, 0.76, 0.7];
+const DENSITY_LEVELS = [1, 0.94, 0.88];
 const SAFETY = 14; // margen por si la estimación se queda corta
 
 // Líneas que ocupa un texto en un ancho dado (Helvetica ≈ 0.5 × tamaño de fuente por carácter)
@@ -204,12 +204,16 @@ const estimateHeight = (q, k) => {
   return h;
 };
 
-// Devuelve el factor de compactación (1 = diseño normal) para que quepa en una hoja
-const pickDensity = (q) => {
+// Devuelve { density, pageH }: primero intenta caber en A4 compactando poco la letra; si el
+// contenido es largo, la hoja CRECE a lo largo (como un tabloide) en vez de pasar a otra página
+// o achicar la letra. Se ve en pantalla (correo/WhatsApp) en una sola hoja continua.
+const pickLayout = (q) => {
   for (const k of DENSITY_LEVELS) {
-    if (estimateHeight(q, k) + SAFETY <= PAGE_H - Math.max(48, 56 * k)) return k;
+    if (estimateHeight(q, k) + SAFETY <= PAGE_H - Math.max(48, 56 * k)) return { density: k, pageH: PAGE_H };
   }
-  return DENSITY_LEVELS[DENSITY_LEVELS.length - 1];
+  const k = 1;
+  const need = estimateHeight(q, k) * 1.06 + SAFETY + Math.max(48, 56 * k); // 6 % de holgura por si la estimación se queda corta
+  return { density: k, pageH: Math.ceil(Math.max(PAGE_H, need)) };
 };
 
 // Las descripciones largas traen sus funciones separadas con "•": la primera frase
@@ -242,12 +246,12 @@ const InfoCell = ({ label, value, full, wide, styles }) => (
 export const QuotationDocument = ({ quotation }) => {
   const { client, items, projectDescription, subtotal, tax, total, correlativo, createdAt, elaboratedBy, validity } = quotation;
 
-  const density = pickDensity(quotation);
+  const { density, pageH } = pickLayout(quotation);
   const styles = buildStyles(density);
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size={[595.28, pageH]} style={styles.page}>
 
         {/* --- FRANJA DE MARCA (se repite en cada página) --- */}
         <View style={styles.accentBar} fixed>
