@@ -15,12 +15,15 @@ const MUTED = '#6B7686';
 const LINE = '#EADFD6';   // línea fina cálida (naranja muy suave)
 const ZEBRA = '#FCF8F4';
 
-const styles = StyleSheet.create({
+// k = factor de compactación (1 = normal). Se baja solo cuando la cotización no cabe en una hoja.
+const buildStyles = (k) => {
+  const s = (n) => Math.round(n * k * 100) / 100;
+  return StyleSheet.create({
   page: {
-    paddingTop: 30,
-    paddingBottom: 56,
-    paddingHorizontal: 40,
-    fontSize: 10,
+    paddingTop: s(30),
+    paddingBottom: Math.max(48, s(56)),
+    paddingHorizontal: s(40),
+    fontSize: s(10),
     fontFamily: 'Helvetica',
     color: INK,
   },
@@ -32,54 +35,54 @@ const styles = StyleSheet.create({
 
   // --- ENCABEZADO ---
   headerContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' },
-  titleKicker: { fontSize: 8.5, fontWeight: 'bold', color: ORANGE, letterSpacing: 2.2 },
-  titleNumber: { fontSize: 22, fontWeight: 'bold', color: NAVY, marginTop: 1 },
-  logoSection: { width: 90, alignItems: 'flex-end', marginTop: -4 },
+  titleKicker: { fontSize: s(8.5), fontWeight: 'bold', color: ORANGE, letterSpacing: s(2.2) },
+  titleNumber: { fontSize: s(22), fontWeight: 'bold', color: NAVY, marginTop: s(1) },
+  logoSection: { width: 90, alignItems: 'flex-end', marginTop: s(-4) },
 
   infoGrid: {
-    marginTop: 8,
+    marginTop: s(8),
     flexDirection: 'row',
     flexWrap: 'wrap',
     borderTopWidth: 0.75,
     borderTopColor: LINE,
-    paddingTop: 8,
+    paddingTop: s(8),
   },
-  infoCell: { width: '25%', marginBottom: 6, paddingRight: 10 },
-  infoCellWide: { width: '50%', marginBottom: 6, paddingRight: 10 },
-  infoCellFull: { width: '100%', marginBottom: 6, paddingRight: 12 },
-  infoLabel: { fontSize: 7.5, fontWeight: 'bold', color: MUTED, letterSpacing: 1.2 },
-  infoValue: { fontSize: 10.5, fontWeight: 'bold', color: NAVY, marginTop: 2 },
+  infoCell: { width: '25%', marginBottom: s(6), paddingRight: s(10) },
+  infoCellWide: { width: '50%', marginBottom: s(6), paddingRight: s(10) },
+  infoCellFull: { width: '100%', marginBottom: s(6), paddingRight: s(12) },
+  infoLabel: { fontSize: s(7.5), fontWeight: 'bold', color: MUTED, letterSpacing: s(1.2) },
+  infoValue: { fontSize: s(10.5), fontWeight: 'bold', color: NAVY, marginTop: s(2) },
 
   // --- DESCRIPCIÓN DEL PROYECTO (solo si se ingresó) ---
   projectBox: {
-    marginTop: 4,
+    marginTop: s(4),
     borderLeftWidth: 3,
     borderLeftColor: ORANGE,
     backgroundColor: '#FFF4EC',
     borderTopRightRadius: 4,
     borderBottomRightRadius: 4,
-    paddingVertical: 7,
-    paddingHorizontal: 11,
+    paddingVertical: s(7),
+    paddingHorizontal: s(11),
   },
-  projectTitle: { fontSize: 8, fontWeight: 'bold', color: ORANGE, letterSpacing: 1.2, marginBottom: 3 },
-  projectText: { fontSize: 9, lineHeight: 1.45, color: INK },
+  projectTitle: { fontSize: s(8), fontWeight: 'bold', color: ORANGE, letterSpacing: s(1.2), marginBottom: s(3) },
+  projectText: { fontSize: s(9), lineHeight: 1.45, color: INK },
 
   // --- TABLA ---
-  table: { marginTop: 14, width: '100%' },
+  table: { marginTop: s(14), width: '100%' },
   tableHeader: {
-    marginTop: 14,
+    marginTop: s(14),
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: ORANGE,
-    height: 26,
+    height: s(26),
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
   },
-  th: { color: 'white', fontSize: 8, fontWeight: 'bold', letterSpacing: 0.8 },
+  th: { color: 'white', fontSize: s(8), fontWeight: 'bold', letterSpacing: s(0.8) },
   tableRow: {
     flexDirection: 'row',
     alignItems: 'stretch',
-    minHeight: 26,
+    minHeight: s(26),
     borderBottomWidth: 0.75,
     borderBottomColor: LINE,
   },
@@ -87,55 +90,55 @@ const styles = StyleSheet.create({
 
   // anchos de columna (Cant, Descripción, P.Lista, %Desc, P.Oferta, Total)
   colCant: { width: '7%', justifyContent: 'center', alignItems: 'center' },
-  colDesc: { width: '43%', paddingVertical: 6, paddingHorizontal: 8, justifyContent: 'center' },
-  colLista: { width: '14%', justifyContent: 'center', alignItems: 'flex-end', paddingRight: 8 },
+  colDesc: { width: '43%', paddingVertical: s(6), paddingHorizontal: s(8), justifyContent: 'center' },
+  colLista: { width: '14%', justifyContent: 'center', alignItems: 'flex-end', paddingRight: s(8) },
   colDescPct: { width: '8%', justifyContent: 'center', alignItems: 'center' },
-  colUni: { width: '14%', justifyContent: 'center', alignItems: 'flex-end', paddingRight: 8 },
-  colTot: { width: '14%', justifyContent: 'center', alignItems: 'flex-end', paddingRight: 8 },
+  colUni: { width: '14%', justifyContent: 'center', alignItems: 'flex-end', paddingRight: s(8) },
+  colTot: { width: '14%', justifyContent: 'center', alignItems: 'flex-end', paddingRight: s(8) },
 
-  cellText: { fontSize: 9.5 },
-  cellStrong: { fontSize: 9.5, fontWeight: 'bold', color: NAVY },
-  discountText: { fontSize: 8.5, color: ORANGE, fontWeight: 'bold' },
-  colDescrip: { fontSize: 9, lineHeight: 1.4 },
-  descTitle: { fontSize: 9.5, lineHeight: 1.35, fontWeight: 'bold', color: NAVY, marginBottom: 3 },
-  bulletRow: { flexDirection: 'row', marginTop: 2 },
-  bulletDot: { width: 10, fontSize: 9, lineHeight: 1.4, color: ORANGE, fontWeight: 'bold' },
-  bulletText: { flex: 1, fontSize: 9, lineHeight: 1.4, color: INK },
+  cellText: { fontSize: s(9.5) },
+  cellStrong: { fontSize: s(9.5), fontWeight: 'bold', color: NAVY },
+  discountText: { fontSize: s(8.5), color: ORANGE, fontWeight: 'bold' },
+  colDescrip: { fontSize: s(9), lineHeight: 1.4 },
+  descTitle: { fontSize: s(9.5), lineHeight: 1.35, fontWeight: 'bold', color: NAVY, marginBottom: s(3) },
+  bulletRow: { flexDirection: 'row', marginTop: s(2) },
+  bulletDot: { width: 10, fontSize: s(9), lineHeight: 1.4, color: ORANGE, fontWeight: 'bold' },
+  bulletText: { flex: 1, fontSize: s(9), lineHeight: 1.4, color: INK },
 
   // --- TOTALES ---
-  totalsWrap: { width: '100%', marginTop: 14, flexDirection: 'row', justifyContent: 'flex-end' },
-  totalsCard: { width: '46%', borderWidth: 0.75, borderColor: LINE, borderRadius: 6, paddingTop: 8, paddingHorizontal: 12, paddingBottom: 0, overflow: 'hidden' },
-  totalsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 },
-  totalsLabel: { fontSize: 9.5, color: MUTED },
-  totalsValue: { fontSize: 9.5, fontWeight: 'bold', color: INK },
+  totalsWrap: { width: '100%', marginTop: s(14), flexDirection: 'row', justifyContent: 'flex-end' },
+  totalsCard: { width: '46%', borderWidth: 0.75, borderColor: LINE, borderRadius: 6, paddingTop: s(8), paddingHorizontal: s(12), paddingBottom: s(0), overflow: 'hidden' },
+  totalsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: s(6) },
+  totalsLabel: { fontSize: s(9.5), color: MUTED },
+  totalsValue: { fontSize: s(9.5), fontWeight: 'bold', color: INK },
   totalBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: ORANGE,
     marginHorizontal: -12,
-    paddingHorizontal: 12,
-    paddingVertical: 9,
-    marginTop: 2,
+    paddingHorizontal: s(12),
+    paddingVertical: s(9),
+    marginTop: s(2),
   },
-  totalBarLabel: { color: 'white', fontSize: 10, fontWeight: 'bold', letterSpacing: 1.5 },
-  totalBarValue: { color: 'white', fontSize: 14, fontWeight: 'bold' },
+  totalBarLabel: { color: 'white', fontSize: s(10), fontWeight: 'bold', letterSpacing: s(1.5) },
+  totalBarValue: { color: 'white', fontSize: s(14), fontWeight: 'bold' },
 
   // --- CONDICIONES ---
   conditions: {
-    marginTop: 16,
+    marginTop: s(16),
     backgroundColor: '#F4F8FC',
     borderLeftWidth: 3,
     borderLeftColor: BLUE,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
-    paddingVertical: 9,
-    paddingHorizontal: 12,
+    paddingVertical: s(9),
+    paddingHorizontal: s(12),
   },
-  condRow: { flexDirection: 'row', marginBottom: 4, alignItems: 'flex-start' },
-  condLabel: { width: 92, fontSize: 8, fontWeight: 'bold', color: BLUE, letterSpacing: 0.8, paddingTop: 1.5 },
-  condValue: { flex: 1, fontSize: 10, color: INK },
-  observations: { marginTop: 8, fontSize: 8.5, lineHeight: 1.45, color: MUTED },
+  condRow: { flexDirection: 'row', marginBottom: s(4), alignItems: 'flex-start' },
+  condLabel: { width: 92, fontSize: s(8), fontWeight: 'bold', color: BLUE, letterSpacing: s(0.8), paddingTop: s(1.5) },
+  condValue: { flex: 1, fontSize: s(10), color: INK },
+  observations: { marginTop: s(8), fontSize: s(8.5), lineHeight: 1.45, color: MUTED },
 
   // --- PIE FIJO ---
   footerFixed: {
@@ -153,11 +156,66 @@ const styles = StyleSheet.create({
   footerText: { fontSize: 8, color: MUTED },
   footerBrand: { fontSize: 8, color: ORANGE, fontWeight: 'bold' },
 });
+};
+
+// ---- Ajuste automático a UNA hoja ------------------------------------------------
+// Estima la altura que ocupará la cotización (A4 = 841.89 pt) para cada nivel de
+// compactación y usa el menos compacto que quepa. Si ni el más compacto cabe (muchas
+// líneas), se deja fluir a varias páginas como antes. Solo cambia el tamaño: nunca los datos.
+const PAGE_H = 841.89;
+const DENSITY_LEVELS = [1, 0.94, 0.88, 0.82, 0.76, 0.7];
+const SAFETY = 14; // margen por si la estimación se queda corta
+
+// Líneas que ocupa un texto en un ancho dado (Helvetica ≈ 0.5 × tamaño de fuente por carácter)
+const linesFor = (text, widthPt, fontPt) => {
+  const perLine = Math.max(8, Math.floor(widthPt / (fontPt * 0.5)));
+  return String(text || '').split('\n').reduce((n, para) => {
+    let lines = 1, used = 0;
+    para.split(/\s+/).filter(Boolean).forEach((w) => {
+      const len = w.length + (used ? 1 : 0);
+      if (used + len > perLine && used > 0) { lines += 1; used = w.length; } else used += len;
+    });
+    return n + lines;
+  }, 0);
+};
+
+const estimateHeight = (q, k) => {
+  const CONTENT_W = 595.28 - 80; // ancho útil (padding 40 + 40)
+  const descW = CONTENT_W * 0.43 - 16 * k;
+  let h = 196 * k; // margen superior + encabezado + datos del cliente (medido en el PDF real)
+  const pd = q.projectDescription && String(q.projectDescription).trim();
+  if (pd) h += 4 * k + 14 * k + 11 * k + 3 * k + linesFor(pd, CONTENT_W - 28 * k, 9 * k) * 9 * k * 1.45;
+  h += 14 * k + 26 * k; // cabecera de la tabla
+  (q.items || []).forEach((it) => {
+    const parts = String(it.description || '').split(/\s*•\s*/).map((t) => t.trim()).filter(Boolean);
+    let textH;
+    if (parts.length <= 1) textH = linesFor(parts[0], descW, 9 * k) * 9 * k * 1.4;
+    else textH = linesFor(parts[0], descW, 9.5 * k) * 9.5 * k * 1.35 + 3 * k
+      + parts.slice(1).reduce((a, b) => a + 2 * k + linesFor(b, descW - 10 * k, 9 * k) * 9 * k * 1.4, 0);
+    h += Math.max(26 * k, textH + 12 * k) + 0.75;
+  });
+  h += 14 * k + 8 * k + 2 * (9.5 * k + 6 * k) + 2 * k + 18 * k + 14 * k * 1.2; // totales
+  const condW = CONTENT_W - 24 * k - 92;
+  h += 16 * k + 18 * k;
+  [q.warranty, q.deliveryTime, q.paymentMethod, q.validity, q.elaboratedBy].forEach((t) => {
+    h += Math.max(1, linesFor(t, condW, 10 * k)) * 10 * k * 1.25 + 4 * k;
+  });
+  if (q.observations) h += 8 * k + linesFor(q.observations, CONTENT_W - 24 * k, 8.5 * k) * 8.5 * k * 1.45;
+  return h;
+};
+
+// Devuelve el factor de compactación (1 = diseño normal) para que quepa en una hoja
+const pickDensity = (q) => {
+  for (const k of DENSITY_LEVELS) {
+    if (estimateHeight(q, k) + SAFETY <= PAGE_H - Math.max(48, 56 * k)) return k;
+  }
+  return DENSITY_LEVELS[DENSITY_LEVELS.length - 1];
+};
 
 // Las descripciones largas traen sus funciones separadas con "•": la primera frase
 // va como título y cada viñeta en su propia línea -mucho más fácil de leer que un
 // solo párrafo corrido.
-const DescriptionBlock = ({ text }) => {
+const DescriptionBlock = ({ text, styles }) => {
   const parts = String(text || '').split(/\s*•\s*/).map((t) => t.trim()).filter(Boolean);
   if (parts.length <= 1) return <Text style={styles.colDescrip}>{parts[0] || ''}</Text>;
   const [title, ...bullets] = parts;
@@ -174,7 +232,7 @@ const DescriptionBlock = ({ text }) => {
   );
 };
 
-const InfoCell = ({ label, value, full, wide }) => (
+const InfoCell = ({ label, value, full, wide, styles }) => (
   <View style={full ? styles.infoCellFull : wide ? styles.infoCellWide : styles.infoCell}>
     <Text style={styles.infoLabel}>{label}</Text>
     <Text style={styles.infoValue}>{value || '-'}</Text>
@@ -183,6 +241,9 @@ const InfoCell = ({ label, value, full, wide }) => (
 
 export const QuotationDocument = ({ quotation }) => {
   const { client, items, projectDescription, subtotal, tax, total, correlativo, createdAt, elaboratedBy, validity } = quotation;
+
+  const density = pickDensity(quotation);
+  const styles = buildStyles(density);
 
   return (
     <Document>
@@ -207,10 +268,10 @@ export const QuotationDocument = ({ quotation }) => {
           </View>
 
           <View style={styles.infoGrid}>
-            <InfoCell label="CLIENTE" value={client?.name} wide />
-            <InfoCell label="FECHA" value={formatDate(createdAt)} />
-            <InfoCell label="NIT" value={client?.taxId} />
-            <InfoCell label="DIRECCIÓN" value={client?.address} full />
+            <InfoCell styles={styles} label="CLIENTE" value={client?.name} wide />
+            <InfoCell styles={styles} label="FECHA" value={formatDate(createdAt)} />
+            <InfoCell styles={styles} label="NIT" value={client?.taxId} />
+            <InfoCell styles={styles} label="DIRECCIÓN" value={client?.address} full />
           </View>
         </View>
 
@@ -240,13 +301,13 @@ export const QuotationDocument = ({ quotation }) => {
             const finalUnitPrice = listPrice * (1 - discount / 100);
 
             return (
-              <View style={[styles.tableRow, i % 2 === 1 ? styles.rowAlt : null]} key={i} wrap={false} minPresenceAhead={i === items.length - 1 ? 290 : 0}>
+              <View style={[styles.tableRow, i % 2 === 1 ? styles.rowAlt : null]} key={i} wrap={false} minPresenceAhead={i === items.length - 1 ? Math.round(290 * density) : 0}>
                 <View style={styles.colCant}>
                   <Text style={styles.cellStrong}>{item.quantity}</Text>
                 </View>
 
                 <View style={styles.colDesc}>
-                  <DescriptionBlock text={item.description} />
+                  <DescriptionBlock text={item.description} styles={styles} />
                 </View>
 
                 <View style={styles.colLista}>
