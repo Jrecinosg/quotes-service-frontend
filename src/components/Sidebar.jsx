@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, FileText, LogOut, Settings, ClipboardList, ShieldCheck, Menu, X } from "lucide-react";
+import { LayoutDashboard, Users, FileText, LogOut, Settings, ClipboardList, ShieldCheck, BookOpen, Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import appLogo from "../assets/logo.png";
 
@@ -19,6 +19,8 @@ export default function Sidebar() {
             { path: "/app/requests", icon: ClipboardList, label: "Solicitudes" },
             // Garantías es interno: va solo en este menú, nunca en el de CLIENT
             { path: "/app/warranties", icon: ShieldCheck, label: "Garantías" },
+            // Bitácora de proyectos: interno (ADMIN/USER), nunca en el menú de CLIENT
+            { path: "/app/bitacora", icon: BookOpen, label: "Bitácora" },
         ];
     // Configuración (solo ADMIN) entra al mismo menú para compartir el indicador deslizante
     const allItems = user?.role === 'ADMIN'

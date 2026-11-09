@@ -18,6 +18,8 @@ import WarrantyProjectDetails from "./pages/WarrantyProjectDetails";
 import AdminPage from "./pages/AdminPage";
 import ForbiddenPage from "./pages/ForbiddenPage";
 import ProfilePage from "./pages/ProfilePage";
+import Bitacora from "./pages/Bitacora";
+import BitacoraDetail from "./pages/BitacoraDetail";
 
 // (Guard): Si no hay usuario, manda Login
 function PrivateRoute({ children }) {
@@ -88,6 +90,9 @@ export default function App() {
           <Route path="warranties/new" element={<StaffRoute><WarrantyProjectForm /></StaffRoute>} />
           <Route path="warranties/edit/:id" element={<StaffRoute><WarrantyProjectForm /></StaffRoute>} />
           <Route path="warranties/:id" element={<StaffRoute><WarrantyProjectDetails /></StaffRoute>} />
+          {/* Bitácora de proyectos: módulo interno (el servidor también responde 403 a un CLIENT) */}
+          <Route path="bitacora" element={<StaffRoute><Bitacora /></StaffRoute>} />
+          <Route path="bitacora/:id" element={<StaffRoute><BitacoraDetail /></StaffRoute>} />
           <Route path="requests" element={<Requests />} />
           <Route path="requests/:id" element={<RequestDetails />} />
           <Route path="profile" element={<ProfilePage />} />
