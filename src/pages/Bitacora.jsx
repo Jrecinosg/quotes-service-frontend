@@ -105,6 +105,9 @@ export default function Bitacora() {
       if (!byClient.has(key)) byClient.set(key, { name: p.client?.name || "Sin cliente", items: [] });
       byClient.get(key).items.push(p);
     });
+    // Dentro de cada cliente: abiertos primero y, entre iguales, la actividad más reciente arriba (el soporte activo sube).
+    const activity = (p) => new Date(p.lastActivityAt || p.startDate || 0).getTime() || 0;
+    byClient.forEach((g) => g.items.sort((a, b) => (a.status === "EN_CURSO" ? 0 : 1) - (b.status === "EN_CURSO" ? 0 : 1) || activity(b) - activity(a)));
     return [...byClient.values()].sort((a, b) => a.name.localeCompare(b.name, "es"));
   }, [projects, filter, kindFilter, clientId, search, overdueOnly]);
 

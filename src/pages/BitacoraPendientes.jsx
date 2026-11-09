@@ -13,6 +13,8 @@ const STATUS = [
   { key: "todos", label: "Todos" },
 ];
 
+const PAGE_SIZE = 200; // pendientes por página en pantalla; "Ver más" trae la siguiente
+
 const toast = (title) => Swal.fire({ toast: true, position: "bottom-end", icon: "success", title, showConfirmButton: false, timer: 2500 });
 
 /**
@@ -28,6 +30,9 @@ export default function BitacoraPendientes() {
   const [status, setStatus] = useState("abiertos");
   const [origin, setOrigin] = useState("");
   const [pendings, setPendings] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -42,11 +47,15 @@ export default function BitacoraPendientes() {
     return () => { alive = false; };
   }, [clientId]);
 
-  const load = useCallback(async () => {
+  // `keep`: recarga conservando lo ya mostrado (tras marcar un pendiente no se pierde el "Ver más").
+  const load = useCallback(async (keep = 0) => {
     setLoading(true);
     setError(false);
     try {
-      setPendings(await bitacoraService.getPendings({ clientId, projectId, status, origin }));
+      const page = await bitacoraService.getPendings({ clientId, projectId, status, origin, limit: Math.min(1000, Math.max(PAGE_SIZE, keep)) });
+      setPendings(page.items);
+      setTotal(page.total);
+      setHasMore(page.hasMore);
     } catch (err) {
       console.error(err);
       setError(true);
@@ -56,6 +65,20 @@ export default function BitacoraPendientes() {
   }, [clientId, projectId, status, origin]);
 
   useEffect(() => { load(); }, [load]);
+
+  const loadMore = async () => {
+    setLoadingMore(true);
+    try {
+      const page = await bitacoraService.getPendings({ clientId, projectId, status, origin, limit: PAGE_SIZE, offset: pendings.length });
+      setPendings((prev) => [...prev, ...page.items]);
+      setTotal(page.total);
+      setHasMore(page.hasMore);
+    } catch {
+      Swal.fire("Error", "No se pudieron cargar más pendientes.", "error");
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   const clientName = useMemo(() => new Map(clients.map((c) => [String(c.id), c.name])), [clients]);
   const byClient = useMemo(() => {
@@ -72,7 +95,7 @@ export default function BitacoraPendientes() {
 
   const run = async (fn, fallback, done) => {
     setBusy(true);
-    try { await fn(); await load(); if (done) toast(done); } catch (err) { Swal.fire("Error", err.response?.data?.error || fallback, "error"); } finally { setBusy(false); }
+    try { await fn(); await load(pendings.length); if (done) toast(done); } catch (err) { Swal.fire("Error", err.response?.data?.error || fallback, "error"); } finally { setBusy(false); }
   };
 
   const toggle = (p) => run(() => (isDone(p) ? bitacoraService.updatePending(p.id, { done: false }) : bitacoraService.resolvePending(p.id)), "No se pudo actualizar el pendiente.");
@@ -97,7 +120,9 @@ export default function BitacoraPendientes() {
     setBusy(true);
     try {
       const proj = projectId === "none" ? "Pendientes sin proyecto" : projects.find((p) => String(p.id) === projectId)?.name || "";
-      await downloadPendientesPdf({ clientName: clientName.get(clientId), filterLabel: proj, pendings, includeDone: status !== "abiertos" });
+      // El PDF trae TODAS las páginas de la lista filtrada (nunca sale incompleto aunque en pantalla haya "Ver más").
+      const all = hasMore ? await bitacoraService.getAllPendings({ clientId, projectId, status, origin }) : pendings;
+      await downloadPendientesPdf({ clientName: clientName.get(clientId), filterLabel: proj, pendings: all, includeDone: status !== "abiertos" });
       toast("Pendientes descargados");
     } catch {
       Swal.fire("No se pudo generar el PDF", "Inténtalo de nuevo.", "error");
@@ -151,7 +176,7 @@ export default function BitacoraPendientes() {
             <div className="card p-10 text-center">
               <AlertCircle className="mx-auto mb-2 text-red-300" size={32} />
               <p className="text-white font-semibold">No se pudieron cargar los pendientes</p>
-              <button type="button" className="btn btn-primary px-4 py-2 mt-4" onClick={load}>Reintentar</button>
+              <button type="button" className="btn btn-primary px-4 py-2 mt-4" onClick={() => load()}>Reintentar</button>
             </div>
           ) : pendings.length === 0 ? (
             <div className="card p-12 text-center">
@@ -161,6 +186,7 @@ export default function BitacoraPendientes() {
             </div>
           ) : (
             <div className="space-y-8">
+              <p className="text-xs text-[#9FB0C4] tabular-nums" role="status">Mostrando {pendings.length} de {total}</p>
               {byClient.map((c) => (
                 <div key={c.key}>
                   {(!clientId) && <h2 className="text-white font-semibold text-base mb-3">{c.name}</h2>}
@@ -201,6 +227,13 @@ export default function BitacoraPendientes() {
                   </div>
                 </div>
               ))}
+              {hasMore && (
+                <div className="text-center">
+                  <button type="button" className="btn btn-secondary px-5 py-2" onClick={loadMore} disabled={loadingMore} aria-busy={loadingMore}>
+                    {loadingMore ? "Cargando…" : `Ver más (${total - pendings.length} restantes)`}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </section>

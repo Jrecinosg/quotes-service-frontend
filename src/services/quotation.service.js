@@ -15,6 +15,17 @@ export const quotationService = {
     return response.data;
   },
 
+  // Cotizaciones de UN cliente (filtro del servidor `clientId`), recientes primero. Pagina hasta traerlas todas (tope de seguridad: 20 paginas).
+  getByClient: async (clientId, limit = 100) => {
+    const all = [];
+    for (let page = 1; page <= 20; page += 1) {
+      const response = await api.get("/quotations", { params: { clientId, page, limit, sort: "recent" } });
+      all.push(...(response.data.data || []));
+      if (page >= (response.data.totalPages || 1)) break;
+    }
+    return all;
+  },
+
   getById: async (id) => {
     const response = await api.get(`/quotations/${id}`);
     return response.data;

@@ -59,12 +59,29 @@ export const bitacoraService = {
   deletePhoto: async (id) => (await api.delete(`/bitacora/photos/${id}`)).data,
 
   // Pendientes V2 (por cliente, con o sin proyecto). status: abiertos | hechos | todos; projectId: id | "none" (sueltos)
-  getPendings: async ({ clientId, projectId, status = "abiertos", origin } = {}) => {
+  // Devuelve { items, total, hasMore } leyendo X-Total-Count / X-Has-More (nunca corta en silencio).
+  getPendings: async ({ clientId, projectId, status = "abiertos", origin, limit = 200, offset = 0 } = {}) => {
     const response = await api.get("/bitacora/pendings", {
-      params: { ...(clientId ? { clientId } : {}), ...(projectId ? { projectId } : {}), status, ...(origin ? { origin } : {}) }
+      params: { ...(clientId ? { clientId } : {}), ...(projectId ? { projectId } : {}), status, ...(origin ? { origin } : {}), limit, offset }
     });
     const data = response.data;
-    return Array.isArray(data) ? data : data?.data || [];
+    const items = Array.isArray(data) ? data : data?.data || [];
+    const total = Number(response.headers?.["x-total-count"]);
+    return {
+      items,
+      total: Number.isFinite(total) ? total : offset + items.length,
+      hasMore: String(response.headers?.["x-has-more"]) === "true",
+    };
+  },
+  // Todas las páginas (para el PDF: nunca sale incompleto).
+  getAllPendings: async (filters = {}) => {
+    const all = [];
+    for (let guard = 0; guard < 50; guard += 1) {
+      const page = await bitacoraService.getPendings({ ...filters, limit: 1000, offset: all.length });
+      all.push(...page.items);
+      if (!page.hasMore || page.items.length === 0) break;
+    }
+    return all;
   },
   createPendingV2: async (payload) => (await api.post("/bitacora/pendings", payload)).data,
   resolvePending: async (id, { resolvedInEntryId } = {}) =>

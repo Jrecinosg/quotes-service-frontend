@@ -27,7 +27,7 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [serverError, setServerError] = useState("");
-  // Cotizaciones del cliente elegido (el servicio de cotizaciones busca por nombre de cliente; aquí se filtra por id).
+  // Cotizaciones del cliente elegido (GET /quotations?clientId=, paginado).
   const [quotations, setQuotations] = useState([]);
   const [quotesState, setQuotesState] = useState("idle"); // idle | loading | error
 
@@ -38,20 +38,19 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
     return () => { alive = false; };
   }, [isOpen, editing]);
 
-  const clientName = editing ? project.client?.name : clients.find((c) => String(c.id) === form.clientId)?.name;
   useEffect(() => {
-    if (!isOpen || !form.clientId || !clientName) { setQuotations([]); return undefined; }
+    if (!isOpen || !form.clientId) { setQuotations([]); return undefined; }
     let alive = true;
     setQuotesState("loading");
-    quotationService.getAll(1, 100, clientName, "recent")
-      .then((res) => {
+    quotationService.getByClient(form.clientId)
+      .then((list) => {
         if (!alive) return;
-        setQuotations((res.data || []).filter((q) => String(q.clientId ?? q.client?.id) === form.clientId));
+        setQuotations(list);
         setQuotesState("idle");
       })
       .catch(() => { if (alive) { setQuotations([]); setQuotesState("error"); } });
     return () => { alive = false; };
-  }, [isOpen, form.clientId, clientName]);
+  }, [isOpen, form.clientId]);
 
   if (!isOpen) return null;
 

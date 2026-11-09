@@ -171,6 +171,7 @@ export const BitacoraInformeDocument = ({ report }) => {
   const texts = report.texts || [];
   const photos = report.photos || [];
   const technician = String(report.technicianName || '').trim();
+  const personnel = report.personnel || [];
   const issued = formatDateNoWeekday(`${report.issuedOn}T12:00:00.000Z`);
   const who = String(report.clientName).replace(/[.\s]+$/, '');
   const closing = report.closing || (variant === 'avance'
@@ -210,6 +211,9 @@ export const BitacoraInformeDocument = ({ report }) => {
           <View style={styles.dataCell}><Text style={styles.dataLabel}>CLIENTE</Text><Text style={styles.dataValue}>{report.clientName}</Text></View>
           {technician ? (
             <View style={styles.dataCell}><Text style={styles.dataLabel}>RESPONSABLE TÉCNICO</Text><Text style={styles.dataValue}>{technician}</Text></View>
+          ) : null}
+          {personnel.length ? (
+            <View style={styles.dataCell}><Text style={styles.dataLabel}>PERSONAL QUE PARTICIPÓ</Text><Text style={styles.dataValue}>{personnel.join(', ')}</Text></View>
           ) : null}
         </View>
         <View style={styles.coverFooter}>

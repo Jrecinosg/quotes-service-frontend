@@ -4,6 +4,9 @@
 // fecha es `issuedOn` (hoy, zona Guatemala).
 import { sortEntries, toIsoDay, todayGuatemala } from "./bitacora";
 
+/** Decisión pendiente del dueño: ¿el informe al cliente lista "Personal que participó"? Ponlo en true para activarlo. */
+export const SHOW_PERSONNEL_IN_CLIENT_REPORT = false;
+
 export const VARIANTS = {
   dia: { label: "Informe del día", kicker: "INFORME DEL DÍA", short: "dia" },
   avance: { label: "Informe de avance", kicker: "INFORME DE AVANCE", short: "avance" },
@@ -48,6 +51,9 @@ export function assembleInformeReport({ project, variant, day, today = todayGuat
     summary: variant === "dia" ? "" : project?.finalSummary || "",
     technicianName: String(project?.technicianName || "").trim(),
     issuedOn: today,
+    personnel: SHOW_PERSONNEL_IN_CLIENT_REPORT
+      ? [...new Set(entries.flatMap((e) => (Array.isArray(e.personnel) ? e.personnel : [])).map((n) => String(n).trim()).filter(Boolean))]
+      : [],
     texts: entries.map((e) => String(e.body || "")).filter((t) => t.trim()),
     photos,
   };
@@ -97,3 +103,4 @@ export async function copyText(text) {
     return ok;
   }
 }
+
