@@ -16,11 +16,6 @@ const INK = '#2B3342';
 const MUTED = '#6B7686';
 const LINE = '#EADFD6';
 
-const PHOTO_W = 243.5;
-const PHOTO_H = 182.6;
-const FULL_W = 499;
-const FULL_H = 280;
-
 const styles = StyleSheet.create({
   // --- Portada ---
   cover: { fontFamily: 'Helvetica', color: INK, backgroundColor: '#FFFFFF' },
@@ -35,8 +30,9 @@ const styles = StyleSheet.create({
   rule: { width: 48, height: 4, borderRadius: 2, backgroundColor: ORANGE, marginVertical: 16 },
   coverClient: { fontSize: 16, color: INK },
   coverDate: { fontSize: 11, color: MUTED, marginTop: 6 },
-  coverData: { position: 'absolute', top: 640, left: 48, width: 499, flexDirection: 'row' },
+  coverData: { position: 'absolute', top: 640, left: 48, width: 499, flexDirection: 'row', flexWrap: 'wrap' },
   dataCell: { flex: 1, paddingRight: 12 },
+  dataCellWrap: { width: '33.33%', paddingRight: 12, marginBottom: 14 },
   dataLabel: { fontSize: 8, fontWeight: 'bold', color: MUTED, letterSpacing: 1.2 },
   dataValue: { fontSize: 11, fontWeight: 'bold', color: NAVY, marginTop: 3, lineHeight: 1.3 },
   coverFooter: { position: 'absolute', bottom: 40, left: 48, right: 48, borderTopWidth: 0.75, borderTopColor: LINE, paddingTop: 8 },
@@ -80,10 +76,6 @@ const styles = StyleSheet.create({
   personnel: { fontSize: 9, color: MUTED, marginTop: 2 },
   photosTitle: { fontSize: 9, fontWeight: 'bold', color: ORANGE_TEXT, letterSpacing: 1.8, marginTop: 14, marginBottom: 8 },
   photoRow: { marginBottom: 14 },
-  photoCell: { width: PHOTO_W, marginRight: 12 },
-  photoCellLast: { width: PHOTO_W, marginRight: 0 },
-  photo: { width: PHOTO_W, height: PHOTO_H, objectFit: 'cover', borderRadius: 8, borderWidth: 0.75, borderColor: LINE },
-  photoFull: { width: FULL_W, height: FULL_H, objectFit: 'cover', borderRadius: 8, borderWidth: 0.75, borderColor: LINE },
   captionRow: { flexDirection: 'row', marginTop: 5 },
   captionNum: { fontSize: 8, fontWeight: 'bold', color: ORANGE_TEXT, marginRight: 4 },
   captionText: { flex: 1, fontSize: 9, color: INK, lineHeight: 1.3 },
@@ -91,7 +83,7 @@ const styles = StyleSheet.create({
 
   closing: { fontSize: 10.5, lineHeight: 1.5, color: INK },
   signRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 40 },
-  signLine: { width: 160, borderTopWidth: 0.75, borderTopColor: NAVY, paddingTop: 5 },
+  signLine: { minWidth: 160, maxWidth: 300, borderTopWidth: 0.75, borderTopColor: NAVY, paddingTop: 5 },
   signName: { fontSize: 10, fontWeight: 'bold', color: NAVY },
   signRole: { fontSize: 9, color: MUTED, marginTop: 1 },
   signLogo: { width: 56 },
@@ -120,38 +112,60 @@ const renderBody = (body) => {
   return out;
 };
 
-const PhotoCell = ({ photo, full, last }) => (
-  <View style={full ? { width: FULL_W } : last ? styles.photoCellLast : styles.photoCell} wrap={false}>
-    <Image src={photo.src} style={full ? styles.photoFull : styles.photo} />
-    <View style={styles.captionRow}>
-      <Text style={styles.captionNum}>Foto {photo.number}{photo.caption ? ' ·' : ''}</Text>
-      {photo.caption ? <Text style={styles.captionText}>{photo.caption}</Text> : null}
+// Galería "justificada": cada foto conserva su proporción real (nunca se recorta). Las fotos de una fila
+// comparten altura y la fila ocupa todo el ancho útil: 2 horizontales 4:3 = igual que antes; 3 verticales
+// 3:4 por fila; mezcladas se acomodan solas. La última fila no se estira de más (tope de altura).
+const GALLERY_W = 499;
+const GAP = 12;
+const ROW_MAX_H = 215;
+const LAST_ROW_MAX_H = 260;
+
+const aspectOf = (p) => (p.width > 0 && p.height > 0 ? Math.min(Math.max(p.width / p.height, 0.4), 2.5) : 4 / 3);
+const rowHeight = (row) => (GALLERY_W - GAP * (row.length - 1)) / row.reduce((n, p) => n + aspectOf(p), 0);
+
+const buildRows = (photos) => {
+  const rows = [];
+  let cur = [];
+  photos.forEach((p) => {
+    cur.push(p);
+    if (rowHeight(cur) <= ROW_MAX_H) { rows.push(cur); cur = []; }
+  });
+  if (cur.length) rows.push(cur);
+  return rows.map((row, i) => {
+    const h = Math.min(rowHeight(row), i === rows.length - 1 ? LAST_ROW_MAX_H : ROW_MAX_H * 1.15);
+    return { row, h };
+  });
+};
+
+const PhotoCell = ({ photo, h, last }) => {
+  const w = h * aspectOf(photo);
+  return (
+    <View style={{ width: w, marginRight: last ? 0 : GAP }} wrap={false}>
+      <Image src={photo.src} style={{ width: w, height: h, objectFit: 'cover', borderRadius: 8, borderWidth: 0.75, borderColor: LINE }} />
+      <View style={styles.captionRow}>
+        <Text style={styles.captionNum}>Foto {photo.number}{photo.caption ? ' ·' : ''}</Text>
+        {photo.caption ? <Text style={styles.captionText}>{photo.caption}</Text> : null}
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 // El encabezado viaja dentro de la primera fila: nunca queda solo al final de una hoja.
-const PhotoGrid = ({ photos, heading }) => {
-  if (photos.length === 1) {
-    return <View style={styles.photoRow} wrap={false}>{heading}<PhotoCell photo={photos[0]} full /></View>;
-  }
-  const rows = [];
-  for (let i = 0; i < photos.length; i += 2) rows.push(photos.slice(i, i + 2));
-  return rows.map((pair, idx) => (
+const PhotoGrid = ({ photos, heading }) =>
+  buildRows(photos).map(({ row, h }, idx) => (
     <View key={idx} style={styles.photoRow} wrap={false}>
       {idx === 0 ? heading : null}
-      <View style={{ flexDirection: 'row' }}>
-        {pair.map((p, j) => <PhotoCell key={p.number} photo={p} last={j === 1} />)}
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+        {row.map((p, j) => <PhotoCell key={p.number} photo={p} h={h} last={j === row.length - 1} />)}
       </View>
     </View>
   ));
-};
 
 /**
  * Informe final AL CLIENTE. Recibe una lista blanca de campos (nunca el proyecto completo):
  * NO existen pendientes ni notas internas en estos datos.
  * report = { clientName, title, summary, type, startDate, endDate, finished, issuedAt,
- *            personnel: [string], days: [{ date, body, photos: [{ number, src, caption }] }],
+ *            personnel: [string], technicianName?: string, days: [{ date, body, photos: [{ number, src, width, height, caption }] }],
  *            closing? }
  */
 export const BitacoraInformeDocument = ({ report }) => {
@@ -165,6 +179,8 @@ export const BitacoraInformeDocument = ({ report }) => {
   const dotDays = multi ? days.filter((d, i) => days.findIndex((x) => toIsoDay(x.date) === toIsoDay(d.date)) === i) : [];
   const showTimeline = multi && dotDays.length > 1 && dotDays.length <= 7;
   const personnel = report.personnel || [];
+  const technician = String(report.technicianName || '').trim();
+  const cellStyle = technician && personnel.length ? styles.dataCellWrap : styles.dataCell;
 
   return (
     <Document title={`Informe final - ${report.clientName}`} author="Grupo AC">
@@ -181,15 +197,18 @@ export const BitacoraInformeDocument = ({ report }) => {
           <Text style={styles.coverDate}>Emitido el {formatLongDate(report.issuedAt).toLowerCase()}</Text>
         </View>
         <View style={styles.coverData}>
-          <View style={styles.dataCell}><Text style={styles.dataLabel}>CLIENTE</Text><Text style={styles.dataValue}>{report.clientName}</Text></View>
-          <View style={styles.dataCell}>
+          <View style={cellStyle}><Text style={styles.dataLabel}>CLIENTE</Text><Text style={styles.dataValue}>{report.clientName}</Text></View>
+          <View style={cellStyle}>
             <Text style={styles.dataLabel}>FECHAS DEL SERVICIO</Text>
             <Text style={styles.dataValue}>
               {toIsoDay(firstDate) === toIsoDay(lastDate) || !lastDate ? formatNumericDate(firstDate) : `${formatNumericDate(firstDate)} al ${formatNumericDate(lastDate)}`}
             </Text>
           </View>
+          {technician ? (
+            <View style={cellStyle}><Text style={styles.dataLabel}>RESPONSABLE TÉCNICO</Text><Text style={styles.dataValue}>{technician}</Text></View>
+          ) : null}
           {personnel.length ? (
-            <View style={styles.dataCell}><Text style={styles.dataLabel}>PERSONAL QUE PARTICIPÓ</Text><Text style={styles.dataValue}>{personnel.join(', ')}</Text></View>
+            <View style={cellStyle}><Text style={styles.dataLabel}>PERSONAL QUE PARTICIPÓ</Text><Text style={styles.dataValue}>{personnel.join(', ')}</Text></View>
           ) : null}
         </View>
         <View style={styles.coverFooter}>
@@ -247,10 +266,11 @@ export const BitacoraInformeDocument = ({ report }) => {
         </View>
 
         {/* C + D. Trabajo por día, con las fotos de ese día justo después */}
-        <Text style={styles.sectionTitle}>TRABAJO REALIZADO POR DÍA</Text>
         {days.map((d, idx) => (
-          <View key={idx} style={styles.dayBlock}>
-            <View wrap={false}>
+          <React.Fragment key={idx}>
+            {/* minPresenceAhead: el título de sección y la cabecera del día no quedan solos al final de una hoja */}
+            <View wrap={false} minPresenceAhead={70}>
+              {idx === 0 ? <Text style={styles.sectionTitle}>TRABAJO REALIZADO POR DÍA</Text> : null}
               <View style={styles.dayHead}>
                 <View style={styles.dayChip}><Text style={styles.dayChipText}>{formatLongDate(d.date)}</Text></View>
                 <Text style={styles.dayCount}>Día {idx + 1} de {total}</Text>
@@ -258,14 +278,12 @@ export const BitacoraInformeDocument = ({ report }) => {
             </View>
             {renderBody(d.body)}
             {d.photos && d.photos.length ? (
-              <View>
-                <PhotoGrid photos={d.photos} heading={<Text style={styles.photosTitle}>REGISTRO FOTOGRÁFICO · {formatShortDate(d.date)}</Text>} />
-              </View>
+              <PhotoGrid photos={d.photos} heading={<Text style={styles.photosTitle}>REGISTRO FOTOGRÁFICO · {formatShortDate(d.date)}</Text>} />
             ) : null}
-            {idx < total - 1 ? <View style={styles.daySep} /> : null}
-          </View>
+            {idx < total - 1 ? <View style={[styles.daySep, { marginBottom: 18 }]} /> : null}
+          </React.Fragment>
         ))}
-        {days.length === 0 ? <Text style={styles.para}>Aún no hay trabajos registrados.</Text> : null}
+        {days.length === 0 ? <View><Text style={styles.sectionTitle}>TRABAJO REALIZADO POR DÍA</Text><Text style={styles.para}>Aún no hay trabajos registrados.</Text></View> : null}
 
         {/* E. Cierre */}
         <View style={{ marginTop: 6 }} wrap={false}>
@@ -273,8 +291,8 @@ export const BitacoraInformeDocument = ({ report }) => {
           <Text style={styles.closing}>{closing}</Text>
           <View style={styles.signRow}>
             <View style={styles.signLine}>
-              <Text style={styles.signName}>Grupo AC</Text>
-              <Text style={styles.signRole}>Tecnoseguridad e Informática</Text>
+              <Text style={styles.signName}>{technician || 'Grupo AC'}</Text>
+              <Text style={styles.signRole}>{technician ? 'Grupo AC · Tecnoseguridad e Informática' : 'Tecnoseguridad e Informática'}</Text>
             </View>
             <Image src={logo} style={styles.signLogo} />
           </View>

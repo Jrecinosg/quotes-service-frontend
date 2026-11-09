@@ -7,6 +7,7 @@ import { StatusChip, TypeChip } from "../components/BitacoraChips";
 import BitacoraPhoto from "../components/BitacoraPhoto";
 import BitacoraPendings from "../components/BitacoraPendings";
 import BitacoraEntryModal from "../components/BitacoraEntryModal";
+import BitacoraProjectModal from "../components/BitacoraProjectModal";
 import BitacoraSummaryModal from "../components/BitacoraSummaryModal";
 import BitacoraLightbox from "../components/BitacoraLightbox";
 import { displayStatus, formatLongDate, formatRange, openPendings, sortEntries } from "../utils/bitacora";
@@ -54,6 +55,7 @@ export default function BitacoraDetail() {
   const [error, setError] = useState("");
   const [entryModal, setEntryModal] = useState(null); // null | { entry? }
   const [summaryModal, setSummaryModal] = useState(null); // null | "close" | "edit"
+  const [projectModal, setProjectModal] = useState(false);
   const [lightbox, setLightbox] = useState(null); // { photos, index }
   const [pdfBusy, setPdfBusy] = useState(null); // null | "informe" | "pendientes"
   const [pdfProgress, setPdfProgress] = useState("");
@@ -154,7 +156,9 @@ export default function BitacoraDetail() {
             <TypeChip type={project.type} />
             <span className="text-[13px] text-[#9FB0C4]">{formatRange(project.startDate, project.endDate)}</span>
           </div>
+          {project.technicianName && <p className="text-[13px] text-[#9FB0C4] mt-2">Responsable técnico: <span className="text-gray-200">{project.technicianName}</span></p>}
           <div className="flex flex-wrap gap-2 mt-3">
+            <button type="button" className="btn btn-ghost px-3 py-1.5 text-sm flex items-center gap-2" onClick={() => setProjectModal(true)}><Pencil size={16} /> Editar proyecto</button>
             {project.status === "EN_CURSO" ? (
               <button type="button" className="btn btn-secondary px-3 py-1.5 text-sm flex items-center gap-2" onClick={() => setSummaryModal("close")}><CheckCircle2 size={16} /> Cerrar proyecto</button>
             ) : (
@@ -245,6 +249,9 @@ export default function BitacoraDetail() {
           onClose={() => setEntryModal(null)}
           onSaved={async () => { setEntryModal(null); await load(); toast("Día guardado"); }}
         />
+      )}
+      {projectModal && (
+        <BitacoraProjectModal isOpen project={project} onClose={() => setProjectModal(false)} onCreated={async () => { setProjectModal(false); await load(); toast("Proyecto actualizado"); }} />
       )}
       {summaryModal && (
         <BitacoraSummaryModal

@@ -22,9 +22,9 @@ export async function downloadInformePdf(project, onProgress = () => {}) {
     for (const ph of entry.photos || []) {
       onProgress({ step: "Preparando fotos", done: loaded, total: allPhotos.length });
       const raw = await bitacoraService.getPhotoBlob(ph.id);
-      const { blob } = await resizeImage(raw, { maxSide: 1200, quality: 0.8 });
+      const { blob, width, height } = await resizeImage(raw, { maxSide: 1200, quality: 0.8 });
       number += 1;
-      photos.push({ number, src: await blobToDataUrl(blob), caption: ph.caption || "" });
+      photos.push({ number, src: await blobToDataUrl(blob), width, height, caption: ph.caption || "" });
       loaded += 1;
     }
     days.push({ date: entry.date, body: entry.body, photos });
@@ -43,6 +43,7 @@ export async function downloadInformePdf(project, onProgress = () => {}) {
     finished: project.status === "TERMINADO",
     issuedAt: new Date().toISOString(),
     personnel,
+    technicianName: String(project.technicianName || "").trim(),
     days,
   };
   const blob = await pdf(React.createElement(BitacoraInformeDocument, { report })).toBlob();

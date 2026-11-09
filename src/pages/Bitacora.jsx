@@ -1,19 +1,23 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Plus, Search, BookOpen, AlertCircle } from "lucide-react";
+import { Plus, Search, BookOpen, AlertCircle, AlertTriangle, X } from "lucide-react";
 import { bitacoraService } from "../services/bitacora.service";
 import { StatusChip, TypeChip } from "../components/BitacoraChips";
 import BitacoraProjectModal from "../components/BitacoraProjectModal";
-import { formatRange } from "../utils/bitacora";
+import { displayStatus, formatRange, projectCounts } from "../utils/bitacora";
 
 const FILTERS = [
   { key: "ALL", label: "Todos" },
   { key: "EN_CURSO", label: "En curso" },
+  { key: "CON_PENDIENTES", label: "Con pendientes" },
   { key: "TERMINADO", label: "Cerrados" },
 ];
 
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+
 function ProjectCard({ project }) {
-  // La lista del servidor trae solo EN_CURSO/TERMINADO; "Con pendientes" se ve en el detalle.
+  // El servidor guarda EN_CURSO/TERMINADO; "Con pendientes" se deriva de counts.openPendings.
+  const counts = projectCounts(project);
   return (
     <Link
       to={`/app/bitacora/${project.id}`}
@@ -21,12 +25,18 @@ function ProjectCard({ project }) {
     >
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-white font-semibold text-base line-clamp-2">{project.name}</h3>
-        <StatusChip status={project.status} />
+        <StatusChip status={displayStatus(project)} />
       </div>
       <div className="flex flex-wrap items-center gap-2 mt-3">
         <TypeChip type={project.type} />
         <span className="text-[13px] text-[#9FB0C4] tabular-nums">{formatRange(project.startDate, project.endDate)}</span>
       </div>
+      {counts.known && (
+        <p className="mt-3 pt-3 border-t border-white/[0.07] text-xs text-[#9FB0C4] tabular-nums">
+          {plural(counts.photos, "foto", "fotos")} · {plural(counts.openPendings, "pendiente abierto", "pendientes abiertos")}
+          {counts.overduePendings > 0 && <span className="text-[#FCA5A5] font-semibold"> · {plural(counts.overduePendings, "vencido", "vencidos")}</span>}
+        </p>
+      )}
     </Link>
   );
 }
@@ -39,6 +49,7 @@ export default function Bitacora() {
   const [filter, setFilter] = useState("ALL");
   const [clientId, setClientId] = useState("");
   const [search, setSearch] = useState("");
+  const [overdueOnly, setOverdueOnly] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
   const load = useCallback(async () => {
@@ -62,10 +73,15 @@ export default function Bitacora() {
     return [...map.entries()].map(([id, name]) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name, "es"));
   }, [projects]);
 
+  const overdueProjects = useMemo(() => projects.filter((p) => projectCounts(p).overduePendings > 0).length, [projects]);
+
   const groups = useMemo(() => {
     const term = search.trim().toLowerCase();
     const filtered = projects.filter((p) => {
-      if (filter !== "ALL" && p.status !== filter) return false;
+      if (overdueOnly && projectCounts(p).overduePendings === 0) return false;
+      if (filter === "CON_PENDIENTES") { if (projectCounts(p).openPendings === 0) return false; }
+      else if (filter === "TERMINADO") { if (p.status !== "TERMINADO") return false; }
+      else if (filter !== "ALL" && p.status !== filter) return false;
       if (clientId && String(p.client?.id) !== clientId) return false;
       if (term && !`${p.name} ${p.client?.name || ""}`.toLowerCase().includes(term)) return false;
       return true;
@@ -77,7 +93,7 @@ export default function Bitacora() {
       byClient.get(key).items.push(p);
     });
     return [...byClient.values()].sort((a, b) => a.name.localeCompare(b.name, "es"));
-  }, [projects, filter, clientId, search]);
+  }, [projects, filter, clientId, search, overdueOnly]);
 
   return (
     <div className="max-w-6xl mx-auto pb-10">
@@ -106,6 +122,18 @@ export default function Bitacora() {
           ))}
         </div>
       </div>
+
+      {!loading && !error && overdueProjects > 0 && (
+        <div className="flex flex-wrap items-center gap-3 mb-6 rounded-2xl px-4 py-3" style={{ background: "rgba(251,191,36,.10)" }} role="status">
+          <AlertTriangle size={16} aria-hidden="true" style={{ color: "#FCD34D" }} />
+          <span className="text-sm font-semibold" style={{ color: "#FCD34D" }}>
+            {overdueProjects === 1 ? "1 proyecto con pendientes vencidos" : `${overdueProjects} proyectos con pendientes vencidos`}
+          </span>
+          <button type="button" className="text-sm text-white underline underline-offset-2 hover:no-underline min-h-[32px] flex items-center gap-1" aria-pressed={overdueOnly} onClick={() => setOverdueOnly((v) => !v)}>
+            {overdueOnly ? <><X size={14} aria-hidden="true" /> Quitar filtro</> : "Ver solo esos"}
+          </button>
+        </div>
+      )}
 
       {loading ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4" aria-busy="true" aria-label="Cargando bitácora">

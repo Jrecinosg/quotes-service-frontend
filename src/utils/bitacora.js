@@ -58,13 +58,29 @@ export const isOverdue = (pending, today = todayIso()) =>
 export const openPendings = (project) => (project?.pendings || []).filter((p) => !p.done);
 
 /**
+ * Contadores del proyecto. La lista del servidor trae `counts`; el detalle trae `pendings`/`entries`.
+ * Tolera que `counts` falte (backend viejo): en la lista queda todo en 0 y no se muestra el pie.
+ */
+export const projectCounts = (project) => {
+  const c = project?.counts;
+  if (c && typeof c === 'object') {
+    return { photos: Number(c.photos) || 0, openPendings: Number(c.openPendings) || 0, overduePendings: Number(c.overduePendings) || 0, known: true };
+  }
+  if (Array.isArray(project?.pendings)) {
+    const open = openPendings(project);
+    const photos = Array.isArray(project.entries) ? project.entries.reduce((n, e) => n + (e.photos || []).length, 0) : 0;
+    return { photos, openPendings: open.length, overduePendings: open.filter((p) => isOverdue(p)).length, known: true };
+  }
+  return { photos: 0, openPendings: 0, overduePendings: 0, known: false };
+};
+
+/**
  * Estado que se muestra: el servidor solo conoce EN_CURSO y TERMINADO.
- * "Con pendientes" = cerrado en campo pero con tareas abiertas (se deriva; solo en el detalle,
- * porque la lista no trae los pendientes).
+ * "Con pendientes" = cerrado en campo pero con tareas abiertas (se deriva de `counts` o de `pendings`).
  */
 export const displayStatus = (project) => {
   if (project.status === 'EN_CURSO') return 'EN_CURSO';
-  if (project.pendings && openPendings(project).length > 0) return 'CON_PENDIENTES';
+  if (projectCounts(project).openPendings > 0) return 'CON_PENDIENTES';
   return 'TERMINADO';
 };
 
