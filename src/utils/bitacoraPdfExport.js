@@ -4,7 +4,8 @@ import { BitacoraInformeDocument } from "../components/BitacoraInformePDF";
 import { BitacoraPendientesDocument } from "../components/BitacoraPendientesPDF";
 import { bitacoraService } from "../services/bitacora.service";
 import { resizeImage, blobToDataUrl } from "./imageResize";
-import { downloadBlob, safeFilePart, groupPendings, isDone, todayGuatemala } from "./bitacora";
+import { downloadBlob, safeFilePart, todayGuatemala } from "./bitacora";
+import { buildCompanies } from "./bitacoraCompras";
 import { assembleInformeReport, reportPhotos, reportTexts, selectEntries, photoCounts, photoFlagsComplete, VARIANTS } from "./bitacoraReport";
 import { scanFields, confirmInternalData } from "./bitacoraDetect";
 
@@ -41,18 +42,34 @@ export async function downloadInformePdf(project, { variant = "final", day } = {
   return { cancelled: false, ...photoCounts(project, { variant, day }) };
 }
 
-/** PENDIENTES PARA EL PERSONAL por cliente (uso interno), agrupados por proyecto / soporte / sueltos. */
+/** PENDIENTES PARA EL PERSONAL de un cliente (uso interno): PENDIENTES (por proyecto/soporte/sueltos) y COMPRAS aparte. */
 export async function downloadPendientesPdf({ clientName, filterLabel, pendings, includeDone = false }) {
+  const name = clientName || "Cliente";
   const data = {
-    clientName: clientName || "Cliente",
+    mode: "cliente",
+    clientName: name,
     filterLabel: filterLabel || "",
-    groups: groupPendings(pendings).map((g) => ({
-      title: g.title, kind: g.kind, quotationNumber: g.quotationNumber,
-      pendings: g.pendings.map((p) => ({ text: p.text, assignee: p.assignee, dueDate: p.dueDate, done: isDone(p), origin: p.origin })),
-    })),
+    companies: buildCompanies(pendings, () => name, { includeDone }),
     generatedAt: new Date(),
-    includeDone,
   };
   const blob = await pdf(React.createElement(BitacoraPendientesDocument, { data })).toBlob();
-  downloadBlob(blob, `Pendientes_${safeFilePart(data.clientName)}_${todayGuatemala()}.pdf`);
+  downloadBlob(blob, `Pendientes_${safeFilePart(name)}_${todayGuatemala()}.pdf`);
+}
+
+/**
+ * PENDIENTES DE TODAS LAS EMPRESAS (o de una selección): resumen por empresa, una sección por empresa en orden
+ * alfabético (PENDIENTES por proyecto/soporte/sueltos y COMPRAS aparte) y lista de compras consolidada al final.
+ * `selectionCount`: si viene, el encabezado dice "Selección de N pendientes" (los hechos se marcan como hechos).
+ */
+export async function downloadPendientesTodosPdf({ pendings, companyName, selectionCount = null }) {
+  const includeDone = selectionCount !== null;
+  const data = {
+    mode: "todos",
+    title: selectionCount !== null ? `Selección de ${selectionCount} ${selectionCount === 1 ? "pendiente" : "pendientes"}` : "Pendientes de todas las empresas",
+    subtitle: selectionCount !== null ? "Solo los pendientes elegidos, ordenados por empresa" : "Todos los pendientes abiertos, ordenados por empresa",
+    companies: buildCompanies(pendings, companyName, { includeDone }),
+    generatedAt: new Date(),
+  };
+  const blob = await pdf(React.createElement(BitacoraPendientesDocument, { data })).toBlob();
+  downloadBlob(blob, `Pendientes_${selectionCount !== null ? "seleccion" : "todas_las_empresas"}_${todayGuatemala()}.pdf`);
 }
