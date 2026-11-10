@@ -4,6 +4,7 @@ import { X, AlertTriangle } from "lucide-react";
 import { bitacoraService } from "../services/bitacora.service";
 import { toIsoDay, openPendings, isSupport } from "../utils/bitacora";
 import { OriginChip } from "./BitacoraChips";
+import { scanFields, confirmInternalData } from "../utils/bitacoraDetect";
 
 // Cerrar el proyecto con su resumen final (mode="close") o solo editar el resumen (mode="edit").
 // El resumen es lo primero que lee el cliente en el informe.
@@ -24,6 +25,7 @@ export default function BitacoraSummaryModal({ project, mode, onClose, onSaved }
 
   const submit = async (e) => {
     e.preventDefault();
+    if (!(await confirmInternalData(scanFields([{ label: "Resumen final", text: summary }]), "Guardar así"))) return;
     setSaving(true);
     setError("");
     try {

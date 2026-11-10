@@ -6,10 +6,7 @@ import { uploadPhotosSequentially } from "../utils/bitacoraUpload";
 import { todayIso, toIsoDay, openPendings, isSupport, ORIGINS, formatShortDate } from "../utils/bitacora";
 import BitacoraPhotoFlags from "./BitacoraPhotoFlags";
 import { OriginChip } from "./BitacoraChips";
-import { detectInternalData } from "../utils/bitacoraDetect";
-import Swal from "sweetalert2";
-
-const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+import { scanFields, confirmInternalData } from "../utils/bitacoraDetect";
 
 const MAX_PHOTOS_PER_ENTRY = 60;
 
@@ -98,22 +95,13 @@ export default function BitacoraEntryModal({ project, entry, onClose, onSaved })
     if (!body.trim()) next.body = support ? "Escribe qué se hizo en la visita." : "Escribe qué se hizo ese día.";
     setErrors(next);
     if (Object.keys(next).length) return;
-    // Aviso (no bloqueo): el texto sale tal cual en el informe al cliente.
+    // Aviso (no bloqueo): el texto y los pies de foto salen tal cual en el informe al cliente.
     if (!savedEntryId) {
-      const hits = detectInternalData(body);
-      if (hits.length) {
-        const r = await Swal.fire({
-          icon: "warning",
-          title: "Este texto saldrá tal cual en el informe al cliente",
-          html: `<p style="margin-bottom:8px">Parece incluir fechas, horas o montos:</p><p><b>${hits.slice(0, 6).map((h) => esc(h.text)).join("</b>, <b>")}</b></p><p style="margin-top:8px">¿Quitar fechas/horas?</p>`,
-          showCancelButton: true,
-          confirmButtonText: "Guardar así",
-          cancelButtonText: "Editar",
-          reverseButtons: true,
-          focusCancel: true,
-        });
-        if (!r.isConfirmed) return;
-      }
+      const groups = scanFields([
+        { label: "Trabajo realizado", text: body },
+        ...items.map((it) => ({ label: `Pie de foto (${it.file.name})`, text: it.caption })),
+      ]);
+      if (!(await confirmInternalData(groups, "Guardar así"))) return;
     }
     setBusy(true);
     setServerError("");

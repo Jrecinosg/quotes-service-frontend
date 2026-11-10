@@ -20,8 +20,26 @@ export const selectEntries = (project, { variant, day }) => {
   return all;
 };
 
-/** Fotos de una entrada que van al informe (excluye las marcadas "No incluir en el informe al cliente"). */
-export const reportPhotos = (entry) => (entry?.photos || []).filter((p) => p.includeInReport !== false);
+/** ¿Todas las fotos del proyecto traen el campo `includeInReport` (booleano)? Si no, el servidor es de versión vieja. */
+export const photoFlagsComplete = (project) => {
+  const photos = (project?.entries || []).flatMap((e) => e.photos || []);
+  return photos.every((p) => typeof p.includeInReport === "boolean");
+};
+
+/**
+ * Fotos de una entrada que van al informe. Con el campo en todas las fotos se usa `=== true` (estricto: solo entra
+ * lo marcado). Si el servidor no lo trae (versión vieja) no se excluye nada; la pantalla avisa.
+ */
+export const reportPhotos = (entry, strict = true) => (entry?.photos || []).filter((p) => (strict ? p.includeInReport === true : true));
+
+/** Conteo de fotos de las entradas elegidas: cuántas van y cuántas se excluyen. */
+export const photoCounts = (project, opts) => {
+  const strict = photoFlagsComplete(project);
+  const entries = selectEntries(project, opts);
+  const all = entries.reduce((n, e) => n + (e.photos || []).length, 0);
+  const included = entries.reduce((n, e) => n + reportPhotos(e, strict).length, 0);
+  return { included, excluded: all - included, strict };
+};
 
 /** Días (AAAA-MM-DD) que tienen entradas, para elegir en "Informe del día". */
 export const entryDays = (project) => [...new Set(sortEntries(project?.entries).map((e) => toIsoDay(e.date)))].reverse();
@@ -32,10 +50,11 @@ export const entryDays = (project) => [...new Set(sortEntries(project?.entries).
  */
 export function assembleInformeReport({ project, variant, day, today = todayGuatemala(), photoData = new Map() }) {
   const entries = selectEntries(project, { variant, day });
+  const strict = photoFlagsComplete(project);
   let number = 0;
   const photos = [];
   entries.forEach((e) => {
-    reportPhotos(e).forEach((ph) => {
+    reportPhotos(e, strict).forEach((ph) => {
       const data = photoData.get(ph.id);
       if (!data) return;
       number += 1;
@@ -71,7 +90,8 @@ const firstSentence = (text) => {
 
 export function whatsappText({ project, variant, entries }) {
   const name = project?.name || "el servicio";
-  const source = variant === "dia" ? entries[entries.length - 1]?.body : project?.finalSummary || entries[entries.length - 1]?.body;
+  // día: el reporte de ESE día. final: el resumen del proyecto. avance: solo el resumen si existe (nunca el último reporte suelto).
+  const source = variant === "dia" ? entries[entries.length - 1]?.body : project?.finalSummary;
   let line = firstSentence(source);
   if (!line || line.length > 160 || RISKY.test(line)) line = "";
   const what = line ? `${line.charAt(0).toLowerCase()}${line.slice(1)}` : "";
@@ -84,6 +104,15 @@ export function whatsappText({ project, variant, entries }) {
     "Quedo atento a cualquier duda. ¡Gracias!",
   ].join("\n");
 }
+
+/** Todo texto que irá al PDF, para el chequeo final de datos internos: [{ label, text }]. */
+export const reportTexts = (report) => [
+  { label: "Título", text: report.title },
+  { label: "Resumen", text: report.summary },
+  { label: "Responsable técnico", text: report.technicianName },
+  ...(report.texts || []).map((t, i) => ({ label: `Trabajos realizados (${i + 1})`, text: t })),
+  ...(report.photos || []).map((p) => ({ label: `Pie de la foto ${p.number}`, text: p.caption })),
+];
 
 export async function copyText(text) {
   try {

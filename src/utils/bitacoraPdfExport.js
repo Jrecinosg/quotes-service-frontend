@@ -5,7 +5,8 @@ import { BitacoraPendientesDocument } from "../components/BitacoraPendientesPDF"
 import { bitacoraService } from "../services/bitacora.service";
 import { resizeImage, blobToDataUrl } from "./imageResize";
 import { downloadBlob, safeFilePart, groupPendings, isDone, todayGuatemala } from "./bitacora";
-import { assembleInformeReport, reportPhotos, selectEntries, VARIANTS } from "./bitacoraReport";
+import { assembleInformeReport, reportPhotos, reportTexts, selectEntries, photoCounts, photoFlagsComplete, VARIANTS } from "./bitacoraReport";
+import { scanFields, confirmInternalData } from "./bitacoraDetect";
 
 /**
  * INFORME AL CLIENTE (variante "dia" | "avance" | "final"). El documento se arma con una lista blanca
@@ -14,7 +15,14 @@ import { assembleInformeReport, reportPhotos, selectEntries, VARIANTS } from "./
  */
 export async function downloadInformePdf(project, { variant = "final", day } = {}, onProgress = () => {}) {
   const entries = selectEntries(project, { variant, day });
-  const wanted = entries.flatMap((e) => reportPhotos(e));
+  const strict = photoFlagsComplete(project);
+  const wanted = entries.flatMap((e) => reportPhotos(e, strict));
+
+  // Chequeo final (solo aviso) de TODO texto que irá al PDF, antes de gastar tiempo en las fotos.
+  const dummy = new Map(wanted.map((ph) => [ph.id, { src: "", width: 1, height: 1 }]));
+  const draft = assembleInformeReport({ project, variant, day, photoData: dummy });
+  if (!(await confirmInternalData(scanFields(reportTexts(draft)), "Generar así"))) return { cancelled: true };
+
   const photoData = new Map();
   let loaded = 0;
   for (const ph of wanted) {
@@ -30,6 +38,7 @@ export async function downloadInformePdf(project, { variant = "final", day } = {
   const report = assembleInformeReport({ project, variant, day, photoData });
   const blob = await pdf(React.createElement(BitacoraInformeDocument, { report })).toBlob();
   downloadBlob(blob, `Informe_${VARIANTS[variant].short}_${safeFilePart(report.clientName)}_${safeFilePart(project.name).slice(0, 40)}_${report.issuedOn}.pdf`);
+  return { cancelled: false, ...photoCounts(project, { variant, day }) };
 }
 
 /** PENDIENTES PARA EL PERSONAL por cliente (uso interno), agrupados por proyecto / soporte / sueltos. */

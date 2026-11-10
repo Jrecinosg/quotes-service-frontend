@@ -5,6 +5,7 @@ import { bitacoraService } from "../services/bitacora.service";
 import { quotationService } from "../services/quotation.service";
 import { formatQuotationId } from "../utils/formatters";
 import { toIsoDay, todayIso } from "../utils/bitacora";
+import { scanFields, confirmInternalData } from "../utils/bitacoraDetect";
 
 // Ventana "Nuevo proyecto / soporte" y "Editar" de la Bitácora (edición: se pasa `project`; el cliente no se cambia).
 // Reglas: tipo (Proyecto o Soporte mensual), cliente, cotización del cliente (opcional) y nombre;
@@ -66,6 +67,8 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
     if (!support && form.type === "VARIOS_DIAS" && form.endDate && form.endDate < form.startDate) next.endDate = "La fecha de fin no puede ser anterior al inicio.";
     setErrors(next);
     if (Object.keys(next).length) return;
+    // Aviso (no bloqueo): el nombre y el responsable salen en la portada del informe al cliente.
+    if (!(await confirmInternalData(scanFields([{ label: "Nombre", text: form.name }, { label: "Responsable técnico", text: form.technicianName }]), "Guardar así"))) return;
     setSaving(true);
     setServerError("");
     try {

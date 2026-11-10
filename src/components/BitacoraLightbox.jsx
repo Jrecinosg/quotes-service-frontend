@@ -5,6 +5,7 @@ import BitacoraPhoto from "./BitacoraPhoto";
 import BitacoraPhotoFlags from "./BitacoraPhotoFlags";
 import { bitacoraService } from "../services/bitacora.service";
 import Swal from "sweetalert2";
+import { scanFields, confirmInternalData } from "../utils/bitacoraDetect";
 
 // Visor de fotos de un día: flechas, Esc para cerrar, pie editable y quitar foto.
 export default function BitacoraLightbox({ photos, startIndex, onClose, onChanged }) {
@@ -33,6 +34,7 @@ export default function BitacoraLightbox({ photos, startIndex, onClose, onChange
   if (!photo) return null;
 
   const saveCaption = async () => {
+    if (!(await confirmInternalData(scanFields([{ label: "Pie de foto", text: caption }]), "Guardar así"))) return;
     setBusy(true);
     try {
       await bitacoraService.updatePhoto(photo.id, { caption: caption.trim() });

@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import { Download, FileText, MessageCircle, Lock } from "lucide-react";
 import Swal from "sweetalert2";
 import { downloadInformePdf, downloadPendientesPdf } from "../utils/bitacoraPdfExport";
-import { entryDays, selectEntries, whatsappText, copyText, VARIANTS } from "../utils/bitacoraReport";
+import { entryDays, selectEntries, whatsappText, copyText, photoCounts, VARIANTS } from "../utils/bitacoraReport";
+import { bitacoraService } from "../services/bitacora.service";
 import { formatShortDate, openPendings } from "../utils/bitacora";
 
 const toast = (title, icon = "success") => Swal.fire({ toast: true, position: "bottom-end", icon, title, showConfirmButton: false, timer: 2500 });
@@ -19,14 +20,56 @@ export default function BitacoraInformeMenu({ project }) {
   const chosenDay = day || days[0] || "";
   const open = openPendings(project).length;
 
+  // Antes de armar un informe o un texto se vuelve a pedir el proyecto al servidor (nunca datos viejos sin avisar).
+  const freshProject = async () => {
+    try {
+      return await bitacoraService.getProject(project.id);
+    } catch {
+      const r = await Swal.fire({
+        icon: "warning",
+        title: "No se pudo actualizar el proyecto",
+        text: "Puede haber cambios nuevos (fotos, textos) que no se verían. ¿Generar con los datos que ya tenías en pantalla?",
+        showCancelButton: true,
+        confirmButtonText: "Usar datos de la pantalla",
+        cancelButtonText: "Cancelar",
+        reverseButtons: true,
+        focusCancel: true,
+      });
+      return r.isConfirmed ? project : null;
+    }
+  };
+
+  // Servidor de versión vieja: sin `includeInReport` no se puede excluir nada; se avisa antes de seguir.
+  const confirmLegacyPhotos = async (data, variant) => {
+    const c = photoCounts(data, { variant, day: chosenDay });
+    if (c.strict || (c.included === 0 && c.excluded === 0)) return true;
+    const r = await Swal.fire({
+      icon: "warning",
+      title: "El servidor no informa qué fotos excluir",
+      text: "Se incluirían TODAS las fotos, también las que marcaste como «No incluir en el informe». Revisa antes de enviarlo al cliente.",
+      showCancelButton: true,
+      confirmButtonText: "Generar así",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
+      focusCancel: true,
+    });
+    return r.isConfirmed;
+  };
+
   const hasText = (variant) => selectEntries(project, { variant, day: chosenDay }).some((e) => e.body && e.body.trim());
 
   const download = async (variant) => {
     setBusy(variant);
-    setProgress("Preparando…");
+    setProgress("Actualizando datos…");
     try {
-      await downloadInformePdf(project, { variant, day: chosenDay }, ({ step, done, total }) => setProgress(total ? `${step} ${done}/${total}` : step));
-      toast("Informe descargado");
+      const data = await freshProject();
+      if (!data) return;
+      if (!(await confirmLegacyPhotos(data, variant))) return;
+      const res = await downloadInformePdf(data, { variant, day: chosenDay }, ({ step, done, total }) => setProgress(total ? `${step} ${done}/${total}` : step));
+      if (res.cancelled) return;
+      const photos = `${res.included} ${res.included === 1 ? "foto incluida" : "fotos incluidas"}`;
+      const excl = res.strict ? `, ${res.excluded} ${res.excluded === 1 ? "excluida" : "excluidas"}` : "";
+      toast(`Informe descargado: ${photos}${excl}`);
     } catch (err) {
       const r = await Swal.fire({ title: "No se pudo generar el PDF", text: err?.name === "PhotoDecodeError" ? err.message : "Revisa tu conexión e inténtalo de nuevo.", icon: "error", showCancelButton: true, confirmButtonText: "Reintentar", cancelButtonText: "Cerrar" });
       if (r.isConfirmed) { setBusy(null); download(variant); return; }
@@ -37,7 +80,9 @@ export default function BitacoraInformeMenu({ project }) {
   };
 
   const copy = async (variant) => {
-    const text = whatsappText({ project, variant, entries: selectEntries(project, { variant, day: chosenDay }) });
+    const data = await freshProject();
+    if (!data) return;
+    const text = whatsappText({ project: data, variant, entries: selectEntries(data, { variant, day: chosenDay }) });
     const ok = await copyText(text);
     toast(ok ? "Texto copiado, pégalo en WhatsApp" : "No se pudo copiar el texto", ok ? "success" : "error");
   };
@@ -88,7 +133,7 @@ export default function BitacoraInformeMenu({ project }) {
           </label>
         ))}
         {row("avance")}
-        {row("final")}
+        {project.status === "TERMINADO" ? row("final") : <p className="text-xs text-[#9FB0C4]">El informe final se habilita al cerrar el proyecto.</p>}
       </div>
       {busy && busy !== "pendientes" && <p className="text-xs text-[#9FB0C4] text-center mt-3" role="status" aria-live="polite">{progress} · no cierres la página</p>}
       <div className="mt-4 pt-3 border-t border-white/10">
