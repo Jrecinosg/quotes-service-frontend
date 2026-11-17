@@ -33,6 +33,19 @@ export default function Landing() {
     };
     anchorLinks.forEach((a) => a.addEventListener("click", onAnchorClick));
 
+    // Entrada por enlace directo (#nosotros, etc.): main.jsx guardó la sección; vamos a ella.
+    let anclaTimer;
+    try {
+      const ancla = sessionStorage.getItem("gac-ancla");
+      if (ancla) {
+        anclaTimer = setTimeout(() => {
+          sessionStorage.removeItem("gac-ancla");
+          const el = document.getElementById(ancla);
+          if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - ((header ? header.offsetHeight : 0) + 16), behavior: "auto" });
+        }, 120);
+      }
+    } catch { /* sin almacenamiento */ }
+
     const revealObservers = [];
     document.querySelectorAll(".reveal").forEach((el) => {
       const io = new IntersectionObserver((entries) => {
@@ -63,6 +76,7 @@ export default function Landing() {
     sections.forEach((s) => secIO.observe(s));
 
     return () => {
+      clearTimeout(anclaTimer);
       window.removeEventListener("scroll", onScroll);
       anchorLinks.forEach((a) => a.removeEventListener("click", onAnchorClick));
       revealObservers.forEach((io) => io.disconnect());
