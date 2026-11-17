@@ -78,21 +78,21 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-orange-50 p-4">
-      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg border border-blue-100">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[#060F1C] bg-[radial-gradient(60%_55%_at_85%_0%,rgba(0,123,255,0.28),transparent_70%),radial-gradient(45%_45%_at_0%_100%,rgba(255,138,0,0.14),transparent_70%)]">
+      <div className="card max-w-md w-full p-8 rounded-2xl shadow-2xl shadow-black/50 border-white/10">
 
         <div className="text-center mb-6">
-          <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center mx-auto mb-3 p-2">
+          <div className="w-16 h-16 rounded-2xl bg-white/95 shadow-sm border border-white/10 flex items-center justify-center mx-auto mb-3 p-2">
             <img src={logo} alt="Grupo AC" className="w-full h-full object-contain" />
           </div>
-          <h2 className="font-display text-2xl font-bold text-gray-800">
+          <h2 className="font-display text-2xl font-bold text-[#E8F0F8]">
             {isRegistering ? "Crear Cuenta" : "Bienvenido de nuevo"}
           </h2>
-          <p className="text-sm mt-1 font-semibold text-transparent bg-clip-text bg-brand-gradient">Plataforma Grupo AC</p>
+          <p className="text-sm mt-1 font-semibold text-brand-cyan">Plataforma Grupo AC</p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg flex items-center gap-2 border border-red-100">
+          <div className="mb-4 p-3 bg-red-500/10 text-red-300 text-sm rounded-lg flex items-center gap-2 border border-red-500/30">
             <AlertCircle size={16} />
             {error}
           </div>
@@ -101,15 +101,15 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {isRegistering && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
+              <label className="block text-sm font-medium text-[#8DA2B8] mb-1">Nombre Completo</label>
               <div className="relative">
-                <Type className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+                <Type className="absolute left-3 top-3 text-[#6b7d92] w-5 h-5" />
                 <input
                   type="text"
                   required={isRegistering}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue outline-none transition-all"
+                  className="field pl-10 pr-4"
                   placeholder="Juan Pérez"
                 />
               </div>
@@ -117,46 +117,46 @@ export default function Login() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+            <label className="block text-sm font-medium text-[#8DA2B8] mb-1">Correo Electrónico</label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+              <Mail className="absolute left-3 top-3 text-[#6b7d92] w-5 h-5" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 readOnly={!!invitedEmail}
-                className={`w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue outline-none transition-all ${invitedEmail ? "bg-gray-100 text-gray-600 cursor-not-allowed" : ""}`}
+                className={`field pl-10 pr-4 ${invitedEmail ? "opacity-70 cursor-not-allowed" : ""}`}
                 placeholder="ejemplo@empresa.com"
               />
             </div>
             {invitedEmail && (
-              <p className="text-xs text-gray-500 mt-1">Esta invitación es para este correo específico.</p>
+              <p className="text-xs text-[#8DA2B8] mt-1">Esta invitación es para este correo específico.</p>
             )}
           </div>
 
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="block text-sm font-medium text-gray-700">Contraseña</label>
+              <label className="block text-sm font-medium text-[#8DA2B8]">Contraseña</label>
 
               {/* LINK: Olvidé mi contraseña -visible tambien en registro, por si
                   el correo ya tenia cuenta y la contraseña no coincide */}
               <button
                 type="button"
                 onClick={handleForgotPassword}
-                className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors"
+                className="text-xs font-semibold text-brand-cyan hover:text-white transition-colors"
               >
                 ¿Olvidaste tu contraseña?
               </button>
             </div>
             <div className="relative">
-              <Lock className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+              <Lock className="absolute left-3 top-3 text-[#6b7d92] w-5 h-5" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue outline-none transition-all"
+                className="field pl-10 pr-4"
                 placeholder="••••••"
               />
             </div>
@@ -172,30 +172,30 @@ export default function Login() {
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-200"></div>
+            <div className="w-full border-t border-white/10"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">O continúa con</span>
+            <span className="px-2 bg-[#10263F] text-[#8DA2B8]">O continúa con</span>
           </div>
         </div>
 
         <button
           onClick={loginWithGoogle}
           type="button"
-          className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-2.5 px-4 rounded-lg transition-all"
+          className="btn btn-secondary w-full gap-3 py-2.5 px-4"
         >
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
           Google
         </button>
 
-        <p className="text-center text-sm text-gray-600 mt-6">
+        <p className="text-center text-sm text-[#8DA2B8] mt-6">
           {isRegistering ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?"}{" "}
           <button
             onClick={() => {
               setIsRegistering(!isRegistering);
               setError("");
             }}
-            className="text-blue-600 hover:text-blue-800 font-semibold"
+            className="text-brand-cyan hover:text-white font-semibold transition-colors"
           >
             {isRegistering ? "Inicia Sesión" : "Regístrate aquí"}
           </button>

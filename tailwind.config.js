@@ -18,7 +18,10 @@ export default {
           cyan: '#00C2FF',
           orange: '#FF8A00',
           orangeDeep: '#FF5A1F',
+          navy950: '#060F1C',   // fondo de portada/login (profundidad bajo el navy)
         },
+        // Semanticos de estado (chips)
+        state: { ok: '#22C3A6', warn: '#F5B94A' },
         surface: {
           base: '#0A1A2F',
           card: '#10263F',
@@ -28,6 +31,8 @@ export default {
         ink: {
           secondary: '#5B6B7C',
           light: '#D9E6F2',
+          text: '#E8F0F8',
+          muted: '#8DA2B8',   // texto secundario sobre navy (contraste >= 4.5:1)
         },
       },
       // Tokens de movimiento aprobados (design-library/tokens.json): 100/150/240/400 ms

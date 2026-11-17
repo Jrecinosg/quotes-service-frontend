@@ -62,137 +62,8 @@ export default function Landing() {
     }, { threshold: 0.5 });
     sections.forEach((s) => secIO.observe(s));
 
-    // ---- hero canvas: animated light streaks ----
-    const canvas = document.getElementById("hero-canvas");
-    const ctx = canvas.getContext("2d");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let w, h, dpr;
-
-    const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      w = canvas.clientWidth; h = canvas.clientHeight;
-      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    window.addEventListener("resize", resize);
-    resize();
-
-    const cubicPoint = (t, p0, p1, p2, p3) => {
-      const it = 1 - t;
-      return {
-        x: it * it * it * p0.x + 3 * it * it * t * p1.x + 3 * it * t * t * p2.x + t * t * t * p3.x,
-        y: it * it * it * p0.y + 3 * it * it * t * p1.y + 3 * it * t * t * p2.y + t * t * t * p3.y,
-      };
-    };
-
-    const streaksDef = [
-      { pts: [[-.05, .62], [.22, .18], [.48, .7], [.78, .12]], color: [31, 140, 255], speed: .00013, phase: .05, w: 3.0 },
-      { pts: [[-.08, .9], [.28, .48], [.55, 1.02], [.9, .34]], color: [255, 106, 0], speed: .000105, phase: .42, w: 2.6 },
-      { pts: [[-.06, .32], [.3, -.05], [.6, .42], [1.02, -.08]], color: [111, 212, 255], speed: .00015, phase: .7, w: 2.1 },
-      { pts: [[-.1, 1.08], [.24, .72], [.5, 1.15], [.95, .62]], color: [255, 176, 51], speed: .00011, phase: .2, w: 2.0 },
-      { pts: [[-.05, .48], [.35, .2], [.62, .6], [1.05, .08]], color: [31, 140, 255], speed: .000095, phase: .85, w: 1.8 },
-      { pts: [[-.08, .2], [.18, .55], [.5, .05], [1.05, .42]], color: [255, 106, 0], speed: .00012, phase: .55, w: 1.7 },
-      { pts: [[-.06, .78], [.32, 1.05], [.58, .55], [1.0, .95]], color: [111, 212, 255], speed: .0001, phase: .15, w: 1.5 },
-    ];
-
-    const streaks = streaksDef.map((s) => ({
-      p0: { x: s.pts[0][0], y: s.pts[0][1] }, p1: { x: s.pts[1][0], y: s.pts[1][1] },
-      p2: { x: s.pts[2][0], y: s.pts[2][1] }, p3: { x: s.pts[3][0], y: s.pts[3][1] },
-      color: s.color, speed: s.speed, phase: s.phase, width: s.w,
-    }));
-
-    // Sprites de brillo pre-dibujados (uno por color unico) -antes cada punto
-    // de cada estela se pintaba con shadowBlur en vivo (7 estelas x ~23
-    // puntos = ~160 sombras recalculadas por cuadro), que en un celular
-    // real se traduce en cuadros perdidos y se ve "trabado"/robotico. Un
-    // sprite dibujado UNA sola vez y reutilizado con drawImage es muchisimo
-    // mas barato -es la tecnica estandar para brillos animados en canvas.
-    const SPRITE_SIZE = 96;
-    const glowSpriteCache = new Map();
-    const getGlowSprite = (color) => {
-      const key = color.join(',');
-      if (glowSpriteCache.has(key)) return glowSpriteCache.get(key);
-      const off = document.createElement('canvas');
-      off.width = off.height = SPRITE_SIZE;
-      const octx = off.getContext('2d');
-      const c = SPRITE_SIZE / 2;
-      const grad = octx.createRadialGradient(c, c, 0, c, c, c);
-      grad.addColorStop(0, `rgba(${color[0]},${color[1]},${color[2]},1)`);
-      grad.addColorStop(0.4, `rgba(${color[0]},${color[1]},${color[2]},.55)`);
-      grad.addColorStop(1, `rgba(${color[0]},${color[1]},${color[2]},0)`);
-      octx.fillStyle = grad;
-      octx.fillRect(0, 0, SPRITE_SIZE, SPRITE_SIZE);
-      glowSpriteCache.set(key, off);
-      return off;
-    };
-    streaks.forEach((s) => { s.sprite = getGlowSprite(s.color); });
-
-    const drawStatic = () => {
-      ctx.clearRect(0, 0, w, h);
-      streaks.forEach((s) => {
-        ctx.beginPath();
-        const steps = 48;
-        for (let i = 0; i <= steps; i++) {
-          const pt = cubicPoint(i / steps, s.p0, s.p1, s.p2, s.p3);
-          const x = pt.x * w, y = pt.y * h;
-          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        }
-        ctx.strokeStyle = `rgba(${s.color[0]},${s.color[1]},${s.color[2]},.32)`;
-        ctx.lineWidth = s.width;
-        ctx.stroke();
-      });
-    };
-
-    const drawFrame = (t) => {
-      ctx.clearRect(0, 0, w, h);
-      ctx.globalCompositeOperation = "lighter";
-      streaks.forEach((s) => {
-        ctx.beginPath();
-        const steps = 48;
-        for (let i = 0; i <= steps; i++) {
-          const pt = cubicPoint(i / steps, s.p0, s.p1, s.p2, s.p3);
-          const x = pt.x * w, y = pt.y * h;
-          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        }
-        ctx.strokeStyle = `rgba(${s.color[0]},${s.color[1]},${s.color[2]},.32)`;
-        ctx.lineWidth = s.width;
-        ctx.stroke();
-
-        const tt = (t * s.speed + s.phase) % 1;
-        const tailLen = 16;
-        for (let k = tailLen; k >= 0; k--) {
-          let tk = tt - k * 0.014;
-          if (tk < 0) tk += 1;
-          const p = cubicPoint(tk, s.p0, s.p1, s.p2, s.p3);
-          const alpha = Math.pow(1 - k / tailLen, 1.4);
-          const r = s.width * (2.2 + (1 - k / tailLen) * 4.5);
-          ctx.globalAlpha = alpha;
-          ctx.drawImage(s.sprite, p.x * w - r, p.y * h - r, r * 2, r * 2);
-        }
-        ctx.globalAlpha = 1;
-      });
-      ctx.globalCompositeOperation = "source-over";
-    };
-
-    let rafId = null;
-    let cancelled = false;
-
-    if (reducedMotion) {
-      drawStatic();
-    } else {
-      const loop = (t) => {
-        if (cancelled) return;
-        drawFrame(t);
-        rafId = requestAnimationFrame(loop);
-      };
-      rafId = requestAnimationFrame(loop);
-    }
-
     return () => {
-      cancelled = true;
-      if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", resize);
       anchorLinks.forEach((a) => a.removeEventListener("click", onAnchorClick));
       revealObservers.forEach((io) => io.disconnect());
       secIO.disconnect();
@@ -218,11 +89,11 @@ export default function Landing() {
             <a href="#contacto">Contacto</a>
           </nav>
           <div className="nav-actions">
-            <Link className="btn-ghost" to="/login" aria-label="Ingresar al portal de clientes y colaboradores">
+            <Link className="btn btn-secondary" to="/login" aria-label="Ingresar al portal de clientes y colaboradores">
               <svg viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="10" width="16" height="10" rx="1"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
-              Ingresar
+              Portal
             </Link>
-            <a className="btn-cta" href="#contacto">Cotiza tu proyecto</a>
+            <a className="btn btn-cta" href="#contacto">Cotiza tu proyecto</a>
           </div>
         </div>
       </header>
@@ -237,57 +108,59 @@ export default function Landing() {
 
       <main>
         <section className="hero" id="inicio">
-          <canvas id="hero-canvas"></canvas>
-          <div className="aurora a1"></div>
-          <div className="aurora a2"></div>
-          <div className="aurora a3"></div>
-          <div className="hero-hexes"></div>
-          <div className="hero-vignette"></div>
-
           <div className="wrap hero-grid">
             <div>
-              <span className="eyebrow">Integrador de telecomunicaciones y seguridad electrónica</span>
-              <h1>
-                <span>PROTEGEMOS</span>
-                <span className="c-blue">Y CONECTAMOS</span>
-                <span className="c-orange">TU OPERACIÓN.</span>
+              <span className="eyebrow mono rise" style={{ "--i": 0 }}>Integrador de telecomunicaciones y seguridad electrónica</span>
+              <h1 className="rise" style={{ "--i": 1 }}>
+                <span>Protegemos</span>
+                <span className="c-blue">y conectamos</span>
+                <span className="c-warm">tu operación.</span>
               </h1>
-              <p className="lede">Videovigilancia, control de acceso, enlaces de conectividad y cableado estructurado — diseñados, instalados y soportados por el mismo equipo, en todo Guatemala.</p>
-              <div className="hero-cta-row">
-                <a className="btn-cta" href="#contacto">Cotiza tu proyecto</a>
-                <a className="link-scroll" href="#soluciones">
+              <p className="lede rise" style={{ "--i": 2 }}>Videovigilancia, control de acceso, enlaces de conectividad y cableado estructurado — diseñados, instalados y soportados por el mismo equipo, en todo Guatemala.</p>
+              <div className="hero-cta-row rise" style={{ "--i": 3 }}>
+                <a className="btn btn-primary btn-hero-primary" href="#contacto">Cotiza tu proyecto</a>
+                <a className="btn btn-secondary" href="#soluciones">
                   Conoce nuestras soluciones
                   <svg viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
                 </a>
               </div>
             </div>
 
-            <div className="quick-panel reveal">
-              <div className="qp-head"><span>Áreas de servicio</span></div>
-              <div className="qp-grid">
-                <div className="qp-item">
-                  <div className="qp-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"></rect><circle cx="9" cy="12" r="3"></circle><path d="M16 10l6-3.5v11L16 14"></path></svg></div>
-                  <div className="lbl">Videovigilancia</div>
+            <div className="ops rise" style={{ "--i": 2 }} role="img" aria-label="Ejemplo ilustrativo de un centro de operación: plano con cámaras y zonas de cobertura">
+              <div className="ops-top"><span className="dot"></span>Centro de operación · ejemplo ilustrativo</div>
+              <svg className="plan" viewBox="0 0 420 210" fill="none" aria-hidden="true">
+                <defs>
+                  <radialGradient id="gac-cone" cx="0" cy="0" r="1"><stop offset="0" stopColor="#00C2FF" stopOpacity=".55" /><stop offset="1" stopColor="#00C2FF" stopOpacity="0" /></radialGradient>
+                  <radialGradient id="gac-coneW" cx="0" cy="0" r="1"><stop offset="0" stopColor="#F5B94A" stopOpacity=".6" /><stop offset="1" stopColor="#F5B94A" stopOpacity="0" /></radialGradient>
+                </defs>
+                <rect x="10" y="10" width="400" height="190" rx="10" stroke="rgba(255,255,255,.22)" strokeWidth="2" />
+                <path d="M150 10V120M150 120H10M270 10V90M270 90H410M270 90V200M150 160V200" stroke="rgba(255,255,255,.13)" strokeWidth="2" />
+                <g fontFamily="IBM Plex Mono,monospace" fontSize="8" letterSpacing="1.2" fill="#6F86A0">
+                  <text x="22" y="28">RECEPCIÓN</text><text x="162" y="28">BODEGA 2</text><text x="282" y="28">PASILLO A</text><text x="22" y="190">ENTRADA</text><text x="282" y="190">PARQUEO</text>
+                </g>
+                <path className="fov" d="M80 60 L40 20 A60 60 0 0 1 120 20Z" fill="url(#gac-cone)" style={{ "--d": 0 }} />
+                <path className="fov" d="M210 60 L170 110 A60 60 0 0 0 250 110Z" fill="url(#gac-cone)" style={{ "--d": 1 }} />
+                <path className="fov" d="M340 40 L290 70 A60 60 0 0 0 390 70Z" fill="url(#gac-cone)" style={{ "--d": 2 }} />
+                <path className="fov" d="M60 170 L20 130 A60 60 0 0 1 100 130Z" fill="url(#gac-cone)" style={{ "--d": 3 }} />
+                <path className="fov" d="M340 140 L290 175 A60 60 0 0 0 390 175Z" fill="url(#gac-coneW)" style={{ "--d": 4 }} />
+                <g fill="#007BFF" stroke="#fff" strokeWidth="1.5"><circle cx="80" cy="60" r="5" /><circle cx="210" cy="60" r="5" /><circle cx="340" cy="40" r="5" /><circle cx="60" cy="170" r="5" /></g>
+                <circle cx="340" cy="140" r="5" fill="#F5B94A" stroke="#fff" strokeWidth="1.5" />
+                <circle className="ring" cx="340" cy="140" r="5" stroke="#F5B94A" strokeWidth="1.5" />
+                <g className="walker"><rect x="-9" y="-13" width="18" height="26" rx="3" stroke="#22C3A6" strokeWidth="1.5" /><circle r="3" fill="#22C3A6" /></g>
+              </svg>
+              <div className="ops-grid">
+                <div className="mini">
+                  <h4>Enlace sede ↔ sucursal</h4>
+                  <svg className="topo" viewBox="0 0 260 84" fill="none" aria-hidden="true">
+                    <defs><linearGradient id="gac-g"><stop stopColor="#00C2FF" /><stop offset="1" stopColor="#FF8A00" /></linearGradient></defs>
+                    <path d="M20 62 C 80 62, 90 22, 130 22 S 190 62, 240 62" stroke="rgba(255,255,255,.14)" strokeWidth="2" />
+                    <path className="pulse" d="M20 62 C 80 62, 90 22, 130 22 S 190 62, 240 62" stroke="url(#gac-g)" strokeWidth="3" strokeLinecap="round" />
+                    <circle cx="20" cy="62" r="6" fill="#007BFF" /><circle cx="130" cy="22" r="6" fill="#00C2FF" /><circle cx="240" cy="62" r="6" fill="#FF8A00" />
+                  </svg>
                 </div>
-                <div className="qp-item">
-                  <div className="qp-icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path><circle cx="12" cy="15" r="1.6"></circle></svg></div>
-                  <div className="lbl">Control de acceso</div>
-                </div>
-                <div className="qp-item">
-                  <div className="qp-icon"><svg viewBox="0 0 24 24"><path d="M2 18a12 12 0 0 1 20 0"></path><path d="M6 18a8 8 0 0 1 12 0"></path><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"></circle></svg></div>
-                  <div className="lbl">Enlaces y conectividad</div>
-                </div>
-                <div className="qp-item">
-                  <div className="qp-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="12" r="3"></circle><line x1="9" y1="12" x2="15" y2="12"></line><path d="M6 9V6M18 9V6"></path></svg></div>
-                  <div className="lbl">Redes estructuradas</div>
-                </div>
+                <div className="mini"><h4>Puertas con acceso</h4><div className="n">12<small>de 12 en línea</small></div></div>
               </div>
             </div>
-          </div>
-
-          <div className="scroll-cue">
-            DESLIZA
-            <svg viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"></path></svg>
           </div>
         </section>
 
@@ -315,31 +188,35 @@ export default function Landing() {
         <section id="soluciones">
           <div className="wrap">
             <div className="section-head reveal">
-              <span className="eyebrow blue">Qué hacemos</span>
+              <span className="eyebrow mono">Qué hacemos</span>
               <h2>Cuatro soluciones, una sola arquitectura</h2>
               <p>Cada línea se diseña pensando en cómo se conecta con las otras — no como proyectos aislados que después alguien tiene que hacer hablar entre sí.</p>
             </div>
 
             <div className="solutions-grid reveal">
               <div className="sol-card">
+                <svg className="go" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
                 <div className="sol-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"></rect><circle cx="9" cy="12" r="3"></circle><path d="M16 10l6-3.5v11L16 14"></path></svg></div>
                 <span className="tag">Sistema 01</span>
                 <h3>Videovigilancia</h3>
                 <p>Cámaras IP, analítica de video y monitoreo centralizado para ver lo que pasa en tu operación, en vivo y en el histórico.</p>
               </div>
               <div className="sol-card">
+                <svg className="go" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
                 <div className="sol-icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path><circle cx="12" cy="15" r="1.6"></circle></svg></div>
                 <span className="tag">Sistema 02</span>
                 <h3>Control de acceso</h3>
                 <p>Biometría, tarjetas y control de puertas o torniquetes, integrado con horarios y nómina para saber quién entra y cuándo.</p>
               </div>
               <div className="sol-card">
+                <svg className="go" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
                 <div className="sol-icon"><svg viewBox="0 0 24 24"><path d="M2 18a12 12 0 0 1 20 0"></path><path d="M6 18a8 8 0 0 1 12 0"></path><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"></circle></svg></div>
                 <span className="tag">Sistema 03</span>
                 <h3>Enlaces y conectividad</h3>
                 <p>Radioenlaces y fibra óptica para conectar sedes, bodegas y sucursales sin depender de un único proveedor de internet.</p>
               </div>
               <div className="sol-card">
+                <svg className="go" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
                 <div className="sol-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="12" r="3"></circle><line x1="9" y1="12" x2="15" y2="12"></line><path d="M6 9V6M18 9V6"></path></svg></div>
                 <span className="tag">Sistema 04</span>
                 <h3>Redes estructuradas</h3>
@@ -352,48 +229,55 @@ export default function Landing() {
         <section id="nosotros">
           <div className="wrap nosotros">
             <div className="nosotros-copy reveal">
-              <span className="eyebrow blue">Quiénes somos</span>
-              <h2 style={{ marginTop: 12 }}>Un solo equipo detrás de toda tu infraestructura</h2>
+              <span className="eyebrow mono">Quiénes somos</span>
+              <h2>Un solo equipo detrás de toda tu infraestructura</h2>
               <p>Grupo AC es una empresa guatemalteca de telecomunicaciones y seguridad electrónica. Diseñamos, instalamos y damos soporte a los sistemas que mantienen a tu negocio funcionando y protegido: cámaras, accesos, enlaces y redes.</p>
               <p>Trabajamos como canal autorizado de las marcas del sector, lo que significa equipos certificados y garantía de fabricante vigente en cada proyecto que entregamos.</p>
             </div>
             <div className="nosotros-art reveal">
-              <div className="glow"></div>
-              <div className="ring r1"></div>
-              <div className="ring r2"></div>
               <img src={logoOscuro} alt="Grupo AC" />
             </div>
           </div>
         </section>
 
         <section id="trabajo">
-          <div className="wrap">
-            <div className="section-head reveal">
-              <span className="eyebrow blue">Nuestro trabajo</span>
+          <div className="wrap two">
+            <div className="reveal">
+              <span className="eyebrow mono">Nuestro trabajo</span>
               <h2>Sectores donde operamos</h2>
-              <p>La misma arquitectura de video, accesos, enlaces y cableado se adapta a distintos tipos de operación.</p>
+              <p className="section-sub" style={{ color: "#8DA2B8", maxWidth: "40em" }}>La misma arquitectura de video, accesos, enlaces y cableado se adapta a distintos tipos de operación.</p>
+              <div className="sectors">
+                <div className="sector">
+                  <svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"></path></svg>
+                  <h3>Industria y manufactura</h3>
+                  <p>Plantas, bodegas y líneas de producción.</p>
+                </div>
+                <div className="sector">
+                  <svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"></path><path d="M9 21v-6h6v6"></path></svg>
+                  <h3>Comercios y retail</h3>
+                  <p>Tiendas y cadenas con varias sucursales.</p>
+                </div>
+                <div className="sector">
+                  <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"></rect><path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1"></path></svg>
+                  <h3>Corporativo y oficinas</h3>
+                  <p>Edificios corporativos y centros de negocio.</p>
+                </div>
+                <div className="sector">
+                  <svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="12" rx="1"></rect><path d="M6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"></path><path d="M2 13h20"></path></svg>
+                  <h3>Bodegas y logística</h3>
+                  <p>Centros de distribución y almacenamiento.</p>
+                </div>
+              </div>
             </div>
-            <div className="sectors reveal">
-              <div className="sector">
-                <svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"></path></svg>
-                <h3>Industria y manufactura</h3>
-                <p>Plantas, bodegas y líneas de producción.</p>
+            <div className="reveal">
+              <div className="portal" role="img" aria-label="Ejemplo ilustrativo del portal de clientes con solicitudes y garantías">
+                <div className="bar"><i></i><i></i><i></i></div>
+                <h4>Portal de clientes · tus solicitudes</h4>
+                <div className="req"><div className="t">Revisión de cámara de parqueo<small>Solicitud de servicio</small></div><span className="pill p-new">Nueva</span></div>
+                <div className="req"><div className="t">Mantenimiento de enlace<small>Solicitud de servicio</small></div><span className="pill p-wait">En proceso</span></div>
+                <div className="req"><div className="t">Cambio de lector biométrico<small>Garantía</small></div><span className="pill p-ok">Resuelta</span></div>
               </div>
-              <div className="sector">
-                <svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"></path><path d="M9 21v-6h6v6"></path></svg>
-                <h3>Comercios y retail</h3>
-                <p>Tiendas y cadenas con varias sucursales.</p>
-              </div>
-              <div className="sector">
-                <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"></rect><path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1"></path></svg>
-                <h3>Corporativo y oficinas</h3>
-                <p>Edificios corporativos y centros de negocio.</p>
-              </div>
-              <div className="sector">
-                <svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="12" rx="1"></rect><path d="M6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"></path><path d="M2 13h20"></path></svg>
-                <h3>Bodegas y logística</h3>
-                <p>Centros de distribución y almacenamiento.</p>
-              </div>
+              <p className="portal-cap">Ejemplo ilustrativo del portal</p>
             </div>
           </div>
         </section>
@@ -401,7 +285,7 @@ export default function Landing() {
         <section id="proceso">
           <div className="wrap">
             <div className="section-head reveal">
-              <span className="eyebrow blue">Cómo trabajamos</span>
+              <span className="eyebrow mono">Cómo trabajamos</span>
               <h2>De la visita técnica al soporte continuo</h2>
             </div>
             <div className="process reveal">
@@ -421,7 +305,8 @@ export default function Landing() {
                 <p>Cuéntanos qué necesita tu operación y te contactamos para agendar una visita de diagnóstico.</p>
               </div>
               <div className="contact-links">
-                <a href="mailto:info@grupo-ac.com.gt">info@grupo-ac.com.gt</a>
+                <a className="btn btn-primary" href="mailto:info@grupo-ac.com.gt">Pedir visita de diagnóstico</a>
+                <a className="btn btn-secondary" href="mailto:info@grupo-ac.com.gt">info@grupo-ac.com.gt</a>
                 <span className="domain">grupo-ac.com.gt</span>
               </div>
             </div>
