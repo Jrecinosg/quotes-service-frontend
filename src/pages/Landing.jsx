@@ -152,10 +152,10 @@ export default function Landing() {
                 <div className="mini">
                   <h4>Enlace sede ↔ sucursal</h4>
                   <svg className="topo" viewBox="0 0 260 84" fill="none" aria-hidden="true">
-                    <defs><linearGradient id="gac-g"><stop stopColor="#00C2FF" /><stop offset="1" stopColor="#FF8A00" /></linearGradient></defs>
+                    <defs><linearGradient id="gac-g"><stop stopColor="#00C2FF" /><stop offset="1" stopColor="#007BFF" /></linearGradient></defs>
                     <path d="M20 62 C 80 62, 90 22, 130 22 S 190 62, 240 62" stroke="rgba(255,255,255,.14)" strokeWidth="2" />
                     <path className="pulse" d="M20 62 C 80 62, 90 22, 130 22 S 190 62, 240 62" stroke="url(#gac-g)" strokeWidth="3" strokeLinecap="round" />
-                    <circle cx="20" cy="62" r="6" fill="#007BFF" /><circle cx="130" cy="22" r="6" fill="#00C2FF" /><circle cx="240" cy="62" r="6" fill="#FF8A00" />
+                    <circle cx="20" cy="62" r="6" fill="#007BFF" /><circle cx="130" cy="22" r="6" fill="#00C2FF" /><circle cx="240" cy="62" r="6" fill="#22C3A6" />
                   </svg>
                 </div>
                 <div className="mini"><h4>Puertas con acceso</h4><div className="n">12<small>de 12 en línea</small></div></div>

@@ -31,6 +31,7 @@
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-x: clip; /* clip no crea contenedor de scroll: necesario para animation-timeline: view() */
 }
 .gac-landing * { box-sizing: border-box; }
 .gac-landing img { max-width: 100%; display: block; }
@@ -54,7 +55,7 @@
 .gac-landing .btn { height: 44px; min-height: 44px; padding: 0 20px; border-radius: 12px; font-size: .9rem; }
 .gac-landing .btn-cta {
   /* ÚNICO naranja de la portada: conversión */
-  color: #fff; background: linear-gradient(100deg, #FF7A00, #FF9D2E);
+  color: #0A1A2F; background: linear-gradient(100deg, #FF7A00, #FF9D2E);
   box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 10px 24px -12px rgba(255,138,0,.8);
 }
 .gac-landing .btn-cta:hover:not(:disabled) { box-shadow: 0 1px 0 rgba(255,255,255,.3) inset, 0 14px 28px -12px rgba(255,138,0,.9); }
@@ -97,7 +98,7 @@
   content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
   background:
     radial-gradient(60% 55% at 85% 0%, rgba(0,123,255,.30), transparent 70%),
-    radial-gradient(45% 45% at 0% 100%, rgba(255,138,0,.16), transparent 70%);
+    radial-gradient(45% 45% at 0% 100%, rgba(0,194,255,.12), transparent 70%);
 }
 .gac-landing .hero::after {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
@@ -211,7 +212,7 @@
 .gac-landing .req .t { flex: 1; font-weight: 600; }
 .gac-landing .req small { display: block; font-weight: 400; color: #64748b; }
 .gac-landing .pill { padding: 2px 9px; border-radius: 99px; font-size: .68rem; font-weight: 700; white-space: nowrap; }
-.gac-landing .p-ok { background: #d9f5ee; color: #0b7d68; }
+.gac-landing .p-ok { background: #d9f5ee; color: #086A58; }
 .gac-landing .p-wait { background: #fdefd1; color: #8a5a00; }
 .gac-landing .p-new { background: #dcebff; color: #0a58c4; }
 
@@ -220,7 +221,7 @@
 .gac-landing .process { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 56px; position: relative; }
 .gac-landing .process::before, .gac-landing .process::after { content: ""; position: absolute; left: 0; top: 17px; height: 2px; border-radius: 2px; }
 .gac-landing .process::before { right: 0; background: var(--line2); }
-.gac-landing .process::after { width: 100%; background: linear-gradient(90deg, var(--blue), var(--orange)); transform-origin: left; }
+.gac-landing .process::after { width: 100%; background: linear-gradient(90deg, var(--blue), var(--cyan, #00C2FF)); transform-origin: left; }
 @supports (animation-timeline: view()) {
   .gac-landing .process::after { transform: scaleX(0); animation: gac-grow linear forwards; animation-timeline: view(); animation-range: entry 30% cover 55%; }
 }
@@ -230,7 +231,7 @@
   width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; position: relative; z-index: 1;
   background: var(--n900); border: 2px solid var(--blue); font: 600 .85rem var(--mono);
 }
-.gac-landing .step:last-child .idx { border-color: var(--orange); }
+.gac-landing .step:last-child .idx { border-color: #00C2FF; }
 .gac-landing .step h3 { font-size: 1.15rem; margin: 18px 0 6px; letter-spacing: -.015em; }
 .gac-landing .step p { color: var(--mute); font-size: .9rem; }
 
@@ -239,7 +240,7 @@
 .gac-landing .contact-panel {
   border-radius: 24px; border: 1px solid var(--line2); padding: 48px;
   display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center;
-  background: radial-gradient(80% 120% at 100% 0%, rgba(0,123,255,.28), transparent 60%), radial-gradient(60% 100% at 0% 100%, rgba(255,138,0,.16), transparent 60%), var(--n800);
+  background: radial-gradient(80% 120% at 100% 0%, rgba(0,123,255,.28), transparent 60%), radial-gradient(60% 100% at 0% 100%, rgba(0,194,255,.12), transparent 60%), var(--n800);
 }
 .gac-landing .contact-panel h2 { margin-top: 0; }
 .gac-landing .contact-panel p { color: var(--mute); margin-top: 10px; max-width: 40em; }
@@ -291,6 +292,7 @@
   .gac-landing .nav-actions .btn-cta { display: none; }
   .gac-landing .nav-actions .btn { padding: 0 14px; }
   .gac-landing .hero-cta-row .btn-hero-primary {
+    color: #0A1A2F;
     background: linear-gradient(100deg, #FF7A00, #FF9D2E);
     box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 10px 24px -12px rgba(255,138,0,.8);
   }
@@ -302,3 +304,6 @@
   .gac-landing .reveal { opacity: 1; transform: none; }
   .gac-landing .process::after { transform: none; }
 }
+
+/* Contraste AA: degradado azul más profundo bajo texto blanco */
+.gac-landing .btn-primary { background: linear-gradient(100deg, #0057D9, #0A62FF); color: #fff; }
