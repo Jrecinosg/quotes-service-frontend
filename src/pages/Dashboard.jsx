@@ -3,8 +3,8 @@ import { quotationService } from "../services/quotation.service";
 import { requestService } from "../services/request.service";
 import { dashboardService } from "../services/dashboard.service";
 import {
-    FileText, ClipboardList, ArrowRight, Plus, ShieldCheck, Users, TrendingUp,
-    ArrowUpRight, ArrowDownRight, Sparkles, Video, KeyRound, Wifi, Network, Activity, Quote
+    FileText, ClipboardList, ArrowRight, Plus, ShieldCheck, Users,
+    ArrowUpRight, ArrowDownRight, Sparkles, Video, KeyRound, Wifi, Network, Lightbulb
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -13,12 +13,8 @@ import {
 } from "recharts";
 import { formatQuotationId, formatCurrency, formatDate } from "../utils/formatters";
 import { useAuth } from "../context/AuthContext";
+import { useTheme, chartColors } from "../context/theme";
 import ValidityPill from "../components/ValidityPill";
-
-const AXIS_TICK = { fontSize: 12, fill: "#8B93B8" };
-const GRID_STROKE = "#2A355F";
-const SERIES_BLUE = "#1F8CFF";
-const SERIES_ORANGE = "#FF6A00";
 
 const MONTH_LABEL = (key) => {
     const [year, month] = key.split("-");
@@ -34,50 +30,60 @@ const parseDayKey = (key) => {
 const DAY_LABEL = (key) => parseDayKey(key).toLocaleDateString("es-GT", { weekday: "short", day: "numeric" });
 const DAY_LABEL_LONG = (key) => parseDayKey(key).toLocaleDateString("es-GT", { weekday: "long", day: "numeric", month: "long" });
 
+const TOOLTIP_BOX = "bg-surface border border-line rounded-xl shadow-[var(--sh-pop)] px-3 py-2 text-sm";
+
 function PerformanceTooltip({ active, payload }) {
     if (!active || !payload?.length) return null;
     const p = payload[0].payload;
     return (
-        <div className="bg-surface-hover border border-surface-border rounded-lg shadow-lg px-3 py-2 text-sm">
-            <p className="font-semibold text-ink">{MONTH_LABEL(p.month)}</p>
+        <div className={TOOLTIP_BOX}>
+            <p className="font-bold text-ink">{MONTH_LABEL(p.month)}</p>
             <p className="text-ink-2">{p.avgHours}h promedio para finalizar</p>
             <p className="text-ink-muted text-xs">{p.count} solicitud{p.count === 1 ? "" : "es"} finalizada{p.count === 1 ? "" : "s"}</p>
         </div>
     );
 }
 
-function WeekTooltip({ active, payload }) {
+function WeekTooltip({ active, payload, colors }) {
     if (!active || !payload?.length) return null;
     const p = payload[0].payload;
     return (
-        <div className="bg-surface-hover border border-surface-border rounded-lg shadow-lg px-3 py-2 text-sm">
-            <p className="font-semibold text-ink capitalize">{DAY_LABEL_LONG(p.date)}</p>
-            <p className="text-ink-2"><span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: SERIES_BLUE }} />{p.quotations} cotizaci{p.quotations === 1 ? "ón" : "ones"}</p>
-            <p className="text-ink-2"><span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: SERIES_ORANGE }} />{p.clients} cliente{p.clients === 1 ? "" : "s"} nuevo{p.clients === 1 ? "" : "s"}</p>
+        <div className={TOOLTIP_BOX}>
+            <p className="font-bold text-ink capitalize">{DAY_LABEL_LONG(p.date)}</p>
+            <p className="text-ink-2"><span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: colors.blue }} />{p.quotations} cotizaci{p.quotations === 1 ? "ón" : "ones"}</p>
+            <p className="text-ink-2"><span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: colors.orange }} />{p.clients} cliente{p.clients === 1 ? "" : "s"} nuevo{p.clients === 1 ? "" : "s"}</p>
         </div>
     );
 }
 
+// Degradados de las tarjetas de color pleno: el texto blanco pasa AA (>= 4.5:1) en todo el tramo
+const G = {
+    blue: { g: "linear-gradient(135deg, #0A4FD6, #2563EB)", sc: "rgba(10,98,255,.75)" },
+    violet: { g: "linear-gradient(135deg, #5A35C9, #7653E6)", sc: "rgba(108,77,224,.75)" },
+    orange: { g: "linear-gradient(135deg, #B23A08, #C9490C)", sc: "rgba(220,90,10,.7)" },
+    teal: { g: "linear-gradient(135deg, #066B5C, #0B8572)", sc: "rgba(10,140,120,.7)" },
+};
+
 const QUICK_ACTIONS = [
-    { to: "/app/quotations/new", icon: Plus, label: "Nueva Cotización", iconBg: "bg-info/15", iconColor: "text-info", glow: "" },
-    { to: "/app/clients", icon: Users, label: "Clientes", iconBg: "bg-violet/15", iconColor: "text-violet", glow: "" },
-    { to: "/app/requests", icon: ClipboardList, label: "Solicitudes", iconBg: "bg-accent/15", iconColor: "text-accent", glow: "" },
-    { to: "/app/warranties", icon: ShieldCheck, label: "Garantías", iconBg: "bg-ok/15", iconColor: "text-ok", glow: "" },
+    { to: "/app/quotations/new", icon: Plus, label: "Nueva Cotización", tone: G.blue },
+    { to: "/app/clients", icon: Users, label: "Clientes", tone: G.violet },
+    { to: "/app/requests", icon: ClipboardList, label: "Solicitudes", tone: G.orange },
+    { to: "/app/warranties", icon: ShieldCheck, label: "Garantías", tone: G.teal },
 ];
 
 // Líneas de servicio reales de Grupo AC (texto fijo, no es un dato)
 const SERVICE_LINES = [
-    { icon: Video, label: "Videovigilancia", sub: "Mayor seguridad", color: "text-info", bg: "bg-info/15", glow: "" },
-    { icon: KeyRound, label: "Control de acceso", sub: "Protege lo importante", color: "text-violet", bg: "bg-violet/15", glow: "" },
-    { icon: Wifi, label: "Enlaces y conectividad", sub: "Sin límites", color: "text-accent", bg: "bg-accent/15", glow: "" },
-    { icon: Network, label: "Redes estructuradas", sub: "Tu infraestructura", color: "text-ok", bg: "bg-ok/15", glow: "" },
+    { icon: Video, label: "Videovigilancia", sub: "Mayor seguridad", tone: G.blue },
+    { icon: KeyRound, label: "Control de acceso", sub: "Protege lo importante", tone: G.violet },
+    { icon: Wifi, label: "Enlaces y conectividad", sub: "Sin límites", tone: G.teal },
+    { icon: Network, label: "Redes estructuradas", sub: "Tu infraestructura", tone: G.orange },
 ];
 
 const STAT_CARDS = [
-    { key: "quotations", title: "Cotizaciones", icon: FileText, iconBg: "bg-info/15", iconColor: "text-info", glow: "", to: "/app/quotations" },
-    { key: "clients", title: "Clientes", icon: Users, iconBg: "bg-violet/15", iconColor: "text-violet", glow: "", to: "/app/clients" },
-    { key: "requests", title: "Solicitudes", icon: ClipboardList, iconBg: "bg-accent/15", iconColor: "text-accent", glow: "", to: "/app/requests" },
-    { key: "warranties", title: "Garantías", icon: ShieldCheck, iconBg: "bg-ok/15", iconColor: "text-ok", glow: "", to: "/app/warranties" },
+    { key: "quotations", title: "Cotizaciones", icon: FileText, tone: G.blue, to: "/app/quotations" },
+    { key: "clients", title: "Clientes", icon: Users, tone: G.violet, to: "/app/clients" },
+    { key: "requests", title: "Solicitudes", icon: ClipboardList, tone: G.orange, to: "/app/requests" },
+    { key: "warranties", title: "Garantías", icon: ShieldCheck, tone: G.teal, to: "/app/warranties" },
 ];
 
 // Tendencia real: este mes vs. el mes anterior (conteos del servidor)
@@ -85,19 +91,19 @@ function TrendBadge({ thisMonth, lastMonth }) {
     if (!thisMonth && !lastMonth) return null;
     if (!lastMonth) {
         return (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-info/15 text-info">
+            <span className="kpi-badge">
                 <Sparkles size={12} /> Nuevo
             </span>
         );
     }
     const pct = Math.round(((thisMonth - lastMonth) / lastMonth) * 100);
     if (pct === 0) {
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-tint/10 text-ink">Igual que el mes pasado</span>;
+        return <span className="kpi-badge">Igual que el mes pasado</span>;
     }
     const up = pct > 0;
     const Icon = up ? ArrowUpRight : ArrowDownRight;
     return (
-        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold ${up ? "bg-ok/15 text-ok" : "bg-bad/15 text-bad"}`}>
+        <span className="kpi-badge">
             <Icon size={13} /> {up ? "+" : ""}{pct}%
         </span>
     );
@@ -122,53 +128,56 @@ function useCountUp(target, duration = 1000) {
     return v;
 }
 
-// Mini gráfica de la semana: la línea se dibuja sola al entrar
-function Sparkline({ data, color }) {
+// Mini gráfica de la semana (blanca sobre la tarjeta de color): la línea se dibuja sola al entrar
+function Sparkline({ data, id }) {
     if (!data || data.length < 2) return null;
     const max = Math.max(...data, 1);
     const pts = data.map((v, i) => [(i / (data.length - 1)) * 100, 30 - (v / max) * 26]);
     const d = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
     return (
-        <svg viewBox="0 0 100 34" preserveAspectRatio="none" className="w-full h-9 overflow-visible" aria-hidden="true">
+        <svg viewBox="0 0 100 34" preserveAspectRatio="none" className="w-24 h-9 overflow-visible" aria-hidden="true">
             <defs>
-                <linearGradient id={`spk-${color.replace("#", "")}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={color} stopOpacity="0.28" />
-                    <stop offset="100%" stopColor={color} stopOpacity="0" />
+                <linearGradient id={`spk-${id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#fff" stopOpacity="0.32" />
+                    <stop offset="100%" stopColor="#fff" stopOpacity="0" />
                 </linearGradient>
             </defs>
-            <path d={`${d} L100 34 L0 34 Z`} fill={`url(#spk-${color.replace("#", "")})`} style={{ animation: "fadeIn 700ms ease-out 500ms backwards" }} />
-            <path d={d} fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+            <path d={`${d} L100 34 L0 34 Z`} fill={`url(#spk-${id})`} style={{ animation: "fadeIn 700ms ease-out 500ms backwards" }} />
+            <path d={d} fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"
                   pathLength="1" strokeDasharray="1" vectorEffect="non-scaling-stroke"
-                  style={{ "--len": 1, animation: "draw 1100ms var(--ease-out) 250ms backwards" }} />
+                  style={{ "--len": 1, animation: "draw 1200ms var(--ease-out) 450ms backwards" }} />
         </svg>
     );
 }
 
-function StatCard({ title, stat, icon: Icon, iconBg, iconColor, glow, loading, to, spark, sparkColor, index = 0 }) {
+// Tarjeta KPI de color pleno. El número de conteo (no es dinero) conserva su subida de siempre.
+function StatCard({ title, stat, icon: Icon, tone, loading, to, spark, sparkId, index = 0 }) {
     const count = useCountUp(stat?.total);
     return (
-        <Link to={to} style={{ "--i": index }} className="group card card-hover stagger-item block p-5">
-            <div className="flex items-center justify-between gap-3">
-                <p className="text-ink-muted text-sm font-medium">{title}</p>
-                <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center transition-transform duration-500 ease-[var(--spring-bounce)] group-hover:scale-110 group-hover:-rotate-6 ${iconBg} ${glow}`}>
-                    <Icon className={`w-5 h-5 ${iconColor}`} />
-                </div>
+        <Link to={to} style={{ "--i": index, "--g": tone.g, "--sc": tone.sc }} className="kpi stagger-item">
+            <div className="flex items-start justify-between gap-3">
+                <div className="kpi-ic"><Icon className="w-5 h-5" /></div>
+                {!loading && stat && <TrendBadge thisMonth={stat.thisMonth} lastMonth={stat.lastMonth} />}
             </div>
-            <h3 className="text-[34px] leading-none font-bold text-ink tracking-tight mt-3 tabular">
-                {loading ? <span className="skeleton inline-block w-16 h-8 align-middle" /> : stat ? count.toLocaleString("es-GT") : "—"}
+            <p className="mt-4 text-sm font-bold text-white">{title}</p>
+            <h3 className="text-[2.6rem] leading-[1.05] font-extrabold tracking-[-0.04em] tabular text-white">
+                {loading ? <span className="inline-block w-16 h-9 align-middle rounded-lg bg-white/25 animate-pulse" /> : stat ? count.toLocaleString("es-GT") : "—"}
             </h3>
-            <div className="mt-3 flex flex-wrap items-center gap-2 min-h-[22px]">
-                {!loading && stat && (
-                    <>
-                        <TrendBadge thisMonth={stat.thisMonth} lastMonth={stat.lastMonth} />
-                        {(stat.thisMonth > 0 || stat.lastMonth > 0) && (
-                            <span className="text-xs text-ink-muted">{stat.thisMonth} este mes · {stat.lastMonth} el anterior</span>
-                        )}
-                    </>
-                )}
+            <div className="mt-2 flex items-end justify-between gap-2 min-h-[36px]">
+                <span className="text-xs font-semibold text-white">
+                    {!loading && stat && (stat.thisMonth > 0 || stat.lastMonth > 0) ? `${stat.thisMonth} este mes · ${stat.lastMonth} el anterior` : ""}
+                </span>
+                {spark && !loading && <Sparkline data={spark} id={sparkId} />}
             </div>
-            {spark && !loading && <div className="mt-3 -mb-1"><Sparkline data={spark} color={sparkColor} /></div>}
         </Link>
+    );
+}
+
+function ChartSkeleton() {
+    return (
+        <div className="h-[260px] flex items-end gap-3 px-2 pb-2" aria-label="Cargando gráfica">
+            {[55, 80, 40, 95, 65, 75, 50].map((h, i) => <div key={i} className="skeleton flex-1" style={{ height: `${h}%` }} />)}
+        </div>
     );
 }
 
@@ -176,6 +185,9 @@ function StatCard({ title, stat, icon: Icon, iconBg, iconColor, glow, loading, t
 // fecha de vencimiento guardada, se dice tal cual -no se asume "vigente".
 export default function Dashboard() {
     const { user } = useAuth();
+    const { theme } = useTheme();
+    const colors = chartColors(theme);
+    const axisTick = { fontSize: 11, fontWeight: 600, fill: colors.tick, fontFamily: "Manrope, system-ui, sans-serif" };
     const [quotations, setQuotations] = useState([]);
     const [stats, setStats] = useState(null);
     const [statsError, setStatsError] = useState(false);
@@ -222,241 +234,207 @@ export default function Dashboard() {
 
     return (
         <div>
-            {/* Hero de bienvenida + acciones rápidas */}
-            <div className="grid grid-cols-1 xl:grid-cols-[1.6fr_1fr] gap-6 mb-8">
-                <div className="card !rounded-3xl relative overflow-hidden min-h-[300px] bg-gradient-to-br from-brand-blue/10 via-transparent to-brand-orange/10">
-                    {/* Línea de energía diagonal -mismo recurso visual que la referencia */}
-                    <svg
-                        aria-hidden="true"
-                        viewBox="0 0 800 420"
-                        preserveAspectRatio="none"
-                        className="absolute inset-0 w-full h-full pointer-events-none mix-blend-screen"
-                    >
-                        <defs>
-                            <linearGradient id="heroStreak1" x1="0%" y1="100%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="#00C2FF" stopOpacity="0" />
-                                <stop offset="20%" stopColor="#00C2FF" stopOpacity="1" />
-                                <stop offset="55%" stopColor="#007BFF" stopOpacity="1" />
-                                <stop offset="85%" stopColor="#FF8A00" stopOpacity="1" />
-                                <stop offset="100%" stopColor="#FF5A1F" stopOpacity="0" />
-                            </linearGradient>
-                            <filter id="heroGlow" x="-50%" y="-50%" width="200%" height="200%">
-                                <feGaussianBlur stdDeviation="7" result="blur" />
-                                <feMerge>
-                                    <feMergeNode in="blur" />
-                                    <feMergeNode in="SourceGraphic" />
-                                </feMerge>
-                            </filter>
-                        </defs>
-                        <g strokeLinecap="round" fill="none">
-                            <path d="M -80 460 C 200 420, 380 340, 520 260 S 780 60, 900 -40" stroke="url(#heroStreak1)" strokeWidth="4.5" opacity="0.95" />
-                            <path d="M -80 500 C 220 470, 400 380, 540 300 S 800 100, 920 0" stroke="url(#heroStreak1)" strokeWidth="2" opacity="0.5" />
-                        </g>
-                    </svg>
+            {/* Saludo + acción principal */}
+            <div className="flex flex-wrap items-end justify-between gap-5 mb-7">
+                <div className="min-w-0">
+                    <p className="eyebrow">Plataforma Grupo AC</p>
+                    <h1 className="title-xl mt-1.5">
+                        {firstName ? <>Hola, <span className="serif-accent">{firstName}</span></> : <>Resumen <span className="serif-accent">general</span></>}
+                    </h1>
+                    <p className="text-ink-muted font-medium mt-1.5">Esto es lo que está pasando en tu operación hoy.</p>
+                </div>
+                <Link to="/app/quotations/new" className="btn btn-primary !min-h-[46px] !px-6 !rounded-[14px] !text-[15px] !font-bold">
+                    <Plus size={18} />
+                    Nueva Cotización
+                </Link>
+            </div>
 
-                    <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center p-6 md:p-8 min-h-[300px]">
-                        <div className="max-w-md">
-                            <p className="text-info text-xs font-bold uppercase tracking-widest mb-2">Plataforma Grupo AC</p>
-                            <h1 className="font-display text-3xl md:text-4xl font-bold text-ink">
-                                {firstName ? `Hola, ${firstName}` : "Resumen General"}
-                            </h1>
-                            <p className="text-ink-2 mt-2">Esto es lo que está pasando en tu operación hoy.</p>
-                            <Link
-                                to="/app/quotations/new"
-                                className="btn btn-primary inline-flex items-center gap-2 mt-6 w-fit px-5 py-2.5 text-sm !rounded-full"
-                            >
-                                <Plus size={16} />
-                                Nueva Cotización
-                            </Link>
-                        </div>
+            {/* Estadísticas con tendencia (este mes vs. mes anterior): color pleno, enfoque al pasar el cursor */}
+            <div>
+                {statsError && (
+                    <p className="mb-4 text-sm font-semibold text-bad">No se pudieron cargar las estadísticas en este momento. Recarga la página para intentarlo de nuevo.</p>
+                )}
+                <div className="kpi-group grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                    {STAT_CARDS.map(({ key, ...card }, idx) => (
+                        <StatCard key={key} {...card} index={idx} stat={stats?.[key]} loading={loading} sparkId={key}
+                            spark={key === "quotations" ? weekData.map((d) => d.quotations) : key === "clients" ? weekData.map((d) => d.clients) : null} />
+                    ))}
+                </div>
+            </div>
 
-                        <ul className="relative grid grid-cols-2 lg:grid-cols-1 gap-3 lg:gap-4 lg:w-44 lg:justify-self-end lg:self-start lg:mt-0">
-                            {SERVICE_LINES.map(({ icon: Icon, label, sub, color, bg, glow }) => (
-                                <li key={label} className="flex items-center gap-2.5">
-                                    <div className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center ${bg} ${glow}`}>
-                                        <Icon size={15} className={color} />
-                                    </div>
-                                    <div className="leading-tight min-w-0">
-                                        <p className="text-xs font-semibold text-ink truncate">{label}</p>
-                                        <p className="text-[10px] text-ink-muted truncate">{sub}</p>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+            {/* Últimos 7 días + Rendimiento de solicitudes */}
+            <div className="grid grid-cols-1 xl:grid-cols-[1.6fr_1fr] gap-4 mt-4">
+                <div className="card glow p-6 min-w-0">
+                    <h2 className="title-md">Cotizaciones y clientes <span className="serif-accent">de los últimos 7 días</span></h2>
+                    <p className="text-ink-muted text-sm mt-0.5 min-h-[20px]">
+                        {!loading && stats && <>{weekQuotations} cotizaci{weekQuotations === 1 ? "ón" : "ones"} y {weekClients} cliente{weekClients === 1 ? "" : "s"} nuevo{weekClients === 1 ? "" : "s"} en los últimos 7 días</>}
+                    </p>
+
+                    <div className="mt-3">
+                        {loading ? (
+                            <ChartSkeleton />
+                        ) : !stats ? (
+                            <div className="h-[260px] flex items-center justify-center text-ink-muted text-sm">No hay datos disponibles.</div>
+                        ) : (
+                            <ResponsiveContainer width="100%" height={260}>
+                                <AreaChart data={weekData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="fillQuotations" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor={colors.blue} stopOpacity={0.3} />
+                                            <stop offset="100%" stopColor={colors.blue} stopOpacity={0} />
+                                        </linearGradient>
+                                        <linearGradient id="fillClients" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor={colors.orange} stopOpacity={0.22} />
+                                            <stop offset="100%" stopColor={colors.orange} stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid vertical={false} stroke={colors.grid} strokeDasharray="3 6" />
+                                    <XAxis
+                                        dataKey="date"
+                                        tickFormatter={DAY_LABEL}
+                                        tick={axisTick}
+                                        axisLine={false}
+                                        tickLine={false}
+                                    />
+                                    <YAxis tick={axisTick} axisLine={false} tickLine={false} width={32} allowDecimals={false} />
+                                    <Tooltip content={<WeekTooltip colors={colors} />} cursor={{ stroke: colors.grid }} />
+                                    <Legend
+                                        verticalAlign="top"
+                                        align="right"
+                                        height={32}
+                                        iconType="circle"
+                                        iconSize={8}
+                                        itemSorter={(item) => (item.dataKey === "quotations" ? 0 : 1)}
+                                        formatter={(value) => <span className="text-sm font-semibold text-ink-muted">{value}</span>}
+                                    />
+                                    <Area type="monotone" dataKey="quotations" name="Cotizaciones" stroke={colors.blue} strokeWidth={3} fill="url(#fillQuotations)" dot={false} activeDot={{ r: 5, fill: "#fff", stroke: colors.blue, strokeWidth: 3 }} animationDuration={1400} animationEasing="ease-out" />
+                                    <Area type="monotone" dataKey="clients" name="Clientes nuevos" stroke={colors.orange} strokeWidth={3} fill="url(#fillClients)" dot={false} activeDot={{ r: 5, fill: "#fff", stroke: colors.orange, strokeWidth: 3 }} animationBegin={250} animationDuration={1400} animationEasing="ease-out" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        )}
                     </div>
                 </div>
 
-                <div className="card !rounded-3xl p-6">
-                    <p className="text-ink font-semibold mb-4">Acciones rápidas</p>
+                <div className="card glow p-6 min-w-0 flex flex-col">
+                    <h2 className="title-md">Rendimiento <span className="serif-accent">de solicitudes</span></h2>
+                    <p className="text-ink-muted text-sm mt-0.5">Tiempo promedio para finalizar una solicitud, por mes</p>
+
+                    <div className="mt-3 flex-1">
+                        {loading ? (
+                            <ChartSkeleton />
+                        ) : performance.length === 0 ? (
+                            <div className="h-[260px] flex items-center justify-center text-center text-ink-muted text-sm">
+                                Todavía no hay solicitudes finalizadas para medir el rendimiento.
+                            </div>
+                        ) : (
+                            <ResponsiveContainer width="100%" height={240}>
+                                <BarChart data={performance} margin={{ top: 8, right: 4, left: 0, bottom: 0 }} barCategoryGap="26%">
+                                    <defs>
+                                        <linearGradient id="fillBars" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor="#2BA0FF" />
+                                            <stop offset="100%" stopColor="#0A62FF" />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid vertical={false} stroke={colors.grid} strokeDasharray="3 6" />
+                                    <XAxis
+                                        dataKey="month"
+                                        tickFormatter={MONTH_LABEL}
+                                        tick={axisTick}
+                                        interval={0}
+                                        axisLine={false}
+                                        tickLine={false}
+                                    />
+                                    <YAxis
+                                        tick={axisTick}
+                                        axisLine={false}
+                                        tickLine={false}
+                                        width={40}
+                                        tickFormatter={(value) => `${value}h`}
+                                    />
+                                    <Tooltip content={<PerformanceTooltip />} cursor={{ fill: colors.cursor, radius: 10 }} />
+                                    <Bar dataKey="avgHours" fill="url(#fillBars)" radius={[10, 10, 4, 4]} maxBarSize={40} animationDuration={900} animationEasing="ease-out" />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        )}
+                    </div>
+                    {/* un segmento por mes medido (se llenan en cascada una vez) */}
+                    {!loading && performance.length > 0 && (
+                        <div className="seg-progress mt-3" aria-hidden="true">
+                            {performance.map((p, i) => <i key={p.month} style={{ "--i": i }} />)}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Acciones rápidas + consejo */}
+            <div className="grid grid-cols-1 xl:grid-cols-[1.6fr_1fr] gap-4 mt-4">
+                <div className="card p-5">
+                    <p className="eyebrow !text-ink-soft mb-3">Acciones rápidas</p>
                     <div className="grid grid-cols-2 gap-3">
-                        {QUICK_ACTIONS.map(({ to, icon: Icon, label, iconBg, iconColor, glow }) => (
+                        {QUICK_ACTIONS.map(({ to, icon: Icon, label, tone }) => (
                             <Link
                                 key={to}
                                 to={to}
-                                className="group card card-hover flex flex-col gap-2 p-4"
+                                className="group card card-hover !rounded-2xl !shadow-none flex items-center gap-3 p-3.5 min-w-0"
                             >
-                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-transform duration-500 ease-[var(--spring-bounce)] group-hover:scale-110 group-hover:-rotate-6 ${iconBg} ${glow}`}>
-                                    <Icon size={18} className={iconColor} />
+                                <div className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-white transition-transform duration-500 ease-[var(--spring-bounce)] group-hover:scale-110 group-hover:-rotate-6"
+                                     style={{ background: tone.g, boxShadow: `0 10px 18px -10px ${tone.sc}` }}>
+                                    <Icon size={18} />
                                 </div>
-                                <span className="text-sm text-ink font-medium leading-tight">{label}</span>
+                                <span className="text-sm text-ink font-bold leading-tight">{label}</span>
                             </Link>
                         ))}
                     </div>
                 </div>
-            </div>
-
-            {/* Estadísticas con tendencia (este mes vs. mes anterior) */}
-            {statsError && (
-                <p className="mb-4 text-sm text-bad">No se pudieron cargar las estadísticas en este momento. Recarga la página para intentarlo de nuevo.</p>
-            )}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 mb-8">
-                {STAT_CARDS.map(({ key, ...card }, idx) => (
-                    <StatCard key={key} {...card} index={idx} stat={stats?.[key]} loading={loading}
-                        spark={key === "quotations" ? weekData.map((d) => d.quotations) : key === "clients" ? weekData.map((d) => d.clients) : null}
-                        sparkColor={key === "quotations" ? "#1F8CFF" : "#FF8A00"} />
-                ))}
-            </div>
-
-            {/* Últimos 7 días + tarjeta "Recuerda" */}
-            <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-6 mb-8">
-                <div className="card p-6">
-                    <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center shrink-0">
-                                    <Activity size={16} className="text-ink" />
-                                </div>
-                                <h2 className="text-lg font-semibold text-ink">Cotizaciones y clientes de los últimos 7 días</h2>
-                            </div>
-                            {!loading && stats && (
-                                <p className="text-ink-muted text-sm mt-1">
-                                    {weekQuotations} cotizaci{weekQuotations === 1 ? "ón" : "ones"} y {weekClients} cliente{weekClients === 1 ? "" : "s"} nuevo{weekClients === 1 ? "" : "s"} en los últimos 7 días
-                                </p>
-                            )}
-                        </div>
-                    </div>
-
-                    {loading ? (
-                        <div className="h-64 flex items-center justify-center text-ink-muted">Cargando...</div>
-                    ) : !stats ? (
-                        <div className="h-64 flex items-center justify-center text-ink-muted text-sm">No hay datos disponibles.</div>
-                    ) : (
-                        <ResponsiveContainer width="100%" height={260}>
-                            <AreaChart data={weekData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                                <defs>
-                                    <linearGradient id="fillQuotations" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor={SERIES_BLUE} stopOpacity={0.35} />
-                                        <stop offset="100%" stopColor={SERIES_BLUE} stopOpacity={0} />
-                                    </linearGradient>
-                                    <linearGradient id="fillClients" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor={SERIES_ORANGE} stopOpacity={0.3} />
-                                        <stop offset="100%" stopColor={SERIES_ORANGE} stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid vertical={false} stroke={GRID_STROKE} />
-                                <XAxis
-                                    dataKey="date"
-                                    tickFormatter={DAY_LABEL}
-                                    tick={AXIS_TICK}
-                                    axisLine={{ stroke: GRID_STROKE }}
-                                    tickLine={false}
-                                />
-                                <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={32} allowDecimals={false} />
-                                <Tooltip content={<WeekTooltip />} cursor={{ stroke: GRID_STROKE }} />
-                                <Legend
-                                    verticalAlign="top"
-                                    align="right"
-                                    height={32}
-                                    iconType="circle"
-                                    iconSize={8}
-                                    itemSorter={(item) => (item.dataKey === "quotations" ? 0 : 1)}
-                                    formatter={(value) => <span className="text-sm text-ink-2">{value}</span>}
-                                />
-                                <Area type="monotone" dataKey="quotations" name="Cotizaciones" stroke={SERIES_BLUE} strokeWidth={2} fill="url(#fillQuotations)" dot={{ r: 3, fill: SERIES_BLUE }} activeDot={{ r: 5 }} />
-                                <Area type="monotone" dataKey="clients" name="Clientes nuevos" stroke={SERIES_ORANGE} strokeWidth={2} fill="url(#fillClients)" dot={{ r: 3, fill: SERIES_ORANGE }} activeDot={{ r: 5 }} />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    )}
-                </div>
 
                 {/* Decorativo: frase fija, no es un dato */}
-                <div className="card relative overflow-hidden p-6 flex flex-col">
-                    <div className="absolute inset-x-0 top-0 h-1 bg-brand-soft" />
-                    <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mb-4">
-                        <Quote size={18} className="text-ink" />
+                <div className="tip-card p-5 flex flex-col justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 shrink-0 rounded-xl bg-white/20 flex items-center justify-center">
+                            <Lightbulb size={20} />
+                        </div>
+                        <div>
+                            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-white">Recuerda</p>
+                            <p className="font-bold leading-snug mt-1">Una cotización que sale rápido y clara ya es parte del servicio.</p>
+                            <p className="text-sm text-white mt-1.5">Dar seguimiento a tiempo convierte una propuesta en un proyecto y a un cliente en uno que regresa.</p>
+                        </div>
                     </div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-accent mb-2">Recuerda</p>
-                    <p className="text-ink text-lg font-semibold leading-snug">
-                        Una cotización que sale rápido y clara ya es parte del servicio.
-                    </p>
-                    <p className="text-ink-muted text-sm mt-3">
-                        Dar seguimiento a tiempo convierte una propuesta en un proyecto y a un cliente en uno que regresa.
-                    </p>
-                    <Link
-                        to="/app/quotations"
-                        className="mt-auto pt-6 inline-flex items-center gap-1 text-sm font-medium text-info hover:text-info w-fit"
-                    >
+                    <Link to="/app/quotations" className="inline-flex items-center gap-1.5 text-sm font-bold text-white underline-offset-4 hover:underline w-fit">
                         Revisar cotizaciones <ArrowRight size={16} />
                     </Link>
                 </div>
             </div>
 
-            {/* Rendimiento de solicitudes */}
-            <div className="card p-6 mb-8">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
-                        <TrendingUp size={16} className="text-ink" />
-                    </div>
-                    <h2 className="text-lg font-semibold text-ink">Rendimiento de solicitudes</h2>
-                </div>
-                <p className="text-ink-muted text-sm mb-4 mt-1">Tiempo promedio para finalizar una solicitud, por mes</p>
-
-                {loading ? (
-                    <div className="h-64 flex items-center justify-center text-ink-muted">Cargando...</div>
-                ) : performance.length === 0 ? (
-                    <div className="h-64 flex items-center justify-center text-ink-muted text-sm">
-                        Todavía no hay solicitudes finalizadas para medir el rendimiento.
-                    </div>
-                ) : (
-                    <ResponsiveContainer width="100%" height={260}>
-                        <BarChart data={performance} margin={{ top: 8, right: 8, left: 0, bottom: 0 }} barCategoryGap="30%">
-                            <CartesianGrid vertical={false} stroke={GRID_STROKE} />
-                            <XAxis
-                                dataKey="month"
-                                tickFormatter={MONTH_LABEL}
-                                tick={AXIS_TICK}
-                                axisLine={{ stroke: GRID_STROKE }}
-                                tickLine={false}
-                            />
-                            <YAxis
-                                tick={AXIS_TICK}
-                                axisLine={false}
-                                tickLine={false}
-                                width={48}
-                                tickFormatter={(value) => `${value}h`}
-                            />
-                            <Tooltip content={<PerformanceTooltip />} cursor={{ fill: "#1C2650" }} />
-                            <Bar dataKey="avgHours" fill={SERIES_BLUE} radius={[4, 4, 0, 0]} maxBarSize={40} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                )}
-            </div>
+            {/* Líneas de servicio de Grupo AC (texto fijo) */}
+            <ul className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+                {SERVICE_LINES.map(({ icon: Icon, label, sub, tone }) => (
+                    <li key={label} className="card !rounded-2xl flex items-center gap-3 px-4 py-3.5 min-w-0">
+                        <div className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-white" style={{ background: tone.g, boxShadow: `0 10px 18px -10px ${tone.sc}` }}>
+                            <Icon size={18} />
+                        </div>
+                        <div className="leading-tight min-w-0">
+                            <p className="text-sm font-extrabold text-ink">{label}</p>
+                            <p className="text-xs font-semibold text-ink-soft">{sub}</p>
+                        </div>
+                    </li>
+                ))}
+            </ul>
 
             {/* Últimas Cotizaciones (las más recientes primero) */}
-            <div className="card overflow-hidden">
-                <div className="p-6 border-b border-surface-border flex justify-between items-center gap-3">
-                    <h2 className="text-lg font-semibold text-ink">Últimas Cotizaciones</h2>
-                    <Link
-                        to="/app/quotations"
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-info hover:bg-info/10 text-sm font-medium transition-colors shrink-0"
-                    >
+            <div className="card overflow-hidden mt-4">
+                <div className="px-6 pt-6 pb-4 flex justify-between items-center gap-3">
+                    <div>
+                        <h2 className="title-md">Últimas <span className="serif-accent">cotizaciones</span></h2>
+                        <p className="text-ink-muted text-sm mt-0.5">Las más recientes de tu equipo</p>
+                    </div>
+                    <Link to="/app/quotations" className="btn btn-secondary !min-h-[38px] !text-[13px] shrink-0">
                         Ver todas <ArrowRight size={16} />
                     </Link>
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left min-w-[800px]">
-                        <thead className="bg-surface-base text-ink-muted text-xs font-semibold uppercase tracking-wide">
+                    <table className="w-full text-left min-w-[760px]">
+                        <thead className="text-ink-soft border-y border-line bg-surface-base">
                             <tr>
                                 <th className="px-6 py-3">Correlativo</th>
                                 <th className="px-6 py-3">Cliente</th>
@@ -465,31 +443,33 @@ export default function Dashboard() {
                                 <th className="px-6 py-3">Estado</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-surface-border">
+                        <tbody className="divide-y divide-line">
                             {loading ? (
-                                <tr><td colSpan="5" className="text-center py-10 text-ink-muted">Cargando datos...</td></tr>
+                                [0, 1, 2].map((i) => (
+                                    <tr key={i}><td colSpan="5" className="px-6 py-4"><div className="skeleton h-6 w-full" /></td></tr>
+                                ))
                             ) : quotations.length === 0 ? (
                                 <tr><td colSpan="5" className="text-center py-10 text-ink-muted">No hay cotizaciones registradas.</td></tr>
                             ) : (
                                 quotations.map((q) => (
                                     <tr key={q.id} className="hover:bg-surface-hover transition-colors">
-                                        <td className="px-6 py-4 font-bold">
-                                            <Link to={`/app/quotations/${q.id}`} className="text-info hover:text-info">
+                                        <td className="px-6 py-4">
+                                            <Link to={`/app/quotations/${q.id}`} className="font-mono text-[13px] font-semibold text-info hover:underline underline-offset-4">
                                                 {formatQuotationId(q.correlativo)}
                                             </Link>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 shrink-0 rounded-full bg-brand-soft flex items-center justify-center text-white text-xs font-bold">
+                                                <div className="w-8 h-8 shrink-0 rounded-full bg-brand-soft flex items-center justify-center text-white text-xs font-extrabold">
                                                     {(q.client?.name || "?").charAt(0).toUpperCase()}
                                                 </div>
-                                                <span className="text-ink-2">{q.client?.name || "Sin Nombre"}</span>
+                                                <span className="text-ink font-semibold">{q.client?.name || "Sin Nombre"}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 font-bold text-ink text-right">
+                                        <td className="px-6 py-4 font-extrabold text-ink text-right tabular">
                                             {formatCurrency(q.total)}
                                         </td>
-                                        <td className="px-6 py-4 text-ink-muted">
+                                        <td className="px-6 py-4 text-ink-muted font-medium">
                                             {formatDate(q.createdAt)}
                                         </td>
                                         <td className="px-6 py-4">
