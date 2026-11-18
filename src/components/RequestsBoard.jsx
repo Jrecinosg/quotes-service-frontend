@@ -6,9 +6,9 @@ import { formatRequestId, formatDate } from "../utils/formatters";
 // Tablero por estados (Kanban). Solo presentación + arrastrar y soltar: el cambio de estado
 // real (confirmación, nota, correo al cliente) lo hace `onMove`, que es el mismo flujo del detalle.
 const COLUMNS = [
-  { status: "PENDING", label: "Pendiente", icon: Clock, tone: "text-amber-400", bar: "bg-amber-400" },
-  { status: "IN_PROGRESS", label: "En proceso", icon: PlayCircle, tone: "text-blue-400", bar: "bg-blue-400" },
-  { status: "DONE", label: "Finalizado", icon: CheckCircle2, tone: "text-green-400", bar: "bg-green-400" },
+  { status: "PENDING", label: "Pendiente", icon: Clock, tone: "text-warn", bar: "bg-amber-400" },
+  { status: "IN_PROGRESS", label: "En proceso", icon: PlayCircle, tone: "text-info", bar: "bg-blue-400" },
+  { status: "DONE", label: "Finalizado", icon: CheckCircle2, tone: "text-ok", bar: "bg-green-400" },
 ];
 const LABEL = Object.fromEntries(COLUMNS.map((c) => [c.status, c.label]));
 const MOVE_PX = 6; // movimiento mínimo para que cuente como arrastre (y no como clic)
@@ -20,15 +20,15 @@ function CardBody({ r, showMove, onMove }) {
   return (
     <>
       <div className="flex items-start justify-between gap-2">
-        <Link to={`/app/requests/${r.id}`} className="text-[13px] font-bold text-blue-400 hover:underline">
+        <Link to={`/app/requests/${r.id}`} className="text-[13px] font-bold text-info hover:underline">
           {formatRequestId(r.correlativo)}
         </Link>
-        <GripVertical size={16} className="text-gray-500 shrink-0 mt-0.5" aria-hidden="true" />
+        <GripVertical size={16} className="text-ink-soft shrink-0 mt-0.5" aria-hidden="true" />
       </div>
-      <p className="mt-1 text-sm font-medium text-white leading-snug line-clamp-2">{r.title}</p>
-      <p className="mt-2 text-xs text-gray-400 truncate">{r.client?.name}</p>
+      <p className="mt-1 text-sm font-medium text-ink leading-snug line-clamp-2">{r.title}</p>
+      <p className="mt-2 text-xs text-ink-muted truncate">{r.client?.name}</p>
       <div className="mt-2 flex items-center justify-between gap-2">
-        <span className="text-[11px] text-gray-500 truncate">{formatDate(r.updatedAt)}</span>
+        <span className="text-[11px] text-ink-soft truncate">{formatDate(r.updatedAt)}</span>
         {showMove && (
           <span className="flex gap-1 shrink-0">
             <button
@@ -155,14 +155,14 @@ export default function RequestsBoard({ requests, onMove }) {
             key={status}
             data-col={status}
             aria-label={`${label}: ${items.length}`}
-            className={`card p-3 min-h-[200px] transition-[box-shadow,border-color] duration-300 ${isOver ? "!border-blue-400/70 shadow-[0_0_0_3px_rgba(0,123,255,0.18)]" : ""}`}
+            className={`card p-3 min-h-[200px] transition-[box-shadow,border-color] duration-300 ${isOver ? "!border-info/70 shadow-[0_0_0_3px_rgba(0,123,255,0.18)]" : ""}`}
           >
             <header className="flex items-center justify-between px-1 pb-3">
               <span className={`flex items-center gap-2 text-sm font-semibold ${tone}`}>
                 <span className={`w-1.5 h-4 rounded-full ${bar}`} aria-hidden="true" />
                 <Icon size={16} /> {label}
               </span>
-              <span className="text-xs font-bold text-gray-300 bg-white/5 rounded-full px-2 py-0.5 tabular">{items.length}</span>
+              <span className="text-xs font-bold text-ink-2 bg-tint/5 rounded-full px-2 py-0.5 tabular">{items.length}</span>
             </header>
             <div className="space-y-2.5">
               {items.map((r, i) => {
@@ -174,8 +174,8 @@ export default function RequestsBoard({ requests, onMove }) {
                     style={{ "--i": Math.min(i, 8) }}
                     className={`stagger-item rounded-xl border p-3 cursor-grab touch-pan-y transition-[opacity,box-shadow,border-color] duration-200 ${
                       lifted
-                        ? "opacity-30 border-dashed border-blue-400/60 bg-transparent"
-                        : "border-white/10 bg-white/[0.04] hover:border-blue-400/40 hover:shadow-[0_8px_20px_-10px_rgba(0,123,255,0.5)]"
+                        ? "opacity-30 border-dashed border-info/60 bg-transparent"
+                        : "border-line bg-tint/[0.04] hover:border-info/40 hover:shadow-[0_8px_20px_-10px_rgba(0,123,255,0.5)]"
                     }`}
                   >
                     <CardBody r={r} showMove onMove={onMove} />
@@ -183,7 +183,7 @@ export default function RequestsBoard({ requests, onMove }) {
                 );
               })}
               {items.length === 0 && (
-                <p className="rounded-xl border border-dashed border-white/10 py-8 text-center text-xs text-gray-500">
+                <p className="rounded-xl border border-dashed border-line py-8 text-center text-xs text-ink-soft">
                   {isOver ? "Suelta aquí" : "Sin solicitudes"}
                 </p>
               )}
@@ -194,7 +194,7 @@ export default function RequestsBoard({ requests, onMove }) {
 
       {drag && (
         <div ref={ghostRef} className="fixed left-0 top-0 z-[60] pointer-events-none" style={{ width: drag.w }}>
-          <div className="board-ghost rounded-xl border border-blue-400/70 bg-[#10243d] p-3 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.7)]">
+          <div className="board-ghost rounded-xl border border-info/70 bg-[#10243d] p-3 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.7)]">
             <CardBody r={drag.r} showMove={false} />
             <p className="sr-only">Moviendo a {over ? LABEL[over] : "…"}</p>
           </div>

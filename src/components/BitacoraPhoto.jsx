@@ -45,14 +45,14 @@ export default function BitacoraPhoto({ photoId, alt, eager = false, contain = f
   const content = state.url ? (
     <img src={state.url} alt={alt || ""} className={`w-full h-full ${contain ? "object-contain" : "object-cover"}`} />
   ) : state.error ? (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-xs text-gray-400">
+    <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-xs text-ink-muted">
       <ImageOff size={18} /> No se pudo cargar
     </div>
   ) : (
     <div className="skeleton w-full h-full" aria-hidden="true" />
   );
 
-  const base = `relative overflow-hidden bg-white/5 ${className}`;
+  const base = `relative overflow-hidden bg-tint/5 ${className}`;
   if (onClick) {
     return (
       <button ref={ref} type="button" onClick={onClick} className={`${base} block text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00c2ff]`} aria-label={alt ? `Ampliar foto: ${alt}` : "Ampliar foto"}>

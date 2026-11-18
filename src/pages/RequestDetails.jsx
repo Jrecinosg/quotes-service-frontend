@@ -8,9 +8,9 @@ import Swal from "sweetalert2";
 
 const STATUS_LABEL = { PENDING: 'Pendiente', IN_PROGRESS: 'En proceso', DONE: 'Finalizado' };
 const STATUS_STYLE = {
-  PENDING: 'bg-amber-500/15 text-amber-400',
-  IN_PROGRESS: 'bg-blue-500/15 text-blue-400',
-  DONE: 'bg-green-500/15 text-green-400'
+  PENDING: 'bg-warn/15 text-warn',
+  IN_PROGRESS: 'bg-info/15 text-info',
+  DONE: 'bg-ok/15 text-ok'
 };
 
 export default function RequestDetails() {
@@ -77,20 +77,20 @@ export default function RequestDetails() {
     }
   };
 
-  if (loading) return <div className="p-8 text-center text-gray-400">Cargando solicitud...</div>;
+  if (loading) return <div className="p-8 text-center text-ink-muted">Cargando solicitud...</div>;
   if (!request) return null;
 
   return (
     <div className="max-w-3xl mx-auto pb-10">
-      <button onClick={() => navigate("/app/requests")} className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors mb-6">
+      <button onClick={() => navigate("/app/requests")} className="flex items-center gap-2 text-ink-muted hover:text-info transition-colors mb-6">
         <ArrowLeft size={20} /> Volver al listado
       </button>
 
       <div className="card overflow-hidden">
         <div className="bg-surface-base px-4 md:px-8 py-6 border-b border-surface-border flex justify-between items-start flex-wrap gap-4">
           <div>
-            <h1 className="font-display text-2xl font-extrabold text-white">{formatRequestId(request.correlativo)} — {request.title}</h1>
-            <p className="text-gray-400 mt-1 font-medium">
+            <h1 className="font-display text-2xl font-extrabold text-ink">{formatRequestId(request.correlativo)} — {request.title}</h1>
+            <p className="text-ink-muted mt-1 font-medium">
               {isStaff && request.client?.name ? `${request.client.name} · ` : ''}
               Creada por {request.createdBy?.name || request.createdBy?.email || 'desconocido'} · {formatDate(request.createdAt)}
             </p>
@@ -101,8 +101,8 @@ export default function RequestDetails() {
         </div>
 
         <div className="p-4 md:p-8">
-          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Descripción</h3>
-          <p className="text-gray-200 whitespace-pre-wrap mb-8">{request.description}</p>
+          <h3 className="text-xs font-bold text-ink-muted uppercase tracking-widest mb-2">Descripción</h3>
+          <p className="text-ink whitespace-pre-wrap mb-8">{request.description}</p>
 
           {isStaff && (
             <div className="mb-8 flex flex-wrap gap-3">
@@ -116,20 +116,20 @@ export default function RequestDetails() {
               <button
                 disabled={changingStatus || request.status === 'DONE'}
                 onClick={() => handleStatusChange('DONE')}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold"
+                className="flex items-center gap-2 px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold"
               >
                 <CheckCircle2 size={18} /> Marcar finalizado
               </button>
             </div>
           )}
 
-          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Historial</h3>
+          <h3 className="text-xs font-bold text-ink-muted uppercase tracking-widest mb-4">Historial</h3>
           <div className="space-y-4 mb-8">
             {request.notes.map((n) => (
               <div key={n.id} className="flex gap-3">
                 <div className="mt-1 shrink-0">
                   {n.type === 'STATUS_CHANGE' ? (
-                    <CheckCircle2 size={16} className="text-green-500" />
+                    <CheckCircle2 size={16} className="text-ok" />
                   ) : (
                     <div className="w-2 h-2 rounded-full bg-gray-500 mt-1.5 ml-1" />
                   )}
@@ -140,8 +140,8 @@ export default function RequestDetails() {
                       {STATUS_LABEL[n.statusTo]}
                     </p>
                   )}
-                  <p className="text-sm text-gray-200">{n.body}</p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-sm text-ink">{n.body}</p>
+                  <p className="text-xs text-ink-muted mt-1">
                     {n.createdBy?.name || n.createdBy?.email} · {formatDateTime(n.createdAt)}
                   </p>
                 </div>

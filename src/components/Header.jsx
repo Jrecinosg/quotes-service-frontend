@@ -104,7 +104,7 @@ function GlobalSearch() {
 
     return (
         <div ref={containerRef} className="relative w-full max-w-md">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-muted pointer-events-none" />
             <input
                 type="search"
                 value={term}
@@ -117,20 +117,20 @@ function GlobalSearch() {
             />
 
             {open && (
-                <div className="card animate-pop-in origin-top absolute left-0 right-0 mt-2 z-40 shadow-black/40 overflow-hidden">
+                <div className="card !bg-surface animate-pop-in origin-top absolute left-0 right-0 mt-2 z-40 !shadow-[var(--sh-pop)] overflow-hidden">
                     {loading && !hasResults ? (
-                        <div className="flex items-center gap-2 px-4 py-4 text-sm text-gray-400">
+                        <div className="flex items-center gap-2 px-4 py-4 text-sm text-ink-muted">
                             <Loader2 size={16} className="animate-spin" /> Buscando...
                         </div>
                     ) : error ? (
-                        <p className="px-4 py-4 text-sm text-red-400">No se pudo completar la búsqueda. Intenta de nuevo.</p>
+                        <p className="px-4 py-4 text-sm text-bad">No se pudo completar la búsqueda. Intenta de nuevo.</p>
                     ) : !hasResults ? (
-                        <p className="px-4 py-4 text-sm text-gray-400">Sin resultados para "{term.trim()}".</p>
+                        <p className="px-4 py-4 text-sm text-ink-muted">Sin resultados para "{term.trim()}".</p>
                     ) : (
                         <div className="max-h-[70vh] overflow-y-auto py-2">
                             {results.quotations.length > 0 && (
                                 <div>
-                                    <p className="px-4 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500">Cotizaciones</p>
+                                    <p className="px-4 pt-2 pb-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">Cotizaciones</p>
                                     {results.quotations.map((q) => (
                                         <button
                                             key={`q-${q.id}`}
@@ -138,23 +138,23 @@ function GlobalSearch() {
                                             onClick={() => goTo(`/app/quotations/${q.id}`)}
                                             className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-surface-hover transition-colors"
                                         >
-                                            <div className="w-8 h-8 shrink-0 rounded-full bg-blue-500/15 flex items-center justify-center">
-                                                <FileText size={15} className="text-blue-400" />
+                                            <div className="w-8 h-8 shrink-0 rounded-full bg-info/15 flex items-center justify-center">
+                                                <FileText size={15} className="text-info" />
                                             </div>
                                             <div className="min-w-0 flex-1">
-                                                <p className="text-sm font-semibold text-white">{formatQuotationId(q.correlativo)}</p>
-                                                <p className="text-xs text-gray-400 truncate">
+                                                <p className="font-mono text-[13px] font-semibold text-info">{formatQuotationId(q.correlativo)}</p>
+                                                <p className="text-xs text-ink-muted truncate">
                                                     {q.client?.name || "Sin cliente"}{q.projectReference ? ` · ${q.projectReference}` : ""}
                                                 </p>
                                             </div>
-                                            <span className="text-xs font-semibold text-gray-300 shrink-0">{formatCurrency(q.total)}</span>
+                                            <span className="text-xs font-semibold text-ink-2 shrink-0">{formatCurrency(q.total)}</span>
                                         </button>
                                     ))}
                                 </div>
                             )}
                             {results.clients.length > 0 && (
                                 <div className={results.quotations.length > 0 ? "mt-1 pt-1 border-t border-surface-border" : ""}>
-                                    <p className="px-4 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500">Clientes</p>
+                                    <p className="px-4 pt-2 pb-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">Clientes</p>
                                     {results.clients.map((c) => (
                                         <button
                                             key={`c-${c.id}`}
@@ -162,12 +162,12 @@ function GlobalSearch() {
                                             onClick={() => goTo(`/app/clients?highlight=${c.id}`)}
                                             className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-surface-hover transition-colors"
                                         >
-                                            <div className="w-8 h-8 shrink-0 rounded-full bg-purple-500/15 flex items-center justify-center">
-                                                <Users size={15} className="text-purple-400" />
+                                            <div className="w-8 h-8 shrink-0 rounded-full bg-violet/15 flex items-center justify-center">
+                                                <Users size={15} className="text-violet" />
                                             </div>
                                             <div className="min-w-0 flex-1">
-                                                <p className="text-sm font-semibold text-white truncate">{c.name}</p>
-                                                <p className="text-xs text-gray-400 truncate">
+                                                <p className="text-sm font-semibold text-ink truncate">{c.name}</p>
+                                                <p className="text-xs text-ink-muted truncate">
                                                     {c.taxId ? `NIT ${c.taxId}` : "Sin NIT"}{c.contactName ? ` · ${c.contactName}` : ""}
                                                 </p>
                                             </div>
@@ -200,23 +200,23 @@ function ProfileMenu() {
                 aria-expanded={open}
                 className="btn btn-secondary !rounded-full !pl-1.5 !pr-3 !py-1.5 gap-3"
             >
-                <div className="w-8 h-8 rounded-full bg-brand-gradient flex items-center justify-center text-white text-sm font-bold shrink-0">
+                <div className="w-8 h-8 rounded-full bg-brand-soft flex items-center justify-center text-white text-sm font-bold shrink-0">
                     {initial}
                 </div>
                 <div className="flex flex-col items-start leading-tight max-w-[160px]">
-                    <span className="text-sm font-semibold text-white truncate max-w-full">{user?.name || "Mi cuenta"}</span>
-                    <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">{user?.role}</span>
+                    <span className="text-sm font-semibold text-ink truncate max-w-full">{user?.name || "Mi cuenta"}</span>
+                    <span className="font-mono text-[10px] font-semibold text-info uppercase tracking-[0.12em]">{user?.role}</span>
                 </div>
-                <ChevronDown size={16} className={`text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} />
+                <ChevronDown size={16} className={`text-ink-muted transition-transform ${open ? "rotate-180" : ""}`} />
             </button>
 
             {open && (
-                <div role="menu" className="animate-pop-in origin-top-right absolute right-0 mt-2 w-52 z-40 bg-surface-card border border-surface-border rounded-2xl shadow-2xl shadow-black/40 py-2">
+                <div role="menu" className="animate-pop-in origin-top-right absolute right-0 mt-2 w-52 z-40 bg-surface border border-line rounded-2xl shadow-[var(--sh-pop)] py-2">
                     <Link
                         to="/app/profile"
                         role="menuitem"
                         onClick={() => setOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:bg-surface-hover hover:text-white transition-colors"
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-ink-2 hover:bg-surface-hover hover:text-ink transition-colors"
                     >
                         <User size={16} /> Mi Perfil
                     </Link>
@@ -224,7 +224,7 @@ function ProfileMenu() {
                         type="button"
                         role="menuitem"
                         onClick={() => { setOpen(false); logout(); }}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-bad hover:bg-bad/10 transition-colors"
                     >
                         <LogOut size={16} /> Cerrar Sesión
                     </button>
@@ -249,14 +249,14 @@ export default function Header() {
     const { day, time } = formatNow(now);
 
     return (
-        <header style={{ viewTransitionName: "header" }} className="hidden md:flex items-center gap-4 h-[72px] px-8 border-b border-white/5 bg-surface-base/60 backdrop-blur-md shrink-0 relative z-30">
+        <header style={{ viewTransitionName: "header" }} className="hidden md:flex items-center gap-4 h-[72px] px-8 lg:px-10 border-b glass shrink-0 relative z-30">
             <div className="flex-1 min-w-0">
                 {!isClientAccount && <GlobalSearch />}
             </div>
 
             <div className="hidden lg:flex flex-col items-end leading-tight">
-                <span className="text-sm font-semibold text-white">{time}</span>
-                <span className="text-xs text-gray-400">{day}</span>
+                <span className="text-sm font-extrabold text-ink tabular">{time}</span>
+                <span className="text-xs text-ink-muted">{day}</span>
             </div>
 
             {/* Decorativo por ahora: no hay sistema de notificaciones todavía,

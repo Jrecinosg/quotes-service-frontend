@@ -139,10 +139,10 @@ export default function WarrantyProjectForm() {
     if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault();
   };
 
-  if (loading) return <div className="p-8 text-center text-gray-400">Cargando proyecto...</div>;
+  if (loading) return <div className="p-8 text-center text-ink-muted">Cargando proyecto...</div>;
 
-  const inputClass = "w-full border border-surface-border rounded-lg p-2 text-sm text-white placeholder:text-gray-500 [color-scheme:dark] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none";
-  const labelClass = "block text-xs font-semibold text-gray-300 uppercase tracking-wide mb-1";
+  const inputClass = "w-full border border-surface-border rounded-lg p-2 text-sm text-ink placeholder:text-ink-soft [color-scheme:dark] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none";
+  const labelClass = "block text-xs font-semibold text-ink-2 uppercase tracking-wide mb-1";
 
   return (
     <div className="max-w-5xl mx-auto pb-10">
@@ -151,16 +151,16 @@ export default function WarrantyProjectForm() {
         <button
           type="button"
           onClick={() => navigate("/app/warranties")}
-          className="p-2 hover:bg-surface-hover rounded-full text-gray-400 shrink-0"
+          className="p-2 hover:bg-surface-hover rounded-full text-ink-muted shrink-0"
           aria-label="Volver"
         >
           <ArrowLeft size={22} />
         </button>
         <div>
-          <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-white">
+          <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-ink">
             {isEditing ? "Editar proyecto de garantía" : "Nuevo proyecto de garantía"}
           </h1>
-          <p className="text-gray-400 text-sm">
+          <p className="text-ink-muted text-sm">
             Registra a quién se le facturó y de qué proveedor salió cada equipo
           </p>
         </div>
@@ -171,10 +171,10 @@ export default function WarrantyProjectForm() {
         {/* Datos del proyecto */}
         <div className="card p-6">
           <div className="flex items-center gap-2 mb-5">
-            <div className="w-9 h-9 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full bg-info/10 text-info flex items-center justify-center">
               <FileText size={18} />
             </div>
-            <h2 className="font-semibold text-white">Datos del proyecto</h2>
+            <h2 className="font-semibold text-ink">Datos del proyecto</h2>
           </div>
 
           <div className="space-y-5">
@@ -224,15 +224,15 @@ export default function WarrantyProjectForm() {
         <div className="card p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-full bg-violet/10 text-violet flex items-center justify-center">
                 <Package size={18} />
               </div>
               <div>
-                <h2 className="font-semibold text-white">Equipos del proyecto</h2>
-                <p className="text-xs text-gray-400">Cada equipo lleva su propio proveedor, compra y factura</p>
+                <h2 className="font-semibold text-ink">Equipos del proyecto</h2>
+                <p className="text-xs text-ink-muted">Cada equipo lleva su propio proveedor, compra y factura</p>
               </div>
             </div>
-            <span className="text-xs font-semibold text-gray-400 sm:ml-auto">
+            <span className="text-xs font-semibold text-ink-muted sm:ml-auto">
               {items.length} equipo{items.length === 1 ? "" : "s"}
             </span>
           </div>
@@ -241,14 +241,14 @@ export default function WarrantyProjectForm() {
             {items.map((item, index) => (
               <div key={index} className="rounded-xl border border-surface-border bg-surface-base p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                  <span className="text-xs font-bold uppercase tracking-wider text-ink-muted">
                     Equipo #{index + 1}
                   </span>
                   <button
                     type="button"
                     onClick={() => removeItem(index)}
                     disabled={items.length === 1}
-                    className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="p-1.5 text-bad hover:bg-bad/10 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
                     title={items.length === 1 ? "El proyecto necesita al menos un equipo" : "Quitar este equipo"}
                   >
                     <Trash2 size={16} />
@@ -272,7 +272,7 @@ export default function WarrantyProjectForm() {
                     <button
                       type="button"
                       onClick={() => openSupplierModal(index)}
-                      className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-blue-400 hover:text-blue-300"
+                      className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-info hover:text-info"
                     >
                       <Truck size={13} /> Nuevo proveedor
                     </button>
@@ -343,7 +343,7 @@ export default function WarrantyProjectForm() {
           <button
             type="button"
             onClick={addItem}
-            className="mt-4 flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold text-sm"
+            className="mt-4 flex items-center gap-2 text-info hover:text-info font-semibold text-sm"
           >
             <Plus size={16} /> Agregar equipo
           </button>
@@ -354,7 +354,7 @@ export default function WarrantyProjectForm() {
           <button
             type="button"
             onClick={() => navigate("/app/warranties")}
-            className="px-5 py-3 rounded-lg text-gray-200 bg-surface-card border border-surface-border hover:bg-surface-hover font-medium"
+            className="px-5 py-3 rounded-lg text-ink bg-surface-card border border-surface-border hover:bg-surface-hover font-medium"
           >
             Cancelar
           </button>

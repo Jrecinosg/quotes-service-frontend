@@ -135,8 +135,8 @@ export default function Clients() {
             {/* Cabecera */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-white">Clientes</h1>
-                    <p className="text-gray-400 text-sm">Gestiona tu cartera de clientes</p>
+                    <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-ink">Clientes</h1>
+                    <p className="text-ink-muted text-sm">Gestiona tu cartera de clientes</p>
                 </div>
                 <button
                     onClick={handleCreate}
@@ -150,7 +150,7 @@ export default function Clients() {
             {/* Barra de Búsqueda */}
             <div className="card p-4 mb-6">
                 <div className="relative">
-                    <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+                    <Search className="absolute left-3 top-3 text-ink-muted w-5 h-5" />
                     <input
                         type="text"
                         placeholder="Buscar por nombre o NIT..."
@@ -165,7 +165,7 @@ export default function Clients() {
             <div className="card overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left min-w-[800px]">
-                        <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
+                        <thead className="bg-surface-base text-ink-muted text-xs uppercase font-semibold">
                             <tr>
                                 <th className="px-6 py-4">Cliente</th>
                                 <th className="px-6 py-4">Documento</th>
@@ -175,33 +175,33 @@ export default function Clients() {
                         </thead>
                         <tbody className="divide-y divide-surface-border">
                             {loading ? (
-                                <tr><td colSpan="4" className="text-center py-8 text-gray-400">Cargando...</td></tr>
+                                <tr><td colSpan="4" className="text-center py-8 text-ink-muted">Cargando...</td></tr>
                             ) : filteredClients.length === 0 ? (
-                                <tr><td colSpan="4" className="text-center py-8 text-gray-400">No se encontraron clientes</td></tr>
+                                <tr><td colSpan="4" className="text-center py-8 text-ink-muted">No se encontraron clientes</td></tr>
                             ) : (
                                 filteredClients.map((client) => (
                                     <tr
                                         key={client.id}
                                         ref={client.id === highlightId ? highlightRef : null}
-                                        className={`transition-colors group ${client.id === highlightId ? "bg-blue-500/10 ring-1 ring-inset ring-blue-400/50" : "hover:bg-surface-hover"}`}
+                                        className={`transition-colors group ${client.id === highlightId ? "bg-info/10 ring-1 ring-inset ring-info/50" : "hover:bg-surface-hover"}`}
                                     >
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 shrink-0 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                                                <div className="w-10 h-10 shrink-0 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
                                                     {client.name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-white">{client.name}</p>
-                                                    <p className="text-xs text-gray-400 truncate max-w-[200px]">{client.address}</p>
+                                                    <p className="font-medium text-ink">{client.name}</p>
+                                                    <p className="text-xs text-ink-muted truncate max-w-[200px]">{client.address}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="px-2 py-1 bg-surface-hover text-gray-300 rounded text-xs font-mono">
+                                            <span className="px-2 py-1 bg-surface-hover text-ink-2 rounded text-xs font-mono">
                                                 {client.taxId || "Sin NIT"}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-300">
+                                        <td className="px-6 py-4 text-sm text-ink-2">
                                             <p>{client.email}</p>
                                             <p>{client.phone}</p>
                                         </td>
@@ -209,21 +209,21 @@ export default function Clients() {
                                             <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => handleEdit(client)}
-                                                    className="p-2 text-blue-400 hover:bg-blue-500/15 rounded-lg" title="Editar"
+                                                    className="p-2 text-info hover:bg-info/15 rounded-lg" title="Editar"
                                                 >
                                                     <Pencil size={18} />
                                                 </button>
                                                 {isAdmin && (
                                                     <button
                                                         onClick={() => handleMerge(client)}
-                                                        className="p-2 text-purple-400 hover:bg-purple-500/15 rounded-lg" title="Fusionar con otro cliente"
+                                                        className="p-2 text-violet hover:bg-violet/15 rounded-lg" title="Fusionar con otro cliente"
                                                     >
                                                         <Merge size={18} />
                                                     </button>
                                                 )}
                                                 <button
                                                     onClick={() => handleDelete(client.id)}
-                                                    className="p-2 text-red-400 hover:bg-red-500/15 rounded-lg" title="Eliminar"
+                                                    className="p-2 text-bad hover:bg-bad/15 rounded-lg" title="Eliminar"
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>

@@ -8,22 +8,22 @@ export default function ForbiddenPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center px-4">
+    <div className="min-h-screen bg-surface-base flex flex-col justify-center items-center px-4">
       <div className="max-w-md w-full text-center">
         {/* Icono de Escudo con Pulso */}
         <div className="flex justify-center mb-6">
           <div className="relative">
-            <div className="absolute inset-0 rounded-full bg-red-100 animate-ping"></div>
-            <div className="relative bg-red-50 p-6 rounded-full border border-red-100">
-              <ShieldAlert className="w-16 h-16 text-red-600" />
+            <div className="absolute inset-0 rounded-full bg-bad/10 animate-ping"></div>
+            <div className="relative bg-bad/10 p-6 rounded-full border border-bad/25">
+              <ShieldAlert className="w-16 h-16 text-bad" />
             </div>
           </div>
         </div>
 
         {/* Texto de Error */}
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-2">403</h1>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Acceso Restringido</h2>
-        <p className="text-gray-600 mb-8">
+        <h1 className="text-4xl font-extrabold text-ink mb-2">403</h1>
+        <h2 className="text-2xl font-bold text-ink mb-4">Acceso Restringido</h2>
+        <p className="text-ink-soft mb-8">
           Lo sentimos, no tienes los permisos necesarios para ver esta sección. 
           Si crees que esto es un error, contacta al administrador del sistema.
         </p>
@@ -40,7 +40,7 @@ export default function ForbiddenPage() {
           
           <button
             onClick={handleLogout}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors shadow-sm"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-surface text-ink border border-line rounded-lg font-semibold hover:bg-surface-base transition-colors shadow-sm"
           >
             <LogOut className="w-4 h-4" />
             Cerrar Sesión
@@ -49,7 +49,7 @@ export default function ForbiddenPage() {
       </div>
 
       {/* Footer */}
-      <p className="mt-12 text-sm text-gray-400 font-medium tracking-widest uppercase">
+      <p className="mt-12 text-sm text-ink-muted font-medium tracking-widest uppercase">
         Plataforma Grupo AC © 2026
       </p>
     </div>

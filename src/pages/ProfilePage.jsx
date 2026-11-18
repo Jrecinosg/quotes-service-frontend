@@ -40,8 +40,8 @@ export default function ProfilePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <header>
-        <h1 className="font-display text-3xl font-bold text-white">Mi Perfil</h1>
-        <p className="text-gray-400">Gestiona tu información personal en el sistema.</p>
+        <h1 className="font-display text-3xl font-bold text-ink">Mi Perfil</h1>
+        <p className="text-ink-muted">Gestiona tu información personal en el sistema.</p>
       </header>
 
       <div className="card overflow-hidden">
@@ -50,11 +50,11 @@ export default function ProfilePage() {
             
             {/* Campo de Nombre (Editable) */}
             <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-ink-2 mb-2">
                 Nombre Completo
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+                <User className="absolute left-3 top-3 text-ink-muted w-5 h-5" />
                 <input
                   type="text"
                   value={name}
@@ -68,27 +68,27 @@ export default function ProfilePage() {
 
             {/* Campo de Email (Lectura) */}
             <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-ink-2 mb-2">
                 Correo Electrónico
               </label>
               <div className="relative bg-surface-base rounded-lg">
-                <Mail className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+                <Mail className="absolute left-3 top-3 text-ink-muted w-5 h-5" />
                 <input
                   type="email"
                   value={user?.email}
                   disabled
-                  className="bg-surface-base placeholder:text-gray-500 w-full pl-10 pr-4 py-2.5 border border-surface-border rounded-lg text-gray-400 cursor-not-allowed"
+                  className="bg-surface-base placeholder:text-ink-soft w-full pl-10 pr-4 py-2.5 border border-surface-border rounded-lg text-ink-muted cursor-not-allowed"
                 />
               </div>
-              <p className="mt-1 text-xs text-gray-400 italic">El correo no puede ser modificado.</p>
+              <p className="mt-1 text-xs text-ink-muted italic">El correo no puede ser modificado.</p>
             </div>
 
             {/* Campo de Rol (Lectura) */}
             <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-ink-2 mb-2">
                 Rol asignado
               </label>
-              <div className="flex items-center gap-2 text-blue-400 bg-blue-500/10 px-4 py-2 rounded-lg w-fit border border-blue-500/30">
+              <div className="flex items-center gap-2 text-info bg-info/10 px-4 py-2 rounded-lg w-fit border border-info/30">
                 <Shield size={18} />
                 <span className="font-bold text-sm uppercase">{user?.role}</span>
               </div>
@@ -101,8 +101,8 @@ export default function ProfilePage() {
               disabled={loading || name === user?.name}
               className={`w-full flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-all ${
                 loading || name === user?.name
-                  ? 'bg-surface-hover text-gray-500 cursor-not-allowed'
-                  : 'bg-brand-gradient text-white hover:brightness-105 shadow-md'
+                  ? 'bg-surface-hover text-ink-soft cursor-not-allowed'
+                  : 'bg-brand-soft text-white hover:brightness-105 shadow-md'
               }`}
             >
               {loading ? 'Guardando...' : <><Save size={20} /> Guardar Cambios</>}

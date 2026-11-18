@@ -133,38 +133,38 @@ export default function AdminPage() {
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <header>
-                <h1 className="font-display text-3xl font-bold text-white">Configuración del Sistema</h1>
-                <p className="text-gray-400">Gestiona quién tiene acceso al cotizador y sus permisos.</p>
+                <h1 className="font-display text-3xl font-bold text-ink">Configuración del Sistema</h1>
+                <p className="text-ink-muted">Gestiona quién tiene acceso al cotizador y sus permisos.</p>
             </header>
 
             {/* Formulario de Invitación / Edición de rol */}
             <div className="card p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                        <Mail size={20} className="text-blue-500" />
+                    <h2 className="text-xl font-semibold text-ink flex items-center gap-2">
+                        <Mail size={20} className="text-info" />
                         {editingEmail ? 'Editar rol de usuario' : 'Invitar Nuevo Usuario'}
                     </h2>
                     {editingEmail && (
-                        <button type="button" onClick={cancelEdit} className="text-sm text-gray-400 hover:text-white flex items-center gap-1">
+                        <button type="button" onClick={cancelEdit} className="text-sm text-ink-muted hover:text-ink flex items-center gap-1">
                             <X size={16} /> Cancelar
                         </button>
                     )}
                 </div>
                 <form onSubmit={handleInvite} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">Correo Electrónico</label>
+                        <label className="block text-sm font-medium text-ink-2 mb-1">Correo Electrónico</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             disabled={!!editingEmail}
-                            className="field w-full py-2 disabled:bg-surface-hover disabled:text-gray-500"
+                            className="field w-full py-2 disabled:bg-surface-hover disabled:text-ink-soft"
                             placeholder="correo@empresa.com"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">Tipo de acceso</label>
+                        <label className="block text-sm font-medium text-ink-2 mb-1">Tipo de acceso</label>
                         <select
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
@@ -177,7 +177,7 @@ export default function AdminPage() {
                     </div>
                     {role === 'CLIENT' ? (
                         <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-1">Empresa cliente</label>
+                            <label className="block text-sm font-medium text-ink-2 mb-1">Empresa cliente</label>
                             <select
                                 value={clientId}
                                 onChange={(e) => setClientId(e.target.value)}
@@ -194,28 +194,28 @@ export default function AdminPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`py-2 px-4 rounded-md text-white font-medium transition-all md:col-start-3 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-brand-gradient hover:brightness-105 shadow-sm'
+                        className={`py-2 px-4 rounded-md text-white font-medium transition-all md:col-start-3 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-brand-soft hover:brightness-105 shadow-sm'
                             }`}
                     >
                         {loading ? 'Procesando...' : editingEmail ? 'Actualizar Rol' : 'Enviar Invitación'}
                     </button>
                 </form>
                 {role === 'CLIENT' && clients.length === 0 && (
-                    <p className="text-xs text-amber-400 mt-2">No hay clientes registrados todavía — crea uno primero en la sección Clientes.</p>
+                    <p className="text-xs text-warn mt-2">No hay clientes registrados todavía — crea uno primero en la sección Clientes.</p>
                 )}
             </div>
 
             {/* Equipo interno */}
             <div className="card overflow-hidden">
                 <div className="p-6 border-b border-surface-border">
-                    <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                        <ShieldCheck size={20} className="text-green-500" />
+                    <h2 className="text-xl font-semibold text-ink flex items-center gap-2">
+                        <ShieldCheck size={20} className="text-ok" />
                         Equipo interno
                     </h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
-                        <thead className="bg-surface-base text-gray-300 uppercase text-xs font-bold">
+                        <thead className="bg-surface-base text-ink-2 uppercase text-xs font-bold">
                             <tr>
                                 <th className="px-6 py-4">Usuario</th>
                                 <th className="px-6 py-4">Rol</th>
@@ -225,9 +225,9 @@ export default function AdminPage() {
                         </thead>
                         <tbody className="divide-y divide-surface-border">
                             {fetching ? (
-                                <tr><td colSpan="4" className="text-center py-10 text-gray-400">Cargando lista...</td></tr>
+                                <tr><td colSpan="4" className="text-center py-10 text-ink-muted">Cargando lista...</td></tr>
                             ) : staffUsers.length === 0 ? (
-                                <tr><td colSpan="4" className="text-center py-10 text-gray-400">No hay colaboradores registrados.</td></tr>
+                                <tr><td colSpan="4" className="text-center py-10 text-ink-muted">No hay colaboradores registrados.</td></tr>
                             ) : (
                                 staffUsers.map((user) => (
                                     <UserRow key={user.email} user={user} onEdit={startEdit} onDelete={handleDelete} />
@@ -241,24 +241,24 @@ export default function AdminPage() {
             {/* Clientes, agrupados por empresa */}
             <div className="card overflow-hidden">
                 <div className="p-6 border-b border-surface-border">
-                    <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                        <Building2 size={20} className="text-orange-500" />
+                    <h2 className="text-xl font-semibold text-ink flex items-center gap-2">
+                        <Building2 size={20} className="text-accent" />
                         Clientes con acceso al portal
                     </h2>
-                    <p className="text-sm text-gray-400 mt-1">Una misma empresa puede tener más de una persona con acceso — solo invita otro correo con la misma empresa seleccionada.</p>
+                    <p className="text-sm text-ink-muted mt-1">Una misma empresa puede tener más de una persona con acceso — solo invita otro correo con la misma empresa seleccionada.</p>
                 </div>
                 {fetching ? (
-                    <div className="text-center py-10 text-gray-400">Cargando lista...</div>
+                    <div className="text-center py-10 text-ink-muted">Cargando lista...</div>
                 ) : clientGroups.length === 0 ? (
-                    <div className="text-center py-10 text-gray-400">Todavía no hay clientes con acceso al portal.</div>
+                    <div className="text-center py-10 text-ink-muted">Todavía no hay clientes con acceso al portal.</div>
                 ) : (
                     <div className="divide-y divide-surface-border">
                         {clientGroups.map(({ clientName, users }) => (
                             <div key={clientName}>
                                 <div className="px-6 py-3 bg-surface-base flex items-center gap-2">
-                                    <Building2 size={14} className="text-gray-400" />
-                                    <span className="font-semibold text-gray-200 text-sm">{clientName}</span>
-                                    <span className="text-xs text-gray-400">({users.length} persona{users.length === 1 ? '' : 's'})</span>
+                                    <Building2 size={14} className="text-ink-muted" />
+                                    <span className="font-semibold text-ink text-sm">{clientName}</span>
+                                    <span className="text-xs text-ink-muted">({users.length} persona{users.length === 1 ? '' : 's'})</span>
                                 </div>
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left border-collapse">
@@ -279,17 +279,17 @@ export default function AdminPage() {
                 la vigencia real quedaron en "Sin fecha" -esto la calcula para
                 todas usando su propio texto de Validez + fecha de creación. */}
             <div className="card p-6">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                    <CalendarClock size={20} className="text-blue-500" />
+                <h2 className="text-xl font-semibold text-ink flex items-center gap-2">
+                    <CalendarClock size={20} className="text-info" />
                     Rellenar vigencia de cotizaciones antiguas
                 </h2>
-                <p className="text-sm text-gray-400 mt-1 mb-4">
+                <p className="text-sm text-ink-muted mt-1 mb-4">
                     Calcula Vigente/Vencida para las cotizaciones que ya existían antes de este cambio, usando su propio texto de "Validez". Es seguro ejecutarlo varias veces -solo toca las que todavía digan "Sin fecha".
                 </p>
                 <button
                     onClick={handleBackfillValidUntil}
                     disabled={backfilling}
-                    className={`py-2 px-4 rounded-md text-white font-medium transition-all ${backfilling ? 'bg-gray-400 cursor-not-allowed' : 'bg-brand-gradient hover:brightness-105 shadow-sm'}`}
+                    className={`py-2 px-4 rounded-md text-white font-medium transition-all ${backfilling ? 'bg-gray-400 cursor-not-allowed' : 'bg-brand-soft hover:brightness-105 shadow-sm'}`}
                 >
                     {backfilling ? 'Calculando...' : 'Rellenar ahora'}
                 </button>
@@ -304,37 +304,37 @@ function UserRow({ user, onEdit, onDelete, hideRole = false }) {
             <td className="px-6 py-4 w-1/3">
                 <div className="flex items-center gap-3">
                     <div className="bg-surface-hover p-2 rounded-full">
-                        <UserIcon size={16} className="text-gray-400" />
+                        <UserIcon size={16} className="text-ink-muted" />
                     </div>
-                    <span className="font-medium text-gray-200">{user.email}</span>
+                    <span className="font-medium text-ink">{user.email}</span>
                 </div>
             </td>
             {!hideRole && (
                 <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                        user.role === 'ADMIN' ? 'bg-purple-500/15 text-purple-300'
-                        : user.role === 'CLIENT' ? 'bg-orange-500/15 text-orange-300'
-                        : 'bg-blue-500/15 text-blue-300'
+                        user.role === 'ADMIN' ? 'bg-violet/15 text-violet'
+                        : user.role === 'CLIENT' ? 'bg-accent/15 text-accent'
+                        : 'bg-info/15 text-info'
                         }`}>
                         {user.role}
                     </span>
                 </td>
             )}
-            <td className="px-6 py-4 text-sm text-gray-400">
+            <td className="px-6 py-4 text-sm text-ink-muted">
                 {new Date(user.invitedAt).toLocaleDateString()}
             </td>
             <td className="px-6 py-4 text-center">
                 <div className="flex items-center justify-center gap-1">
                     <button
                         onClick={() => onEdit(user)}
-                        className="text-blue-400 hover:text-blue-300 transition-colors p-2 hover:bg-blue-500/10 rounded-lg"
+                        className="text-info hover:text-info transition-colors p-2 hover:bg-info/10 rounded-lg"
                         title="Editar rol"
                     >
                         <Pencil size={18} />
                     </button>
                     <button
                         onClick={() => onDelete(user.email)}
-                        className="text-red-400 hover:text-red-300 transition-colors p-2 hover:bg-red-500/10 rounded-lg"
+                        className="text-bad hover:text-bad transition-colors p-2 hover:bg-bad/10 rounded-lg"
                         title="Revocar acceso"
                     >
                         <Trash2 size={18} />

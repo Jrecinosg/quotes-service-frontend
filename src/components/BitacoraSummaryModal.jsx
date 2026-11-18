@@ -61,20 +61,20 @@ export default function BitacoraSummaryModal({ project, mode, onClose, onSaved }
   return createPortal(
     <div className="modal-overlay animate-overlay-in fixed inset-0 flex items-center justify-center z-50 p-4 overflow-y-auto">
       <div className="card w-full max-w-lg max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="bit-sum-title">
-        <div className="px-6 py-4 flex justify-between items-center border-b border-white/10">
-          <h2 id="bit-sum-title" className="text-white font-semibold text-lg">{title}</h2>
+        <div className="px-6 py-4 flex justify-between items-center border-b border-line">
+          <h2 id="bit-sum-title" className="text-ink font-semibold text-lg">{title}</h2>
           <button type="button" onClick={onClose} className="btn btn-ghost btn-icon" aria-label="Cerrar"><X size={20} /></button>
         </div>
         <form onSubmit={submit} className="p-6 space-y-4">
           <div>
-            <label htmlFor="bit-summary" className="block text-sm font-medium text-gray-300">Resumen final (lo lee el cliente)</label>
+            <label htmlFor="bit-summary" className="block text-sm font-medium text-ink-2">Resumen final (lo lee el cliente)</label>
             <textarea id="bit-summary" rows={5} maxLength={5000} className="field mt-1 w-full" placeholder="Qué se pidió, qué se hizo y en qué estado quedó. Sin fechas ni horas." value={summary} onChange={(e) => setSummary(e.target.value)} />
           </div>
           {closing && (
             <div>
-              <label htmlFor="bit-endd" className="block text-sm font-medium text-gray-300">Fecha de fin (opcional, uso interno)</label>
+              <label htmlFor="bit-endd" className="block text-sm font-medium text-ink-2">Fecha de fin (opcional, uso interno)</label>
               <input id="bit-endd" type="date" min={toIsoDay(project.startDate)} className="field mt-1 w-full" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-              <p className="text-xs text-gray-400 mt-1">Si la dejas vacía se usa hoy (o la fecha de inicio en proyectos de 1 día). No sale en el informe al cliente.</p>
+              <p className="text-xs text-ink-muted mt-1">Si la dejas vacía se usa hoy (o la fecha de inicio en proyectos de 1 día). No sale en el informe al cliente.</p>
             </div>
           )}
 
@@ -85,13 +85,13 @@ export default function BitacoraSummaryModal({ project, mode, onClose, onSaved }
               </legend>
               <p className="text-xs text-[#CBD5E1]">Elige qué pasa con cada uno. «Pendiente del cliente» lo deja suelto, sin proyecto, para atenderlo después.</p>
               <div className="flex gap-3 mt-2 text-xs">
-                <button type="button" className="underline text-white" onClick={() => setAll("SUELTO")}>Todos al cliente</button>
-                <button type="button" className="underline text-white" onClick={() => setAll("RESOLVER")}>Todos resueltos</button>
+                <button type="button" className="underline text-ink" onClick={() => setAll("SUELTO")}>Todos al cliente</button>
+                <button type="button" className="underline text-ink" onClick={() => setAll("RESOLVER")}>Todos resueltos</button>
               </div>
               <ul className="mt-3 space-y-3">
                 {remaining.map((p) => (
                   <li key={p.id}>
-                    <p className="text-sm text-white break-words">{p.text} <span className="inline-flex align-middle ml-1"><OriginChip origin={p.origin} /></span></p>
+                    <p className="text-sm text-ink break-words">{p.text} <span className="inline-flex align-middle ml-1"><OriginChip origin={p.origin} /></span></p>
                     <div className="seg mt-1.5" role="group" aria-label={`Qué hacer con «${p.text}»`}>
                       <button type="button" className="seg-item" aria-pressed={choices[p.id] === "SUELTO"} onClick={() => setChoices((c) => ({ ...c, [p.id]: "SUELTO" }))}>Pendiente del cliente</button>
                       <button type="button" className="seg-item" aria-pressed={choices[p.id] === "RESOLVER"} onClick={() => setChoices((c) => ({ ...c, [p.id]: "RESOLVER" }))}>Resolver ahora</button>
@@ -102,7 +102,7 @@ export default function BitacoraSummaryModal({ project, mode, onClose, onSaved }
             </fieldset>
           )}
 
-          {error && <p className="text-sm text-red-300" role="alert">{error}</p>}
+          {error && <p className="text-sm text-bad" role="alert">{error}</p>}
           <div className="flex justify-end gap-3 pt-2">
             <button type="button" onClick={onClose} className="btn btn-secondary px-4 py-2">Cancelar</button>
             <button type="submit" className="btn btn-primary px-5 py-2" aria-busy={saving} disabled={saving}>{closing ? title : "Guardar"}</button>

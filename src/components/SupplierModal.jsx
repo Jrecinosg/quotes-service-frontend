@@ -52,11 +52,11 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
       <div className="card w-full max-w-md max-h-[90vh] overflow-y-auto">
 
         {/* Header */}
-        <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
-          <h2 className="text-white font-bold text-lg">
+        <div className="px-6 py-4 border-b border-line flex justify-between items-center">
+          <h2 className="text-ink font-bold text-lg">
             {supplierToEdit ? "Editar proveedor" : "Nuevo proveedor"}
           </h2>
-          <button type="button" onClick={onClose} className="text-blue-100 hover:text-white">
+          <button type="button" onClick={onClose} className="text-ink-muted hover:text-ink">
             <X size={24} />
           </button>
         </div>
@@ -64,7 +64,7 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
         {/* Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300">Nombre del proveedor *</label>
+            <label className="block text-sm font-medium text-ink-2">Nombre del proveedor *</label>
             <input
               type="text"
               required
@@ -77,7 +77,7 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300">NIT</label>
+            <label className="block text-sm font-medium text-ink-2">NIT</label>
             <input
               type="text"
               placeholder="Ej. 12345678-9"
@@ -88,7 +88,7 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300">Nombre del contacto</label>
+            <label className="block text-sm font-medium text-ink-2">Nombre del contacto</label>
             <input
               type="text"
               placeholder="Persona con quien se gestiona la garantía"
@@ -100,7 +100,7 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300">Teléfono</label>
+              <label className="block text-sm font-medium text-ink-2">Teléfono</label>
               <input
                 type="text"
                 className="field mt-1 w-full"
@@ -109,7 +109,7 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300">Correo</label>
+              <label className="block text-sm font-medium text-ink-2">Correo</label>
               <input
                 type="email"
                 className="field mt-1 w-full"
@@ -124,7 +124,7 @@ export default function SupplierModal({ isOpen, onClose, supplierToEdit, onSucce
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-200 bg-surface-hover rounded-lg hover:bg-surface-border"
+              className="px-4 py-2 text-ink bg-surface-hover rounded-lg hover:bg-surface-border"
             >
               Cancelar
             </button>

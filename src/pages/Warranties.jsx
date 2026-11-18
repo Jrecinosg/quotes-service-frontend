@@ -130,8 +130,8 @@ export default function Warranties() {
       {/* Cabecera */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-white">Garantías</h1>
-          <p className="text-gray-400 text-sm">
+          <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-ink">Garantías</h1>
+          <p className="text-ink-muted text-sm">
             Rastrea qué equipo se compró, a qué proveedor y contra qué factura
           </p>
         </div>
@@ -162,13 +162,13 @@ export default function Warranties() {
             onClick={() => setTab(key)}
             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               tab === key
-                ? "bg-brand-gradient text-white shadow-sm"
-                : "bg-surface-card text-gray-300 border border-surface-border hover:bg-surface-hover"
+                ? "bg-brand-soft text-white shadow-sm"
+                : "bg-surface-card text-ink-2 border border-surface-border hover:bg-surface-hover"
             }`}
           >
             <Icon size={16} />
             {label}
-            <span className={`text-xs ${tab === key ? "text-white/80" : "text-gray-400"}`}>
+            <span className={`text-xs ${tab === key ? "text-white/80" : "text-ink-muted"}`}>
               {key === "projects" ? projects.length : suppliers.length}
             </span>
           </button>
@@ -180,7 +180,7 @@ export default function Warranties() {
           {/* Buscador */}
           <div className="card p-4 mb-6">
             <div className="relative">
-              <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-3 text-ink-muted w-5 h-5" />
               <input
                 type="text"
                 placeholder="Buscar por folio, cliente, título, factura o número de serie..."
@@ -195,7 +195,7 @@ export default function Warranties() {
           <div className="card overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left min-w-[820px]">
-                <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
+                <thead className="bg-surface-base text-ink-muted text-xs uppercase font-semibold">
                   <tr>
                     <th className="px-6 py-4">Folio</th>
                     <th className="px-6 py-4">Cliente</th>
@@ -207,16 +207,16 @@ export default function Warranties() {
                 </thead>
                 <tbody className="divide-y divide-surface-border">
                   {loadingProjects ? (
-                    <tr><td colSpan="6" className="text-center py-10 text-gray-400">Cargando garantías...</td></tr>
+                    <tr><td colSpan="6" className="text-center py-10 text-ink-muted">Cargando garantías...</td></tr>
                   ) : projects.length === 0 ? (
                     <tr>
-                      <td colSpan="6" className="text-center py-14 text-gray-400">
-                        <ShieldCheck className="mx-auto mb-2 text-gray-300" size={32} />
+                      <td colSpan="6" className="text-center py-14 text-ink-muted">
+                        <ShieldCheck className="mx-auto mb-2 text-ink-2" size={32} />
                         Todavía no hay garantías registradas. Crea la primera con el botón de arriba.
                       </td>
                     </tr>
                   ) : filteredProjects.length === 0 ? (
-                    <tr><td colSpan="6" className="text-center py-14 text-gray-400">No se encontró ninguna garantía con esa búsqueda.</td></tr>
+                    <tr><td colSpan="6" className="text-center py-14 text-ink-muted">No se encontró ninguna garantía con esa búsqueda.</td></tr>
                   ) : (
                     filteredProjects.map((p) => (
                       <tr
@@ -225,22 +225,22 @@ export default function Warranties() {
                         className="hover:bg-surface-hover transition-colors group cursor-pointer"
                       >
                         <td className="px-6 py-4">
-                          <span className="font-bold text-blue-400">{formatWarrantyId(p.correlativo)}</span>
+                          <span className="font-bold text-info">{formatWarrantyId(p.correlativo)}</span>
                         </td>
-                        <td className="px-6 py-4 text-white font-medium">{p.client?.name || "—"}</td>
-                        <td className="px-6 py-4 text-gray-300">{p.title}</td>
+                        <td className="px-6 py-4 text-ink font-medium">{p.client?.name || "—"}</td>
+                        <td className="px-6 py-4 text-ink-2">{p.title}</td>
                         <td className="px-6 py-4 text-sm">
                           {p.clientInvoiceNumber ? (
                             <>
-                              <p className="text-white font-mono">{p.clientInvoiceNumber}</p>
-                              <p className="text-xs text-gray-400">{formatDate(p.clientInvoiceDate)}</p>
+                              <p className="text-ink font-mono">{p.clientInvoiceNumber}</p>
+                              <p className="text-xs text-ink-muted">{formatDate(p.clientInvoiceDate)}</p>
                             </>
                           ) : (
-                            <span className="inline-flex px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 text-xs font-semibold">Sin facturar aún</span>
+                            <span className="inline-flex px-2 py-0.5 rounded-full bg-warn/15 text-warn text-xs font-semibold">Sin facturar aún</span>
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold">
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-violet/10 text-violet text-xs font-semibold">
                             <Package size={13} />
                             {p.items?.length || 0}
                           </span>
@@ -249,19 +249,19 @@ export default function Warranties() {
                           <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                             <Link
                               to={`/app/warranties/${p.id}`}
-                              className="p-2 text-gray-400 hover:bg-surface-hover rounded-lg" title="Ver detalle"
+                              className="p-2 text-ink-muted hover:bg-surface-hover rounded-lg" title="Ver detalle"
                             >
                               <Eye size={18} />
                             </Link>
                             <Link
                               to={`/app/warranties/edit/${p.id}`}
-                              className="p-2 text-blue-400 hover:bg-blue-500/20 rounded-lg" title="Editar"
+                              className="p-2 text-info hover:bg-info/20 rounded-lg" title="Editar"
                             >
                               <Pencil size={18} />
                             </Link>
                             <button
                               onClick={() => handleDeleteProject(p)}
-                              className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg" title="Eliminar"
+                              className="p-2 text-bad hover:bg-bad/20 rounded-lg" title="Eliminar"
                             >
                               <Trash2 size={18} />
                             </button>
@@ -280,7 +280,7 @@ export default function Warranties() {
           {/* Buscador de proveedores */}
           <div className="card p-4 mb-6">
             <div className="relative">
-              <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-3 text-ink-muted w-5 h-5" />
               <input
                 type="text"
                 placeholder="Buscar proveedor por nombre, contacto o teléfono..."
@@ -294,7 +294,7 @@ export default function Warranties() {
           <div className="card overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left min-w-[620px]">
-                <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
+                <thead className="bg-surface-base text-ink-muted text-xs uppercase font-semibold">
                   <tr>
                     <th className="px-6 py-4">Proveedor</th>
                     <th className="px-6 py-4">Contacto</th>
@@ -304,50 +304,50 @@ export default function Warranties() {
                 </thead>
                 <tbody className="divide-y divide-surface-border">
                   {loadingSuppliers ? (
-                    <tr><td colSpan="4" className="text-center py-10 text-gray-400">Cargando proveedores...</td></tr>
+                    <tr><td colSpan="4" className="text-center py-10 text-ink-muted">Cargando proveedores...</td></tr>
                   ) : suppliers.length === 0 ? (
                     <tr>
-                      <td colSpan="4" className="text-center py-14 text-gray-400">
-                        <Truck className="mx-auto mb-2 text-gray-300" size={32} />
+                      <td colSpan="4" className="text-center py-14 text-ink-muted">
+                        <Truck className="mx-auto mb-2 text-ink-2" size={32} />
                         Aún no hay proveedores. Registra el primero para poder asignarlo a los equipos.
                       </td>
                     </tr>
                   ) : filteredSuppliers.length === 0 ? (
-                    <tr><td colSpan="4" className="text-center py-14 text-gray-400">No se encontró ningún proveedor con esa búsqueda.</td></tr>
+                    <tr><td colSpan="4" className="text-center py-14 text-ink-muted">No se encontró ningún proveedor con esa búsqueda.</td></tr>
                   ) : (
                     filteredSuppliers.map((s) => (
                       <tr key={s.id} className="hover:bg-surface-hover transition-colors group">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-indigo-500/15 flex items-center justify-center text-indigo-400 font-bold shrink-0">
+                            <div className="w-10 h-10 rounded-full bg-violet/15 flex items-center justify-center text-violet font-bold shrink-0">
                               {s.name.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                              <p className="font-medium text-white">{s.name}</p>
+                              <p className="font-medium text-ink">{s.name}</p>
                               {s.taxId && (
-                                <span className="inline-block px-1.5 py-0.5 bg-surface-hover text-gray-400 rounded text-[11px] font-mono">
+                                <span className="inline-block px-1.5 py-0.5 bg-surface-hover text-ink-muted rounded text-[11px] font-mono">
                                   NIT {s.taxId}
                                 </span>
                               )}
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-300">{s.contactName || "—"}</td>
-                        <td className="px-6 py-4 text-sm text-gray-300">
+                        <td className="px-6 py-4 text-sm text-ink-2">{s.contactName || "—"}</td>
+                        <td className="px-6 py-4 text-sm text-ink-2">
                           <p>{s.phone || "—"}</p>
-                          <p className="text-xs text-gray-400">{s.email || ""}</p>
+                          <p className="text-xs text-ink-muted">{s.email || ""}</p>
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                             <button
                               onClick={() => { setEditingSupplier(s); setIsSupplierModalOpen(true); }}
-                              className="p-2 text-blue-400 hover:bg-blue-500/20 rounded-lg" title="Editar"
+                              className="p-2 text-info hover:bg-info/20 rounded-lg" title="Editar"
                             >
                               <Pencil size={18} />
                             </button>
                             <button
                               onClick={() => handleDeleteSupplier(s)}
-                              className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg" title="Eliminar"
+                              className="p-2 text-bad hover:bg-bad/20 rounded-lg" title="Eliminar"
                             >
                               <Trash2 size={18} />
                             </button>

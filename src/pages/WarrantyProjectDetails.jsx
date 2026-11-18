@@ -7,13 +7,13 @@ import { formatWarrantyId, formatDate } from "../utils/formatters";
 function InfoBlock({ icon: Icon, label, value, sub }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-9 h-9 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0">
+      <div className="w-9 h-9 rounded-full bg-info/10 text-info flex items-center justify-center shrink-0">
         <Icon size={17} />
       </div>
       <div className="min-w-0">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">{label}</p>
-        <p className="text-white font-medium break-words">{value || "—"}</p>
-        {sub && <p className="text-xs text-gray-400">{sub}</p>}
+        <p className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">{label}</p>
+        <p className="text-ink font-medium break-words">{value || "—"}</p>
+        {sub && <p className="text-xs text-ink-muted">{sub}</p>}
       </div>
     </div>
   );
@@ -32,7 +32,7 @@ export default function WarrantyProjectDetails() {
       .finally(() => setLoading(false));
   }, [id, navigate]);
 
-  if (loading) return <div className="p-8 text-center text-gray-400">Cargando garantía...</div>;
+  if (loading) return <div className="p-8 text-center text-ink-muted">Cargando garantía...</div>;
   if (!project) return null;
 
   const items = project.items || [];
@@ -41,14 +41,14 @@ export default function WarrantyProjectDetails() {
     <div className="max-w-5xl mx-auto pb-10">
       <button
         onClick={() => navigate("/app/warranties")}
-        className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors mb-6"
+        className="flex items-center gap-2 text-ink-muted hover:text-info transition-colors mb-6"
       >
         <ArrowLeft size={20} /> Volver al listado
       </button>
 
       {/* Encabezado del proyecto */}
       <div className="card overflow-hidden mb-6">
-        <div className="bg-brand-gradient px-5 md:px-8 py-6 text-white">
+        <div className="bg-brand-soft px-5 md:px-8 py-6 text-white">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="min-w-0">
               <p className="font-mono text-sm text-white/80">{formatWarrantyId(project.correlativo)}</p>
@@ -57,7 +57,7 @@ export default function WarrantyProjectDetails() {
             </div>
             <Link
               to={`/app/warranties/edit/${project.id}`}
-              className="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-blue-50 font-semibold text-sm shadow-sm transition-all"
+              className="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2 bg-surface text-info rounded-lg hover:bg-info/10 font-semibold text-sm shadow-sm transition-all"
             >
               <Pencil size={16} /> Editar
             </Link>
@@ -76,7 +76,7 @@ export default function WarrantyProjectDetails() {
           )}
         </div>
 
-        <div className="px-5 md:px-8 pb-5 md:pb-6 text-xs text-gray-400 border-t border-surface-border pt-4">
+        <div className="px-5 md:px-8 pb-5 md:pb-6 text-xs text-ink-muted border-t border-surface-border pt-4">
           Registrado por {project.createdBy?.name || project.createdBy?.email || "—"} · {formatDate(project.createdAt)}
         </div>
       </div>
@@ -84,20 +84,20 @@ export default function WarrantyProjectDetails() {
       {/* Equipos */}
       <div className="card overflow-hidden">
         <div className="px-5 md:px-8 py-5 border-b border-surface-border flex items-center gap-2">
-          <div className="w-9 h-9 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-full bg-violet/10 text-violet flex items-center justify-center">
             <Package size={18} />
           </div>
           <div>
-            <h2 className="font-semibold text-white">Equipos y proveedores</h2>
-            <p className="text-xs text-gray-400">
+            <h2 className="font-semibold text-ink">Equipos y proveedores</h2>
+            <p className="text-xs text-ink-muted">
               {items.length} equipo{items.length === 1 ? "" : "s"} registrado{items.length === 1 ? "" : "s"}
             </p>
           </div>
         </div>
 
         {items.length === 0 ? (
-          <div className="text-center py-14 text-gray-400">
-            <Package className="mx-auto mb-2 text-gray-300" size={32} />
+          <div className="text-center py-14 text-ink-muted">
+            <Package className="mx-auto mb-2 text-ink-2" size={32} />
             Este proyecto no tiene equipos registrados.
           </div>
         ) : (
@@ -105,7 +105,7 @@ export default function WarrantyProjectDetails() {
             {/* Escritorio: tabla */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left min-w-[860px]">
-                <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
+                <thead className="bg-surface-base text-ink-muted text-xs uppercase font-semibold">
                   <tr>
                     <th className="px-6 py-3">Equipo</th>
                     <th className="px-6 py-3 text-center">Cant.</th>
@@ -118,21 +118,21 @@ export default function WarrantyProjectDetails() {
                 <tbody className="divide-y divide-surface-border">
                   {items.map((item) => (
                     <tr key={item.id} className="hover:bg-surface-hover transition-colors">
-                      <td className="px-6 py-4 text-white">{item.description}</td>
-                      <td className="px-6 py-4 text-center text-gray-300">{item.quantity}</td>
+                      <td className="px-6 py-4 text-ink">{item.description}</td>
+                      <td className="px-6 py-4 text-center text-ink-2">{item.quantity}</td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet/10 text-violet text-xs font-semibold">
                           <Truck size={13} />
                           {item.supplier?.name || "—"}
                         </span>
                         {item.supplier?.phone && (
-                          <p className="text-xs text-gray-400 mt-1">{item.supplier.phone}</p>
+                          <p className="text-xs text-ink-muted mt-1">{item.supplier.phone}</p>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-gray-300 text-sm">{formatDate(item.purchaseDate)}</td>
-                      <td className="px-6 py-4 text-gray-300 text-sm font-mono">{item.supplierInvoiceNumber}</td>
-                      <td className="px-6 py-4 text-sm font-mono text-gray-200">
-                        {item.serialNumber || <span className="text-gray-300 font-sans">Sin serie</span>}
+                      <td className="px-6 py-4 text-ink-2 text-sm">{formatDate(item.purchaseDate)}</td>
+                      <td className="px-6 py-4 text-ink-2 text-sm font-mono">{item.supplierInvoiceNumber}</td>
+                      <td className="px-6 py-4 text-sm font-mono text-ink">
+                        {item.serialNumber || <span className="text-ink-2 font-sans">Sin serie</span>}
                       </td>
                     </tr>
                   ))}
@@ -145,28 +145,28 @@ export default function WarrantyProjectDetails() {
               {items.map((item) => (
                 <div key={item.id} className="p-5 space-y-3">
                   <div className="flex items-start justify-between gap-3">
-                    <p className="font-medium text-white">{item.description}</p>
-                    <span className="shrink-0 px-2 py-0.5 rounded-full bg-surface-hover text-gray-300 text-xs font-bold">
+                    <p className="font-medium text-ink">{item.description}</p>
+                    <span className="shrink-0 px-2 py-0.5 rounded-full bg-surface-hover text-ink-2 text-xs font-bold">
                       x{item.quantity}
                     </span>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet/10 text-violet text-xs font-semibold">
                     <Truck size={13} />
                     {item.supplier?.name || "—"}
                   </span>
                   <dl className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <dt className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Compra</dt>
-                      <dd className="text-gray-200">{formatDate(item.purchaseDate)}</dd>
+                      <dt className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">Compra</dt>
+                      <dd className="text-ink">{formatDate(item.purchaseDate)}</dd>
                     </div>
                     <div>
-                      <dt className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Factura prov.</dt>
-                      <dd className="text-gray-200 font-mono break-words">{item.supplierInvoiceNumber}</dd>
+                      <dt className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">Factura prov.</dt>
+                      <dd className="text-ink font-mono break-words">{item.supplierInvoiceNumber}</dd>
                     </div>
                     <div className="col-span-2">
-                      <dt className="text-[11px] font-bold uppercase tracking-wider text-gray-400">No. de serie</dt>
-                      <dd className="text-gray-200 font-mono break-words">
-                        {item.serialNumber || <span className="text-gray-300 font-sans">Sin serie</span>}
+                      <dt className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">No. de serie</dt>
+                      <dd className="text-ink font-mono break-words">
+                        {item.serialNumber || <span className="text-ink-2 font-sans">Sin serie</span>}
                       </dd>
                     </div>
                   </dl>

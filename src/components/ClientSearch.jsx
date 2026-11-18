@@ -45,16 +45,16 @@ export default function ClientSearch({ onSelect, selectedClient }) {
 
   if (selectedClient) {
     return (
-      <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 flex justify-between items-center">
+      <div className="bg-info/10 border border-info/30 rounded-lg p-4 flex justify-between items-center">
         <div>
-          <p className="font-bold text-blue-300">{selectedClient.name}</p>
-          <p className="text-sm text-blue-400">NIT: {selectedClient.taxId}</p>
-          <p className="text-xs text-blue-400">{selectedClient.address}</p>
+          <p className="font-bold text-info">{selectedClient.name}</p>
+          <p className="text-sm text-info">NIT: {selectedClient.taxId}</p>
+          <p className="text-xs text-info">{selectedClient.address}</p>
         </div>
         <button
           type="button"
           onClick={() => onSelect(null)} // Deseleccionar
-          className="text-blue-400 hover:text-red-500"
+          className="text-info hover:text-bad"
         >
           <X size={24} />
         </button>
@@ -65,7 +65,7 @@ export default function ClientSearch({ onSelect, selectedClient }) {
   return (
     <div className="relative">
       <div className="relative">
-        <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+        <Search className="absolute left-3 top-3 text-ink-muted w-5 h-5" />
         <input
           type="text"
           className="field w-full pl-10 pr-4 py-3"
@@ -84,15 +84,15 @@ export default function ClientSearch({ onSelect, selectedClient }) {
               onClick={() => handleSelect(client)}
               className="p-3 hover:bg-surface-hover cursor-pointer border-b border-surface-border last:border-0"
             >
-              <p className="font-medium text-white">{client.name}</p>
-              <p className="text-xs text-gray-400">{client.taxId}</p>
+              <p className="font-medium text-ink">{client.name}</p>
+              <p className="text-xs text-ink-muted">{client.taxId}</p>
             </div>
           ))}
 
           {/* Botón para crear nuevo si no existe */}
           <div
             onClick={() => setIsModalOpen(true)}
-            className="p-3 bg-surface-base hover:bg-surface-hover cursor-pointer text-blue-400 flex items-center gap-2 font-medium border-t border-surface-border"
+            className="p-3 bg-surface-base hover:bg-surface-hover cursor-pointer text-info flex items-center gap-2 font-medium border-t border-surface-border"
           >
             <UserPlus size={18} />
             Crear nuevo cliente

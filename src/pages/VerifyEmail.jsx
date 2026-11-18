@@ -35,17 +35,17 @@ export default function VerifyEmail() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-orange-50 p-4">
-      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg border border-blue-100">
+      <div className="max-w-md w-full bg-surface p-8 rounded-xl shadow-lg border border-info/25">
         <div className="text-center mb-6">
-          <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center mx-auto mb-3 p-2">
+          <div className="w-16 h-16 rounded-2xl bg-surface shadow-sm border border-line flex items-center justify-center mx-auto mb-3 p-2">
             <img src={logo} alt="Grupo AC" className="w-full h-full object-contain" />
           </div>
-          <h2 className="font-display text-2xl font-bold text-gray-800">Verificar correo</h2>
+          <h2 className="font-display text-2xl font-bold text-ink">Verificar correo</h2>
           <p className="text-sm mt-1 font-semibold text-transparent bg-clip-text bg-brand-gradient">Plataforma Grupo AC</p>
         </div>
 
         {estado === "verificando" && (
-          <div className="text-center text-gray-600 flex items-center justify-center gap-2">
+          <div className="text-center text-ink-soft flex items-center justify-center gap-2">
             <Loader2 size={18} className="animate-spin" />
             Verificando tu correo...
           </div>
@@ -53,7 +53,7 @@ export default function VerifyEmail() {
 
         {estado === "listo" && (
           <div className="text-center">
-            <div className="mb-4 p-3 bg-green-50 text-green-700 text-sm rounded-lg flex items-center gap-2 border border-green-100">
+            <div className="mb-4 p-3 bg-ok/10 text-ok text-sm rounded-lg flex items-center gap-2 border border-ok/25">
               <CheckCircle2 size={18} />
               Tu correo quedó verificado. Ya puedes iniciar sesión.
             </div>
@@ -68,7 +68,7 @@ export default function VerifyEmail() {
 
         {estado === "error" && (
           <div className="text-center">
-            <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg flex items-center gap-2 border border-red-100 text-left">
+            <div className="mb-4 p-3 bg-bad/10 text-bad text-sm rounded-lg flex items-center gap-2 border border-bad/25 text-left">
               <AlertCircle size={18} className="shrink-0" />
               {mensaje}
             </div>

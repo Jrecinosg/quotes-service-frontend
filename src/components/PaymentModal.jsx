@@ -62,16 +62,16 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
     <div className="modal-overlay animate-overlay-in fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
       <div className="card w-full max-w-md max-h-[90vh] overflow-y-auto">
 
-        <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
-          <h2 className="text-white font-bold text-lg">Registrar pago recibido</h2>
-          <button type="button" onClick={onClose} className="text-blue-100 hover:text-white">
+        <div className="px-6 py-4 border-b border-line flex justify-between items-center">
+          <h2 className="text-ink font-bold text-lg">Registrar pago recibido</h2>
+          <button type="button" onClick={onClose} className="text-ink-muted hover:text-ink">
             <X size={24} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300">Tipo de pago *</label>
+            <label className="block text-sm font-medium text-ink-2">Tipo de pago *</label>
             <select
               required
               className="field mt-1 w-full"
@@ -85,7 +85,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300">Fecha en que se recibió *</label>
+              <label className="block text-sm font-medium text-ink-2">Fecha en que se recibió *</label>
               <input
                 type="date"
                 required
@@ -95,7 +95,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300">Monto acordado *</label>
+              <label className="block text-sm font-medium text-ink-2">Monto acordado *</label>
               <input
                 type="number"
                 min="0.01"
@@ -110,11 +110,11 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
           </div>
 
           <div className="bg-surface-base rounded-lg p-3 border border-surface-border">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Retención de impuesto (opcional)</p>
-            <p className="text-xs text-gray-400 mb-3">Solo si el cliente retiene -algunas empresas lo hacen, otras no.</p>
+            <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-2">Retención de impuesto (opcional)</p>
+            <p className="text-xs text-ink-muted mb-3">Solo si el cliente retiene -algunas empresas lo hacen, otras no.</p>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300">% Retenido</label>
+                <label className="block text-sm font-medium text-ink-2">% Retenido</label>
                 <input
                   type="number"
                   min="0"
@@ -127,7 +127,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300">Monto retenido</label>
+                <label className="block text-sm font-medium text-ink-2">Monto retenido</label>
                 <input
                   type="number"
                   min="0"
@@ -142,7 +142,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300">Notas</label>
+            <label className="block text-sm font-medium text-ink-2">Notas</label>
             <input
               type="text"
               placeholder="Opcional -ej. número de depósito"
@@ -156,7 +156,7 @@ export default function PaymentModal({ isOpen, onClose, quotationId, onSuccess }
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-200 bg-surface-hover rounded-lg hover:bg-surface-border"
+              className="px-4 py-2 text-ink bg-surface-hover rounded-lg hover:bg-surface-border"
             >
               Cancelar
             </button>

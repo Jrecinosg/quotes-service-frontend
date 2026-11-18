@@ -79,20 +79,20 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-[#060F1C] bg-[radial-gradient(60%_55%_at_85%_0%,rgba(0,123,255,0.28),transparent_70%),radial-gradient(45%_45%_at_0%_100%,rgba(255,138,0,0.14),transparent_70%)]">
-      <div className="card max-w-md w-full p-8 rounded-2xl shadow-2xl shadow-black/50 border-white/10">
+      <div className="card max-w-md w-full p-8 rounded-2xl shadow-2xl shadow-black/50 border-line">
 
         <div className="text-center mb-6">
-          <div className="w-16 h-16 rounded-2xl bg-white/95 shadow-sm border border-white/10 flex items-center justify-center mx-auto mb-3 p-2">
+          <div className="w-16 h-16 rounded-2xl bg-tint/95 shadow-sm border border-line flex items-center justify-center mx-auto mb-3 p-2">
             <img src={logo} alt="Grupo AC" className="w-full h-full object-contain" />
           </div>
           <h2 className="font-display text-2xl font-bold text-[#E8F0F8]">
             {isRegistering ? "Crear Cuenta" : "Bienvenido de nuevo"}
           </h2>
-          <p className="text-sm mt-1 font-semibold text-brand-cyan">Plataforma Grupo AC</p>
+          <p className="text-sm mt-1 font-semibold text-info">Plataforma Grupo AC</p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-500/10 text-red-300 text-sm rounded-lg flex items-center gap-2 border border-red-500/30">
+          <div className="mb-4 p-3 bg-bad/10 text-bad text-sm rounded-lg flex items-center gap-2 border border-bad/30">
             <AlertCircle size={16} />
             {error}
           </div>
@@ -144,7 +144,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={handleForgotPassword}
-                className="text-xs font-semibold text-brand-cyan hover:text-white transition-colors"
+                className="text-xs font-semibold text-info hover:text-ink transition-colors"
               >
                 ¿Olvidaste tu contraseña?
               </button>
@@ -172,7 +172,7 @@ export default function Login() {
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-white/10"></div>
+            <div className="w-full border-t border-line"></div>
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="px-2 bg-[#10263F] text-[#8DA2B8]">O continúa con</span>
@@ -195,7 +195,7 @@ export default function Login() {
               setIsRegistering(!isRegistering);
               setError("");
             }}
-            className="text-brand-cyan hover:text-white font-semibold transition-colors"
+            className="text-info hover:text-ink font-semibold transition-colors"
           >
             {isRegistering ? "Inicia Sesión" : "Regístrate aquí"}
           </button>

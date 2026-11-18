@@ -84,7 +84,7 @@ export default function BitacoraLightbox({ photos, startIndex, onClose, onChange
         <BitacoraPhotoFlags key={photo.id} idPrefix={`lb-${photo.id}`} stage={photo.stage} includeInReport={photo.includeInReport !== false} disabled={busy} onChange={saveFlags} />
       </div>
       <div className="w-full max-w-4xl flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
-        <span className="text-xs text-gray-300 tabular-nums shrink-0">Foto {index + 1} de {photos.length}</span>
+        <span className="text-xs text-ink-2 tabular-nums shrink-0">Foto {index + 1} de {photos.length}</span>
         <input className="field flex-1 text-sm" placeholder="Pie de foto" aria-label="Pie de foto" maxLength={500} value={caption} onChange={(e) => setCaption(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") saveCaption(); }} />
         <button type="button" onClick={saveCaption} disabled={busy || caption.trim() === (photo.caption || "")} className="btn btn-secondary px-3 py-2 flex items-center justify-center gap-2"><Save size={16} /> Guardar pie</button>
         <button type="button" onClick={remove} disabled={busy} className="btn btn-danger px-3 py-2 flex items-center justify-center gap-2"><Trash2 size={16} /> Quitar</button>

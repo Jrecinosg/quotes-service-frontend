@@ -94,7 +94,7 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
     }
   };
 
-  const err = (k) => (errors[k] ? <p className="text-xs text-red-300 mt-1" role="alert">{errors[k]}</p> : null);
+  const err = (k) => (errors[k] ? <p className="text-xs text-bad mt-1" role="alert">{errors[k]}</p> : null);
   const noun = support ? "soporte mensual" : "proyecto";
   const quoteLabel = (q) => {
     const extra = q.projectDescription || q.projectReference;
@@ -104,13 +104,13 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
   return createPortal(
     <div className="modal-overlay animate-overlay-in fixed inset-0 flex items-center justify-center z-50 p-4 overflow-y-auto">
       <div className="card w-full max-w-lg max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="bit-new-title">
-        <div className="px-6 py-4 flex justify-between items-center border-b border-white/10">
-          <h2 id="bit-new-title" className="text-white font-semibold text-lg">{editing ? "Editar" : "Nuevo"} {noun}</h2>
+        <div className="px-6 py-4 flex justify-between items-center border-b border-line">
+          <h2 id="bit-new-title" className="text-ink font-semibold text-lg">{editing ? "Editar" : "Nuevo"} {noun}</h2>
           <button type="button" onClick={onClose} className="btn btn-ghost btn-icon" aria-label="Cerrar"><X size={20} /></button>
         </div>
         <form onSubmit={submit} className="p-6 space-y-4" noValidate>
           <div>
-            <span className="block text-sm font-medium text-gray-300 mb-1">Qué vas a registrar</span>
+            <span className="block text-sm font-medium text-ink-2 mb-1">Qué vas a registrar</span>
             <div className="seg" role="group" aria-label="Tipo de bitácora">
               <button type="button" className="seg-item" aria-pressed={form.kind === "PROYECTO"} onClick={() => set({ kind: "PROYECTO" })}>Proyecto</button>
               <button type="button" className="seg-item" aria-pressed={support} onClick={() => set({ kind: "SOPORTE", endDate: "" })}>Soporte mensual</button>
@@ -118,7 +118,7 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
             {support && <p className="text-xs text-[#9FB0C4] mt-1">Visitas y pendientes del mes; no se cierra solo y no lleva tiempos.</p>}
           </div>
           <div>
-            <label htmlFor="bit-client" className="block text-sm font-medium text-gray-300">Cliente *</label>
+            <label htmlFor="bit-client" className="block text-sm font-medium text-ink-2">Cliente *</label>
             <select id="bit-client" className="field mt-1 w-full" disabled={editing} value={form.clientId} onChange={(e) => set({ clientId: e.target.value, quotationId: "" })}>
               {editing && <option value={form.clientId}>{project.client?.name}</option>}
               <option value="">Selecciona un cliente…</option>
@@ -127,16 +127,16 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
             {err("clientId")}
           </div>
           <div>
-            <label htmlFor="bit-quote" className="block text-sm font-medium text-gray-300">Cotización del cliente (opcional)</label>
+            <label htmlFor="bit-quote" className="block text-sm font-medium text-ink-2">Cotización del cliente (opcional)</label>
             <select id="bit-quote" className="field mt-1 w-full" disabled={!form.clientId || quotesState === "loading"} value={form.quotationId} onChange={(e) => set({ quotationId: e.target.value })}>
               <option value="">{!form.clientId ? "Elige primero el cliente" : quotesState === "loading" ? "Cargando cotizaciones…" : "Sin cotización"}</option>
               {quotations.map((q) => <option key={q.id} value={q.id}>{quoteLabel(q)}</option>)}
               {form.quotationId && !quotations.some((q) => String(q.id) === form.quotationId) && <option value={form.quotationId}>{project?.quotation?.number || "Cotización vinculada"}</option>}
             </select>
-            {quotesState === "error" && <p className="text-xs text-amber-300 mt-1">No se pudieron cargar las cotizaciones; puedes guardar sin vincularla.</p>}
+            {quotesState === "error" && <p className="text-xs text-warn mt-1">No se pudieron cargar las cotizaciones; puedes guardar sin vincularla.</p>}
           </div>
           <div>
-            <label htmlFor="bit-name" className="block text-sm font-medium text-gray-300">Nombre {form.quotationId ? "(opcional con cotización)" : "*"}</label>
+            <label htmlFor="bit-name" className="block text-sm font-medium text-ink-2">Nombre {form.quotationId ? "(opcional con cotización)" : "*"}</label>
             <input
               id="bit-name"
               className="field mt-1 w-full"
@@ -149,7 +149,7 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
           </div>
           {!support && (
             <div>
-              <span className="block text-sm font-medium text-gray-300 mb-1">Duración</span>
+              <span className="block text-sm font-medium text-ink-2 mb-1">Duración</span>
               <div className="seg" role="group" aria-label="Duración del proyecto">
                 <button type="button" className="seg-item" aria-pressed={form.type === "UN_DIA"} onClick={() => set({ type: "UN_DIA", endDate: "" })}>1 día</button>
                 <button type="button" className="seg-item" aria-pressed={form.type === "VARIOS_DIAS"} onClick={() => set({ type: "VARIOS_DIAS" })}>Varios días</button>
@@ -158,13 +158,13 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="bit-start" className="block text-sm font-medium text-gray-300">{support ? "Desde *" : "Fecha de inicio *"}</label>
+              <label htmlFor="bit-start" className="block text-sm font-medium text-ink-2">{support ? "Desde *" : "Fecha de inicio *"}</label>
               <input id="bit-start" type="date" className="field mt-1 w-full" value={form.startDate} onChange={(e) => set({ startDate: e.target.value })} />
               {err("startDate")}
             </div>
             {!support && form.type === "VARIOS_DIAS" && (
               <div>
-                <label htmlFor="bit-end" className="block text-sm font-medium text-gray-300">Fecha de fin (opcional)</label>
+                <label htmlFor="bit-end" className="block text-sm font-medium text-ink-2">Fecha de fin (opcional)</label>
                 <input id="bit-end" type="date" min={form.startDate} className="field mt-1 w-full" value={form.endDate} onChange={(e) => set({ endDate: e.target.value })} />
                 {err("endDate")}
               </div>
@@ -172,11 +172,11 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
           </div>
           <p className="text-xs text-[#9FB0C4] -mt-2">Las fechas son de uso interno: no salen en el informe al cliente.</p>
           <div>
-            <label htmlFor="bit-tech" className="block text-sm font-medium text-gray-300">Responsable técnico (opcional)</label>
+            <label htmlFor="bit-tech" className="block text-sm font-medium text-ink-2">Responsable técnico (opcional)</label>
             <input id="bit-tech" className="field mt-1 w-full" maxLength={120} placeholder="Ej. Carlos Pérez" value={form.technicianName} onChange={(e) => set({ technicianName: e.target.value })} aria-describedby="bit-tech-help" />
             <p id="bit-tech-help" className="text-xs text-[#9FB0C4] mt-1">Aparece en la portada y como firma del informe al cliente.</p>
           </div>
-          {serverError && <p className="text-sm text-red-300" role="alert">{serverError}</p>}
+          {serverError && <p className="text-sm text-bad" role="alert">{serverError}</p>}
           <div className="flex justify-end gap-3 pt-2">
             <button type="button" onClick={onClose} className="btn btn-secondary px-4 py-2">Cancelar</button>
             <button type="submit" className="btn btn-primary px-5 py-2" aria-busy={saving} disabled={saving}>{editing ? "Guardar cambios" : support ? "Crear soporte" : "Crear proyecto"}</button>

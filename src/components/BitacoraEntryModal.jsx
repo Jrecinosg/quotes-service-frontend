@@ -22,7 +22,7 @@ function PickedPhoto({ item, error, onChange, onRemove, disabled }) {
   }, [item.file]);
   return (
     <li className="flex gap-3 items-start">
-      <div className="w-20 h-[60px] rounded-lg overflow-hidden bg-white/5 shrink-0 flex items-center justify-center text-[10px] text-gray-400 text-center">
+      <div className="w-20 h-[60px] rounded-lg overflow-hidden bg-tint/5 shrink-0 flex items-center justify-center text-[10px] text-ink-muted text-center">
         {broken ? "Sin vista previa" : <img ref={imgRef} alt="" className="w-full h-full object-cover" onError={() => setBroken(true)} />}
       </div>
       <div className="flex-1 min-w-0">
@@ -37,7 +37,7 @@ function PickedPhoto({ item, error, onChange, onRemove, disabled }) {
         />
         <BitacoraPhotoFlags idPrefix={`pick-${item.id}`} stage={item.stage} includeInReport={item.includeInReport} disabled={disabled} onChange={onChange} />
         {error && (
-          <p className="text-xs text-red-300 mt-1 flex gap-1.5" role="alert"><AlertTriangle size={14} className="shrink-0 mt-0.5" />{item.file.name}: {error}</p>
+          <p className="text-xs text-bad mt-1 flex gap-1.5" role="alert"><AlertTriangle size={14} className="shrink-0 mt-0.5" />{item.file.name}: {error}</p>
         )}
       </div>
       <button type="button" onClick={onRemove} disabled={disabled} className="btn btn-ghost btn-icon shrink-0" aria-label={`Quitar ${item.file.name}`}><Trash2 size={16} /></button>
@@ -170,35 +170,35 @@ export default function BitacoraEntryModal({ project, entry, onClose, onSaved })
   return createPortal(
     <div className="modal-overlay animate-overlay-in fixed inset-0 flex items-center justify-center z-50 p-4 overflow-y-auto">
       <div className="card w-full max-w-2xl max-h-[92vh] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="bit-entry-title">
-        <div className="px-6 py-4 flex justify-between items-center border-b border-white/10">
-          <h2 id="bit-entry-title" className="text-white font-semibold text-lg">{editing ? `Editar ${word}` : support ? "Agregar visita" : "Agregar día"}</h2>
+        <div className="px-6 py-4 flex justify-between items-center border-b border-line">
+          <h2 id="bit-entry-title" className="text-ink font-semibold text-lg">{editing ? `Editar ${word}` : support ? "Agregar visita" : "Agregar día"}</h2>
           <button type="button" onClick={savedEntryId ? onSaved : onClose} disabled={busy} className="btn btn-ghost btn-icon" aria-label="Cerrar"><X size={20} /></button>
         </div>
         <form onSubmit={submit} className="p-6 space-y-5" noValidate>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="bit-date" className="block text-sm font-medium text-gray-300">Fecha *</label>
+              <label htmlFor="bit-date" className="block text-sm font-medium text-ink-2">Fecha *</label>
               <input id="bit-date" type="date" className="field mt-1 w-full" value={date} disabled={locked} onChange={(e) => setDate(e.target.value)} />
-              {errors.date && <p className="text-xs text-red-300 mt-1" role="alert">{errors.date}</p>}
+              {errors.date && <p className="text-xs text-bad mt-1" role="alert">{errors.date}</p>}
             </div>
             <div className="sm:col-span-2">
-              <label htmlFor="bit-people" className="block text-sm font-medium text-gray-300">Personal que participó</label>
+              <label htmlFor="bit-people" className="block text-sm font-medium text-ink-2">Personal que participó</label>
               <input id="bit-people" className="field mt-1 w-full" placeholder="Nombres separados por coma" value={personnel} disabled={locked} onChange={(e) => setPersonnel(e.target.value)} />
             </div>
           </div>
           <div>
-            <label htmlFor="bit-body" className="block text-sm font-medium text-gray-300">Trabajo realizado *</label>
+            <label htmlFor="bit-body" className="block text-sm font-medium text-ink-2">Trabajo realizado *</label>
             <textarea id="bit-body" rows={6} maxLength={20000} className="field mt-1 w-full" placeholder="Redáctalo como lo leerá el cliente, sin fechas ni horas. Las líneas que empiezan con «- » salen como viñetas." value={body} disabled={locked} onChange={(e) => setBody(e.target.value)} />
-            {errors.body && <p className="text-xs text-red-300 mt-1" role="alert">{errors.body}</p>}
+            {errors.body && <p className="text-xs text-bad mt-1" role="alert">{errors.body}</p>}
           </div>
 
           <div>
-            <span className="block text-sm font-medium text-gray-300 mb-2">Fotos</span>
+            <span className="block text-sm font-medium text-ink-2 mb-2">Fotos</span>
             <div
               onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
               onDragLeave={() => setDragging(false)}
               onDrop={(e) => { e.preventDefault(); setDragging(false); if (!busy) addFiles(e.dataTransfer.files); }}
-              className="flex items-center justify-center gap-2 h-[72px] rounded-lg text-sm text-gray-300 transition-colors"
+              className="flex items-center justify-center gap-2 h-[72px] rounded-lg text-sm text-ink-2 transition-colors"
               style={{ border: `1.5px dashed ${dragging ? "#2bb8ff" : "rgba(255,255,255,.2)"}` }}
             >
               <ImagePlus size={18} aria-hidden="true" />
@@ -206,7 +206,7 @@ export default function BitacoraEntryModal({ project, entry, onClose, onSaved })
               <button type="button" className="btn btn-secondary px-3 py-1.5 text-sm" disabled={busy} onClick={() => fileInput.current?.click()}>elegir archivos</button>
               <input ref={fileInput} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
             </div>
-            <p className="text-xs text-gray-400 mt-1">Se reducen en tu navegador antes de subir (máx. 1600 px). Marca «No incluir en el informe» en las que son solo de control interno.</p>
+            <p className="text-xs text-ink-muted mt-1">Se reducen en tu navegador antes de subir (máx. 1600 px). Marca «No incluir en el informe» en las que son solo de control interno.</p>
             {items.length > 0 && (
               <ul className="mt-3 space-y-4">
                 {items.map((it) => (
@@ -224,13 +224,13 @@ export default function BitacoraEntryModal({ project, entry, onClose, onSaved })
           </div>
 
           {/* Pendientes: lo que faltó y lo que este reporte resolvió */}
-          <div className="border-t border-white/10 pt-4">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2"><ListPlus size={16} aria-hidden="true" /> ¿Faltó algo? Agregar pendientes</h3>
+          <div className="border-t border-line pt-4">
+            <h3 className="text-sm font-semibold text-ink flex items-center gap-2"><ListPlus size={16} aria-hidden="true" /> ¿Faltó algo? Agregar pendientes</h3>
             <p className="text-xs text-[#9FB0C4] mt-1">Quedan ligados a este reporte y solo los ve el equipo.</p>
             {newPendings.length > 0 && (
               <ul className="mt-3 space-y-2">
                 {newPendings.map((np) => (
-                  <li key={np.id} className="flex items-start gap-2 text-sm text-white">
+                  <li key={np.id} className="flex items-start gap-2 text-sm text-ink">
                     <span className="flex-1 min-w-0 break-words">{np.text}
                       <span className="ml-2 inline-flex align-middle"><OriginChip origin={np.origin} /></span>
                       {(np.assignee || np.dueDate) && <span className="block text-xs text-[#9FB0C4]">{[np.assignee, np.dueDate && formatShortDate(`${np.dueDate}T12:00:00Z`, false)].filter(Boolean).join(" · ")}</span>}
@@ -254,11 +254,11 @@ export default function BitacoraEntryModal({ project, entry, onClose, onSaved })
 
             {openList.length > 0 && (
               <fieldset className="mt-4">
-                <legend className="text-sm font-semibold text-white">¿Este reporte resolvió algún pendiente abierto?</legend>
+                <legend className="text-sm font-semibold text-ink">¿Este reporte resolvió algún pendiente abierto?</legend>
                 <ul className="mt-2 space-y-1">
                   {openList.map((p) => (
                     <li key={p.id}>
-                      <label className="flex items-start gap-2 text-sm text-gray-100 min-h-[32px] cursor-pointer">
+                      <label className="flex items-start gap-2 text-sm text-ink min-h-[32px] cursor-pointer">
                         <input type="checkbox" className="w-4 h-4 mt-1 accent-[#2bb8ff]" checked={resolveIds.includes(p.id)} disabled={busy}
                           onChange={(e) => setResolveIds((prev) => (e.target.checked ? [...prev, p.id] : prev.filter((x) => x !== p.id)))} />
                         <span className="break-words">{p.text}</span>
@@ -272,15 +272,15 @@ export default function BitacoraEntryModal({ project, entry, onClose, onSaved })
 
           {progress && (
             <div role="status" aria-live="polite">
-              <div className="flex justify-between text-xs text-gray-300 mb-1">
+              <div className="flex justify-between text-xs text-ink-2 mb-1">
                 <span>{progress.step ? `${progress.step} ${progress.current}` : "Terminando…"}</span>
                 <span className="tabular-nums">{progress.done} de {progress.total}</span>
               </div>
-              <div className="h-2 rounded-full bg-white/10 overflow-hidden"><div className="h-full bg-[#2bb8ff] transition-all duration-300" style={{ width: `${pct}%` }} /></div>
-              <p className="text-xs text-gray-400 mt-1">No cierres esta ventana hasta que termine.</p>
+              <div className="h-2 rounded-full bg-tint/10 overflow-hidden"><div className="h-full bg-[#2bb8ff] transition-all duration-300" style={{ width: `${pct}%` }} /></div>
+              <p className="text-xs text-ink-muted mt-1">No cierres esta ventana hasta que termine.</p>
             </div>
           )}
-          {serverError && <p className="text-sm text-red-300" role="alert">{serverError}</p>}
+          {serverError && <p className="text-sm text-bad" role="alert">{serverError}</p>}
 
           <div className="flex justify-end gap-3 pt-2">
             {savedEntryId ? (

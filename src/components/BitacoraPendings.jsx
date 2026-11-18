@@ -59,7 +59,7 @@ export default function BitacoraPendings({ project, entries = [], onChanged, onG
     const entry = entryById.get(id);
     if (!entry) return null;
     return (
-      <button type="button" className="inline-flex items-center gap-1 text-[#7DD3FF] hover:text-white underline-offset-2 hover:underline min-h-[24px]" onClick={() => onGoToEntry?.(id)}>
+      <button type="button" className="inline-flex items-center gap-1 text-[#7DD3FF] hover:text-ink underline-offset-2 hover:underline min-h-[24px]" onClick={() => onGoToEntry?.(id)}>
         <CornerDownRight size={11} aria-hidden="true" /> {prefix} {formatShortDate(entry.date, false)}
       </button>
     );
@@ -68,7 +68,7 @@ export default function BitacoraPendings({ project, entries = [], onChanged, onG
   return (
     <section className="card p-5" aria-labelledby="bit-pend-title">
       <div className="flex items-center justify-between gap-2">
-        <h2 id="bit-pend-title" className="text-white font-semibold text-base">Pendientes</h2>
+        <h2 id="bit-pend-title" className="text-ink font-semibold text-base">Pendientes</h2>
         <span className="inline-flex items-center h-6 px-2.5 rounded-full text-xs font-semibold" style={{ background: "rgba(255,255,255,.07)", color: "#CBD5E1" }}>
           {open} {open === 1 ? "abierto" : "abiertos"}
         </span>
@@ -76,9 +76,9 @@ export default function BitacoraPendings({ project, entries = [], onChanged, onG
       <p className="text-xs text-[#9FB0C4] mt-1 flex items-center gap-1.5"><Lock size={12} aria-hidden="true" /> Solo equipo · no sale en el informe del cliente</p>
 
       {pendings.length === 0 ? (
-        <p className="text-sm text-gray-400 py-6 text-center">No hay pendientes. Agrega el primero abajo.</p>
+        <p className="text-sm text-ink-muted py-6 text-center">No hay pendientes. Agrega el primero abajo.</p>
       ) : (
-        <ul className="mt-3 divide-y divide-white/10">
+        <ul className="mt-3 divide-y divide-line">
           {pendings.map((p) => {
             const over = isOverdue(p);
             const done = isDone(p);
@@ -90,7 +90,7 @@ export default function BitacoraPendings({ project, entries = [], onChanged, onG
                   </span>
                 </button>
                 <div className="flex-1 min-w-0 pt-2.5">
-                  <p className={`text-sm break-words ${done ? "line-through text-gray-500" : "text-white"}`}>{p.text}</p>
+                  <p className={`text-sm break-words ${done ? "line-through text-ink-soft" : "text-ink"}`}>{p.text}</p>
                   <div className="flex flex-wrap items-center gap-2 mt-1 text-xs">
                     <OriginChip origin={p.origin} />
                     {p.assignee && <span className="px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,.07)", color: "#CBD5E1" }}>{p.assignee}</span>}
@@ -116,7 +116,7 @@ export default function BitacoraPendings({ project, entries = [], onChanged, onG
         </ul>
       )}
 
-      <form onSubmit={add} className="mt-3 pt-3 border-t border-white/10 space-y-2">
+      <form onSubmit={add} className="mt-3 pt-3 border-t border-line space-y-2">
         <input className="field w-full text-sm" placeholder="Nuevo pendiente…" maxLength={1000} aria-label="Nuevo pendiente" value={text} onChange={(e) => setText(e.target.value)} />
         <div className="grid grid-cols-1 gap-2">
           <select className="field text-sm w-full min-w-0" aria-label="Origen del pendiente" value={origin} onChange={(e) => setOrigin(e.target.value)}>

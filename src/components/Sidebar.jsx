@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Users, FileText, LogOut, Settings, ClipboardList, ShieldCheck, BookOpen, Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import appLogo from "../assets/logo.png";
+import ThemeSwitch from "./ThemeSwitch";
 
 export default function Sidebar() {
     const { logout, user } = useAuth();
@@ -42,10 +43,10 @@ export default function Sidebar() {
     return (
         <>
             {/* Barra superior -solo celular: logo + boton de menu */}
-            <div className="md:hidden flex items-center justify-between h-14 px-4 bg-surface-card/90 backdrop-blur border-b border-white/5 shrink-0">
+            <div className="md:hidden relative z-30 flex items-center justify-between h-14 px-4 glass border-b shrink-0">
                 <div className="flex items-center gap-2">
                     <img src={appLogo} alt="Grupo AC" className="h-7 w-auto" />
-                    <span className="font-display font-extrabold text-sm text-white">GRUPO AC</span>
+                    <span className="font-display font-extrabold text-sm tracking-tight text-ink">GRUPO AC</span>
                 </div>
                 <button
                     onClick={() => setMobileOpen(true)}
@@ -56,36 +57,38 @@ export default function Sidebar() {
                 </button>
             </div>
 
-            {/* Fondo oscuro detras del menu -solo celular, mientras esta abierto */}
+            {/* Fondo detras del menu -solo celular, mientras esta abierto */}
             {mobileOpen && (
                 <div
-                    className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 animate-fade-in"
+                    className="md:hidden fixed inset-0 backdrop-blur-sm z-40 animate-fade-in"
+                    style={{ background: "var(--scrim)" }}
                     onClick={() => setMobileOpen(false)}
                 />
             )}
 
+            {/* Celular: cajón sólido (va encima del contenido). Escritorio: barra translúcida sobre el fondo vivo. */}
             <aside
                 style={{ viewTransitionName: "sidebar" }}
-                className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-[#0e2340] to-[#0a1a2f] border-r border-white/5 h-screen flex flex-col transform transition-transform duration-300 ease-move ${mobileOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+                className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-surface md:bg-transparent md:glass border-r border-line h-screen flex flex-col transform transition-transform duration-300 ease-move ${mobileOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
             >
                 {/* Logo (encabezado del menu -visible siempre en escritorio, dentro del cajon en celular) */}
-                <div className="flex items-center justify-between border-b border-white/5">
+                <div className="flex items-center justify-between">
                     {isClientAccount ? (
-                        <div className="h-16 flex-1 flex items-center justify-center gap-2 px-3">
+                        <div className="h-[72px] flex-1 flex items-center justify-center gap-2 px-3">
                             <img src={appLogo} alt="Grupo AC" className="h-8 w-auto" />
                             {user?.client?.logoBase64 && (
                                 <>
-                                    <span className="text-gray-500">+</span>
+                                    <span className="text-ink-soft">+</span>
                                     <img src={user.client.logoBase64} alt={user.client.name} className="h-8 w-auto object-contain" />
                                 </>
                             )}
                         </div>
                     ) : (
-                        <div className="h-16 flex-1 flex items-center gap-2.5 px-5">
-                            <img src={appLogo} alt="Grupo AC" className="h-8 w-auto" />
+                        <div className="h-[72px] flex-1 flex items-center gap-3 px-5">
+                            <img src={appLogo} alt="Grupo AC" className="h-9 w-auto" />
                             <div className="flex flex-col leading-none">
-                                <span className="font-display font-extrabold text-sm tracking-wide text-white">GRUPO AC</span>
-                                <span className="mt-0.5 text-[10px] font-semibold text-transparent bg-clip-text bg-brand-gradient uppercase tracking-wider">Plataforma</span>
+                                <span className="font-display font-extrabold text-[15px] tracking-tight text-ink">GRUPO AC</span>
+                                <span className="mt-1 font-mono text-[9px] font-semibold tracking-[0.18em] text-ink-soft uppercase">Plataforma</span>
                             </div>
                         </div>
                     )}
@@ -99,20 +102,20 @@ export default function Sidebar() {
                 </div>
 
                 {/* Navegación Principal */}
-                <nav className="relative flex-1 px-3 py-5 space-y-1 overflow-y-auto">
-                    {/* indicador deslizante */}
+                <nav className="relative flex-1 px-3 py-3 space-y-1 overflow-y-auto overflow-x-hidden">
+                    {/* indicador deslizante (azul de marca, con resorte) */}
                     <span
                         aria-hidden="true"
-                        className="pointer-events-none absolute left-3 right-3 top-0 rounded-xl bg-white/[0.07] border border-white/10"
+                        className="pointer-events-none absolute left-3 right-3 top-0 rounded-[14px]"
                         style={{
                             height: ind.h,
                             transform: `translateY(${ind.y}px)`,
                             opacity: ind.show ? 1 : 0,
+                            background: "linear-gradient(100deg, #0A55E6, #0A62FF 60%, #3A6BF5)",
+                            boxShadow: "0 12px 24px -10px rgba(10,98,255,.8)",
                             transition: "transform 630ms var(--spring-bounce), height 400ms var(--spring-soft), opacity 200ms",
                         }}
-                    >
-                        <span className="absolute left-0 top-2.5 bottom-2.5 w-[3px] rounded-full bg-brand-cyan" />
-                    </span>
+                    />
 
                     {allItems.map((item, i) => {
                         const Icon = item.icon;
@@ -124,40 +127,43 @@ export default function Sidebar() {
                                 to={item.path}
                                 viewTransition
                                 onClick={() => setMobileOpen(false)}
-                                className={`group relative flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors duration-200 ${isActive
+                                className={`group relative flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-bold transition-[color,background-color,transform] duration-300 ease-[var(--spring-soft)] ${isActive
                                     ? "text-white"
                                     : item.admin
-                                        ? "text-gray-400 hover:text-purple-300 hover:bg-white/[0.04]"
-                                        : "text-gray-400 hover:text-white hover:bg-white/[0.04]"
+                                        ? "text-ink-muted hover:text-violet hover:bg-tint/[0.06] hover:translate-x-1"
+                                        : "text-ink-muted hover:text-ink hover:bg-tint/[0.06] hover:translate-x-1"
                                     }`}
                             >
                                 <Icon
                                     size={19}
-                                    className={`transition-transform duration-500 ease-[var(--spring-bounce)] group-hover:scale-110 group-hover:-rotate-6 ${isActive ? "text-brand-cyan" : ""}`}
+                                    className="transition-transform duration-500 ease-[var(--spring-bounce)] group-hover:scale-[1.18] group-hover:-rotate-[7deg]"
                                 />
-                                <span className="transition-transform duration-300 ease-move group-hover:translate-x-0.5">{item.label}</span>
+                                <span>{item.label}</span>
                             </Link>
                         );
                     })}
                 </nav>
 
-                {/* Perfil del Usuario y Logout */}
-                <div className="p-3 border-t border-white/5 space-y-1">
+                {/* Ambiente, perfil del usuario y cierre de sesión */}
+                <div className="p-3 space-y-2">
+                    {/* Ambiente visual (se recuerda en este navegador) */}
+                    <ThemeSwitch />
+
                     {/* Info de Usuario */}
                     <Link
                         to="/app/profile"
                         viewTransition
                         onClick={() => setMobileOpen(false)}
-                        className="card card-hover flex items-center gap-3 px-3 py-3 mb-1"
+                        className="card card-hover !rounded-2xl flex items-center gap-3 px-3 py-3"
                     >
-                        <div className="w-9 h-9 rounded-full bg-brand-gradient flex items-center justify-center text-white font-bold shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-brand-soft flex items-center justify-center text-white font-extrabold shrink-0">
                             {getInitial(user?.name)}
                         </div>
                         <div className="flex flex-col min-w-0">
-                            <span className="text-sm font-semibold text-white truncate">
+                            <span className="text-sm font-bold text-ink truncate">
                                 {user?.name || "Cargando..."}
                             </span>
-                            <span className="text-[10px] font-bold text-brand-cyan uppercase tracking-wider">
+                            <span className="font-mono text-[10px] font-semibold text-info uppercase tracking-[0.12em]">
                                 {user?.role}
                             </span>
                         </div>
@@ -166,7 +172,7 @@ export default function Sidebar() {
                     {/* Logout Button */}
                     <button
                         onClick={logout}
-                        className="btn btn-ghost w-full !justify-start !text-red-300 hover:!bg-red-500/10 px-4"
+                        className="btn btn-ghost w-full !justify-start !text-bad hover:!bg-bad/10 px-4"
                     >
                         <LogOut size={18} />
                         <span>Cerrar Sesión</span>

@@ -39,9 +39,9 @@ function PerformanceTooltip({ active, payload }) {
     const p = payload[0].payload;
     return (
         <div className="bg-surface-hover border border-surface-border rounded-lg shadow-lg px-3 py-2 text-sm">
-            <p className="font-semibold text-white">{MONTH_LABEL(p.month)}</p>
-            <p className="text-gray-300">{p.avgHours}h promedio para finalizar</p>
-            <p className="text-gray-400 text-xs">{p.count} solicitud{p.count === 1 ? "" : "es"} finalizada{p.count === 1 ? "" : "s"}</p>
+            <p className="font-semibold text-ink">{MONTH_LABEL(p.month)}</p>
+            <p className="text-ink-2">{p.avgHours}h promedio para finalizar</p>
+            <p className="text-ink-muted text-xs">{p.count} solicitud{p.count === 1 ? "" : "es"} finalizada{p.count === 1 ? "" : "s"}</p>
         </div>
     );
 }
@@ -51,33 +51,33 @@ function WeekTooltip({ active, payload }) {
     const p = payload[0].payload;
     return (
         <div className="bg-surface-hover border border-surface-border rounded-lg shadow-lg px-3 py-2 text-sm">
-            <p className="font-semibold text-white capitalize">{DAY_LABEL_LONG(p.date)}</p>
-            <p className="text-gray-300"><span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: SERIES_BLUE }} />{p.quotations} cotizaci{p.quotations === 1 ? "ón" : "ones"}</p>
-            <p className="text-gray-300"><span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: SERIES_ORANGE }} />{p.clients} cliente{p.clients === 1 ? "" : "s"} nuevo{p.clients === 1 ? "" : "s"}</p>
+            <p className="font-semibold text-ink capitalize">{DAY_LABEL_LONG(p.date)}</p>
+            <p className="text-ink-2"><span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: SERIES_BLUE }} />{p.quotations} cotizaci{p.quotations === 1 ? "ón" : "ones"}</p>
+            <p className="text-ink-2"><span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: SERIES_ORANGE }} />{p.clients} cliente{p.clients === 1 ? "" : "s"} nuevo{p.clients === 1 ? "" : "s"}</p>
         </div>
     );
 }
 
 const QUICK_ACTIONS = [
-    { to: "/app/quotations/new", icon: Plus, label: "Nueva Cotización", iconBg: "bg-brand-blue/15", iconColor: "text-brand-cyan", glow: "" },
-    { to: "/app/clients", icon: Users, label: "Clientes", iconBg: "bg-purple-500/15", iconColor: "text-purple-300", glow: "" },
-    { to: "/app/requests", icon: ClipboardList, label: "Solicitudes", iconBg: "bg-brand-orange/15", iconColor: "text-brand-orange", glow: "" },
-    { to: "/app/warranties", icon: ShieldCheck, label: "Garantías", iconBg: "bg-emerald-500/15", iconColor: "text-emerald-300", glow: "" },
+    { to: "/app/quotations/new", icon: Plus, label: "Nueva Cotización", iconBg: "bg-info/15", iconColor: "text-info", glow: "" },
+    { to: "/app/clients", icon: Users, label: "Clientes", iconBg: "bg-violet/15", iconColor: "text-violet", glow: "" },
+    { to: "/app/requests", icon: ClipboardList, label: "Solicitudes", iconBg: "bg-accent/15", iconColor: "text-accent", glow: "" },
+    { to: "/app/warranties", icon: ShieldCheck, label: "Garantías", iconBg: "bg-ok/15", iconColor: "text-ok", glow: "" },
 ];
 
 // Líneas de servicio reales de Grupo AC (texto fijo, no es un dato)
 const SERVICE_LINES = [
-    { icon: Video, label: "Videovigilancia", sub: "Mayor seguridad", color: "text-brand-cyan", bg: "bg-brand-blue/15", glow: "" },
-    { icon: KeyRound, label: "Control de acceso", sub: "Protege lo importante", color: "text-purple-300", bg: "bg-purple-500/15", glow: "" },
-    { icon: Wifi, label: "Enlaces y conectividad", sub: "Sin límites", color: "text-brand-orange", bg: "bg-brand-orange/15", glow: "" },
-    { icon: Network, label: "Redes estructuradas", sub: "Tu infraestructura", color: "text-emerald-300", bg: "bg-emerald-500/15", glow: "" },
+    { icon: Video, label: "Videovigilancia", sub: "Mayor seguridad", color: "text-info", bg: "bg-info/15", glow: "" },
+    { icon: KeyRound, label: "Control de acceso", sub: "Protege lo importante", color: "text-violet", bg: "bg-violet/15", glow: "" },
+    { icon: Wifi, label: "Enlaces y conectividad", sub: "Sin límites", color: "text-accent", bg: "bg-accent/15", glow: "" },
+    { icon: Network, label: "Redes estructuradas", sub: "Tu infraestructura", color: "text-ok", bg: "bg-ok/15", glow: "" },
 ];
 
 const STAT_CARDS = [
-    { key: "quotations", title: "Cotizaciones", icon: FileText, iconBg: "bg-brand-blue/15", iconColor: "text-brand-cyan", glow: "", to: "/app/quotations" },
-    { key: "clients", title: "Clientes", icon: Users, iconBg: "bg-purple-500/15", iconColor: "text-purple-300", glow: "", to: "/app/clients" },
-    { key: "requests", title: "Solicitudes", icon: ClipboardList, iconBg: "bg-brand-orange/15", iconColor: "text-brand-orange", glow: "", to: "/app/requests" },
-    { key: "warranties", title: "Garantías", icon: ShieldCheck, iconBg: "bg-emerald-500/15", iconColor: "text-emerald-300", glow: "", to: "/app/warranties" },
+    { key: "quotations", title: "Cotizaciones", icon: FileText, iconBg: "bg-info/15", iconColor: "text-info", glow: "", to: "/app/quotations" },
+    { key: "clients", title: "Clientes", icon: Users, iconBg: "bg-violet/15", iconColor: "text-violet", glow: "", to: "/app/clients" },
+    { key: "requests", title: "Solicitudes", icon: ClipboardList, iconBg: "bg-accent/15", iconColor: "text-accent", glow: "", to: "/app/requests" },
+    { key: "warranties", title: "Garantías", icon: ShieldCheck, iconBg: "bg-ok/15", iconColor: "text-ok", glow: "", to: "/app/warranties" },
 ];
 
 // Tendencia real: este mes vs. el mes anterior (conteos del servidor)
@@ -85,19 +85,19 @@ function TrendBadge({ thisMonth, lastMonth }) {
     if (!thisMonth && !lastMonth) return null;
     if (!lastMonth) {
         return (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-blue-500/15 text-blue-300">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-info/15 text-info">
                 <Sparkles size={12} /> Nuevo
             </span>
         );
     }
     const pct = Math.round(((thisMonth - lastMonth) / lastMonth) * 100);
     if (pct === 0) {
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-gray-600 text-gray-200">Igual que el mes pasado</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-tint/10 text-ink">Igual que el mes pasado</span>;
     }
     const up = pct > 0;
     const Icon = up ? ArrowUpRight : ArrowDownRight;
     return (
-        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold ${up ? "bg-emerald-500/15 text-emerald-300" : "bg-red-500/15 text-red-300"}`}>
+        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold ${up ? "bg-ok/15 text-ok" : "bg-bad/15 text-bad"}`}>
             <Icon size={13} /> {up ? "+" : ""}{pct}%
         </span>
     );
@@ -149,12 +149,12 @@ function StatCard({ title, stat, icon: Icon, iconBg, iconColor, glow, loading, t
     return (
         <Link to={to} style={{ "--i": index }} className="group card card-hover stagger-item block p-5">
             <div className="flex items-center justify-between gap-3">
-                <p className="text-gray-400 text-sm font-medium">{title}</p>
+                <p className="text-ink-muted text-sm font-medium">{title}</p>
                 <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center transition-transform duration-500 ease-[var(--spring-bounce)] group-hover:scale-110 group-hover:-rotate-6 ${iconBg} ${glow}`}>
                     <Icon className={`w-5 h-5 ${iconColor}`} />
                 </div>
             </div>
-            <h3 className="text-[34px] leading-none font-bold text-white tracking-tight mt-3 tabular">
+            <h3 className="text-[34px] leading-none font-bold text-ink tracking-tight mt-3 tabular">
                 {loading ? <span className="skeleton inline-block w-16 h-8 align-middle" /> : stat ? count.toLocaleString("es-GT") : "—"}
             </h3>
             <div className="mt-3 flex flex-wrap items-center gap-2 min-h-[22px]">
@@ -162,7 +162,7 @@ function StatCard({ title, stat, icon: Icon, iconBg, iconColor, glow, loading, t
                     <>
                         <TrendBadge thisMonth={stat.thisMonth} lastMonth={stat.lastMonth} />
                         {(stat.thisMonth > 0 || stat.lastMonth > 0) && (
-                            <span className="text-xs text-gray-400">{stat.thisMonth} este mes · {stat.lastMonth} el anterior</span>
+                            <span className="text-xs text-ink-muted">{stat.thisMonth} este mes · {stat.lastMonth} el anterior</span>
                         )}
                     </>
                 )}
@@ -256,11 +256,11 @@ export default function Dashboard() {
 
                     <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center p-6 md:p-8 min-h-[300px]">
                         <div className="max-w-md">
-                            <p className="text-brand-cyan text-xs font-bold uppercase tracking-widest mb-2">Plataforma Grupo AC</p>
-                            <h1 className="font-display text-3xl md:text-4xl font-bold text-white">
+                            <p className="text-info text-xs font-bold uppercase tracking-widest mb-2">Plataforma Grupo AC</p>
+                            <h1 className="font-display text-3xl md:text-4xl font-bold text-ink">
                                 {firstName ? `Hola, ${firstName}` : "Resumen General"}
                             </h1>
-                            <p className="text-gray-300 mt-2">Esto es lo que está pasando en tu operación hoy.</p>
+                            <p className="text-ink-2 mt-2">Esto es lo que está pasando en tu operación hoy.</p>
                             <Link
                                 to="/app/quotations/new"
                                 className="btn btn-primary inline-flex items-center gap-2 mt-6 w-fit px-5 py-2.5 text-sm !rounded-full"
@@ -277,8 +277,8 @@ export default function Dashboard() {
                                         <Icon size={15} className={color} />
                                     </div>
                                     <div className="leading-tight min-w-0">
-                                        <p className="text-xs font-semibold text-white truncate">{label}</p>
-                                        <p className="text-[10px] text-gray-400 truncate">{sub}</p>
+                                        <p className="text-xs font-semibold text-ink truncate">{label}</p>
+                                        <p className="text-[10px] text-ink-muted truncate">{sub}</p>
                                     </div>
                                 </li>
                             ))}
@@ -287,7 +287,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className="card !rounded-3xl p-6">
-                    <p className="text-white font-semibold mb-4">Acciones rápidas</p>
+                    <p className="text-ink font-semibold mb-4">Acciones rápidas</p>
                     <div className="grid grid-cols-2 gap-3">
                         {QUICK_ACTIONS.map(({ to, icon: Icon, label, iconBg, iconColor, glow }) => (
                             <Link
@@ -298,7 +298,7 @@ export default function Dashboard() {
                                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-transform duration-500 ease-[var(--spring-bounce)] group-hover:scale-110 group-hover:-rotate-6 ${iconBg} ${glow}`}>
                                     <Icon size={18} className={iconColor} />
                                 </div>
-                                <span className="text-sm text-gray-200 font-medium leading-tight">{label}</span>
+                                <span className="text-sm text-ink font-medium leading-tight">{label}</span>
                             </Link>
                         ))}
                     </div>
@@ -307,7 +307,7 @@ export default function Dashboard() {
 
             {/* Estadísticas con tendencia (este mes vs. mes anterior) */}
             {statsError && (
-                <p className="mb-4 text-sm text-red-400">No se pudieron cargar las estadísticas en este momento. Recarga la página para intentarlo de nuevo.</p>
+                <p className="mb-4 text-sm text-bad">No se pudieron cargar las estadísticas en este momento. Recarga la página para intentarlo de nuevo.</p>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 mb-8">
                 {STAT_CARDS.map(({ key, ...card }, idx) => (
@@ -324,12 +324,12 @@ export default function Dashboard() {
                         <div>
                             <div className="flex items-center gap-2">
                                 <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center shrink-0">
-                                    <Activity size={16} className="text-white" />
+                                    <Activity size={16} className="text-ink" />
                                 </div>
-                                <h2 className="text-lg font-semibold text-white">Cotizaciones y clientes de los últimos 7 días</h2>
+                                <h2 className="text-lg font-semibold text-ink">Cotizaciones y clientes de los últimos 7 días</h2>
                             </div>
                             {!loading && stats && (
-                                <p className="text-gray-400 text-sm mt-1">
+                                <p className="text-ink-muted text-sm mt-1">
                                     {weekQuotations} cotizaci{weekQuotations === 1 ? "ón" : "ones"} y {weekClients} cliente{weekClients === 1 ? "" : "s"} nuevo{weekClients === 1 ? "" : "s"} en los últimos 7 días
                                 </p>
                             )}
@@ -337,9 +337,9 @@ export default function Dashboard() {
                     </div>
 
                     {loading ? (
-                        <div className="h-64 flex items-center justify-center text-gray-400">Cargando...</div>
+                        <div className="h-64 flex items-center justify-center text-ink-muted">Cargando...</div>
                     ) : !stats ? (
-                        <div className="h-64 flex items-center justify-center text-gray-400 text-sm">No hay datos disponibles.</div>
+                        <div className="h-64 flex items-center justify-center text-ink-muted text-sm">No hay datos disponibles.</div>
                     ) : (
                         <ResponsiveContainer width="100%" height={260}>
                             <AreaChart data={weekData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -370,7 +370,7 @@ export default function Dashboard() {
                                     iconType="circle"
                                     iconSize={8}
                                     itemSorter={(item) => (item.dataKey === "quotations" ? 0 : 1)}
-                                    formatter={(value) => <span className="text-sm text-gray-300">{value}</span>}
+                                    formatter={(value) => <span className="text-sm text-ink-2">{value}</span>}
                                 />
                                 <Area type="monotone" dataKey="quotations" name="Cotizaciones" stroke={SERIES_BLUE} strokeWidth={2} fill="url(#fillQuotations)" dot={{ r: 3, fill: SERIES_BLUE }} activeDot={{ r: 5 }} />
                                 <Area type="monotone" dataKey="clients" name="Clientes nuevos" stroke={SERIES_ORANGE} strokeWidth={2} fill="url(#fillClients)" dot={{ r: 3, fill: SERIES_ORANGE }} activeDot={{ r: 5 }} />
@@ -381,20 +381,20 @@ export default function Dashboard() {
 
                 {/* Decorativo: frase fija, no es un dato */}
                 <div className="card relative overflow-hidden p-6 flex flex-col">
-                    <div className="absolute inset-x-0 top-0 h-1 bg-brand-gradient" />
+                    <div className="absolute inset-x-0 top-0 h-1 bg-brand-soft" />
                     <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mb-4">
-                        <Quote size={18} className="text-white" />
+                        <Quote size={18} className="text-ink" />
                     </div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-orange-400 mb-2">Recuerda</p>
-                    <p className="text-white text-lg font-semibold leading-snug">
+                    <p className="text-xs font-bold uppercase tracking-widest text-accent mb-2">Recuerda</p>
+                    <p className="text-ink text-lg font-semibold leading-snug">
                         Una cotización que sale rápido y clara ya es parte del servicio.
                     </p>
-                    <p className="text-gray-400 text-sm mt-3">
+                    <p className="text-ink-muted text-sm mt-3">
                         Dar seguimiento a tiempo convierte una propuesta en un proyecto y a un cliente en uno que regresa.
                     </p>
                     <Link
                         to="/app/quotations"
-                        className="mt-auto pt-6 inline-flex items-center gap-1 text-sm font-medium text-blue-400 hover:text-blue-300 w-fit"
+                        className="mt-auto pt-6 inline-flex items-center gap-1 text-sm font-medium text-info hover:text-info w-fit"
                     >
                         Revisar cotizaciones <ArrowRight size={16} />
                     </Link>
@@ -405,16 +405,16 @@ export default function Dashboard() {
             <div className="card p-6 mb-8">
                 <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
-                        <TrendingUp size={16} className="text-white" />
+                        <TrendingUp size={16} className="text-ink" />
                     </div>
-                    <h2 className="text-lg font-semibold text-white">Rendimiento de solicitudes</h2>
+                    <h2 className="text-lg font-semibold text-ink">Rendimiento de solicitudes</h2>
                 </div>
-                <p className="text-gray-400 text-sm mb-4 mt-1">Tiempo promedio para finalizar una solicitud, por mes</p>
+                <p className="text-ink-muted text-sm mb-4 mt-1">Tiempo promedio para finalizar una solicitud, por mes</p>
 
                 {loading ? (
-                    <div className="h-64 flex items-center justify-center text-gray-400">Cargando...</div>
+                    <div className="h-64 flex items-center justify-center text-ink-muted">Cargando...</div>
                 ) : performance.length === 0 ? (
-                    <div className="h-64 flex items-center justify-center text-gray-400 text-sm">
+                    <div className="h-64 flex items-center justify-center text-ink-muted text-sm">
                         Todavía no hay solicitudes finalizadas para medir el rendimiento.
                     </div>
                 ) : (
@@ -445,10 +445,10 @@ export default function Dashboard() {
             {/* Últimas Cotizaciones (las más recientes primero) */}
             <div className="card overflow-hidden">
                 <div className="p-6 border-b border-surface-border flex justify-between items-center gap-3">
-                    <h2 className="text-lg font-semibold text-white">Últimas Cotizaciones</h2>
+                    <h2 className="text-lg font-semibold text-ink">Últimas Cotizaciones</h2>
                     <Link
                         to="/app/quotations"
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-blue-400 hover:bg-blue-500/10 text-sm font-medium transition-colors shrink-0"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-info hover:bg-info/10 text-sm font-medium transition-colors shrink-0"
                     >
                         Ver todas <ArrowRight size={16} />
                     </Link>
@@ -456,7 +456,7 @@ export default function Dashboard() {
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-left min-w-[800px]">
-                        <thead className="bg-surface-base text-gray-400 text-xs font-semibold uppercase tracking-wide">
+                        <thead className="bg-surface-base text-ink-muted text-xs font-semibold uppercase tracking-wide">
                             <tr>
                                 <th className="px-6 py-3">Correlativo</th>
                                 <th className="px-6 py-3">Cliente</th>
@@ -467,29 +467,29 @@ export default function Dashboard() {
                         </thead>
                         <tbody className="divide-y divide-surface-border">
                             {loading ? (
-                                <tr><td colSpan="5" className="text-center py-10 text-gray-400">Cargando datos...</td></tr>
+                                <tr><td colSpan="5" className="text-center py-10 text-ink-muted">Cargando datos...</td></tr>
                             ) : quotations.length === 0 ? (
-                                <tr><td colSpan="5" className="text-center py-10 text-gray-400">No hay cotizaciones registradas.</td></tr>
+                                <tr><td colSpan="5" className="text-center py-10 text-ink-muted">No hay cotizaciones registradas.</td></tr>
                             ) : (
                                 quotations.map((q) => (
                                     <tr key={q.id} className="hover:bg-surface-hover transition-colors">
                                         <td className="px-6 py-4 font-bold">
-                                            <Link to={`/app/quotations/${q.id}`} className="text-blue-400 hover:text-blue-300">
+                                            <Link to={`/app/quotations/${q.id}`} className="text-info hover:text-info">
                                                 {formatQuotationId(q.correlativo)}
                                             </Link>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 shrink-0 rounded-full bg-brand-gradient flex items-center justify-center text-white text-xs font-bold">
+                                                <div className="w-8 h-8 shrink-0 rounded-full bg-brand-soft flex items-center justify-center text-white text-xs font-bold">
                                                     {(q.client?.name || "?").charAt(0).toUpperCase()}
                                                 </div>
-                                                <span className="text-gray-300">{q.client?.name || "Sin Nombre"}</span>
+                                                <span className="text-ink-2">{q.client?.name || "Sin Nombre"}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 font-bold text-white text-right">
+                                        <td className="px-6 py-4 font-bold text-ink text-right">
                                             {formatCurrency(q.total)}
                                         </td>
-                                        <td className="px-6 py-4 text-gray-400">
+                                        <td className="px-6 py-4 text-ink-muted">
                                             {formatDate(q.createdAt)}
                                         </td>
                                         <td className="px-6 py-4">

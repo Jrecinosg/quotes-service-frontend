@@ -218,14 +218,14 @@ export default function BitacoraPendientes() {
   return (
     <div className="max-w-6xl mx-auto pb-10">
       <nav aria-label="Migas" className="flex items-center gap-1 text-sm text-[#9FB0C4] mb-3">
-        <Link to="/app/bitacora" className="hover:text-white">Bitácora</Link>
+        <Link to="/app/bitacora" className="hover:text-ink">Bitácora</Link>
         <ChevronRight size={14} aria-hidden="true" />
-        <span className="text-gray-300">Pendientes</span>
+        <span className="text-ink-2">Pendientes</span>
       </nav>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="font-display text-[28px] leading-tight font-semibold tracking-tight text-white">Pendientes por cliente</h1>
-          <p className="text-gray-400 text-sm flex items-center gap-1.5"><Lock size={13} aria-hidden="true" /> Solo equipo · nunca sale en el informe al cliente</p>
+          <h1 className="font-display text-[28px] leading-tight font-semibold tracking-tight text-ink">Pendientes por cliente</h1>
+          <p className="text-ink-muted text-sm flex items-center gap-1.5"><Lock size={13} aria-hidden="true" /> Solo equipo · nunca sale en el informe al cliente</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           <button type="button" className="btn btn-secondary px-4 py-2 flex items-center justify-center gap-2" onClick={pdf} disabled={!clientId || busy || pendings.length === 0}
@@ -263,23 +263,23 @@ export default function BitacoraPendientes() {
             <div className="space-y-3" aria-busy="true" aria-label="Cargando pendientes">{[0, 1, 2].map((i) => <div key={i} className="skeleton h-20 rounded-2xl" />)}</div>
           ) : error ? (
             <div className="card p-10 text-center">
-              <AlertCircle className="mx-auto mb-2 text-red-300" size={32} />
-              <p className="text-white font-semibold">No se pudieron cargar los pendientes</p>
+              <AlertCircle className="mx-auto mb-2 text-bad" size={32} />
+              <p className="text-ink font-semibold">No se pudieron cargar los pendientes</p>
               <button type="button" className="btn btn-primary px-4 py-2 mt-4" onClick={() => load()}>Reintentar</button>
             </div>
           ) : pendings.length === 0 ? (
             <div className="card p-12 text-center">
-              <ListChecks className="mx-auto mb-3 text-gray-400" size={36} />
-              <p className="text-white font-medium">No hay pendientes con estos filtros</p>
-              <p className="text-sm text-gray-400 mt-1">Agrega uno desde el formulario o cambia el filtro.</p>
+              <ListChecks className="mx-auto mb-3 text-ink-muted" size={36} />
+              <p className="text-ink font-medium">No hay pendientes con estos filtros</p>
+              <p className="text-sm text-ink-muted mt-1">Agrega uno desde el formulario o cambia el filtro.</p>
             </div>
           ) : (
             <div className="space-y-8">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-xs text-[#9FB0C4] tabular-nums" role="status">Mostrando {pendings.length} de {total}</p>
                 <div className="flex gap-3 text-xs">
-                  <button type="button" className="text-[#7DD3FF] hover:text-white underline-offset-2 hover:underline min-h-[32px]" onClick={selectVisible}>Seleccionar todos los visibles</button>
-                  <button type="button" className="text-[#7DD3FF] hover:text-white underline-offset-2 hover:underline min-h-[32px] disabled:opacity-40 disabled:no-underline" onClick={clearSel} disabled={selected.size === 0}>Limpiar selección</button>
+                  <button type="button" className="text-[#7DD3FF] hover:text-ink underline-offset-2 hover:underline min-h-[32px]" onClick={selectVisible}>Seleccionar todos los visibles</button>
+                  <button type="button" className="text-[#7DD3FF] hover:text-ink underline-offset-2 hover:underline min-h-[32px] disabled:opacity-40 disabled:no-underline" onClick={clearSel} disabled={selected.size === 0}>Limpiar selección</button>
                 </div>
               </div>
               {byClient.map((c) => (
@@ -289,7 +289,7 @@ export default function BitacoraPendientes() {
                     const all = items.length > 0 && items.every((p) => selected.has(p.id));
                     return (
                       <div className="flex items-center gap-3 mb-3">
-                        <h2 className="text-white font-semibold text-base">{c.name}</h2>
+                        <h2 className="text-ink font-semibold text-base">{c.name}</h2>
                         <label className="flex items-center gap-2 text-xs text-[#9FB0C4] min-h-[32px] cursor-pointer">
                           <input type="checkbox" className="w-4 h-4 accent-[#2bb8ff]" checked={all} disabled={busy || !!pdfMsg} onChange={(e) => toggleCompany(c.key, items, e.target.checked)} aria-label={`Seleccionar todos los pendientes de ${c.name}`} />
                           Seleccionar toda la empresa
@@ -301,12 +301,12 @@ export default function BitacoraPendientes() {
                     {c.groups.map((g) => (
                       <article key={g.key} className="card p-5" aria-label={g.title}>
                         <header className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-white font-semibold text-sm break-words">{g.title}</h3>
+                          <h3 className="text-ink font-semibold text-sm break-words">{g.title}</h3>
                           {g.kind === "SOPORTE" && <KindChip kind="SOPORTE" />}
                           {g.quotationNumber && <span className="text-xs text-[#9FB0C4]">{g.quotationNumber}</span>}
-                          {g.kind !== "SUELTOS" && <Link to={`/app/bitacora/${g.key}`} className="ml-auto text-xs text-[#7DD3FF] hover:text-white">Abrir</Link>}
+                          {g.kind !== "SUELTOS" && <Link to={`/app/bitacora/${g.key}`} className="ml-auto text-xs text-[#7DD3FF] hover:text-ink">Abrir</Link>}
                         </header>
-                        <ul className="mt-2 divide-y divide-white/10">
+                        <ul className="mt-2 divide-y divide-line">
                           {g.pendings.map((p) => {
                             const done = isDone(p);
                             const over = isOverdue(p);
@@ -318,7 +318,7 @@ export default function BitacoraPendientes() {
                                   </span>
                                 </button>
                                 <div className="flex-1 min-w-0 pt-2.5">
-                                  <p className={`text-sm break-words ${done ? "line-through text-gray-500" : "text-white"}`}>{p.text}</p>
+                                  <p className={`text-sm break-words ${done ? "line-through text-ink-soft" : "text-ink"}`}>{p.text}</p>
                                   <div className="flex flex-wrap items-center gap-2 mt-1 text-xs">
                                     <OriginChip origin={p.origin} />
                                     {p.assignee && <span className="px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,.07)", color: "#CBD5E1" }}>{p.assignee}</span>}
@@ -350,7 +350,7 @@ export default function BitacoraPendientes() {
 
         <aside className="lg:col-span-4">
           <form onSubmit={add} className="card p-5 space-y-2" aria-labelledby="bit-newp-title">
-            <h2 id="bit-newp-title" className="text-white font-semibold text-base">Nuevo pendiente</h2>
+            <h2 id="bit-newp-title" className="text-ink font-semibold text-base">Nuevo pendiente</h2>
             {!clientId && <p className="text-xs text-[#9FB0C4]">Elige un cliente arriba para poder agregar.</p>}
             <input className="field w-full text-sm" placeholder="Qué falta hacer…" maxLength={1000} aria-label="Nuevo pendiente" value={form.text} disabled={!clientId} onChange={(e) => setForm({ ...form, text: e.target.value })} />
             <select className="field w-full text-sm" aria-label="Proyecto o soporte (opcional)" value={form.projectId} disabled={!clientId} onChange={(e) => setForm({ ...form, projectId: e.target.value })}>
@@ -369,7 +369,7 @@ export default function BitacoraPendientes() {
 
       <div className="sticky bottom-3 z-20 mt-6" role="region" aria-label="Selección para el PDF">
         <div className="card px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 shadow-2xl">
-          <p className="text-sm text-white font-semibold tabular-nums" role="status" aria-live="polite">
+          <p className="text-sm text-ink font-semibold tabular-nums" role="status" aria-live="polite">
             {selected.size} {selected.size === 1 ? "seleccionado" : "seleccionados"}
             {pdfMsg && <span className="ml-2 text-xs font-normal text-[#9FB0C4]">{pdfMsg} · no cierres la página</span>}
           </p>

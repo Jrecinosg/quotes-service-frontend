@@ -94,8 +94,8 @@ export default function Quotations() {
             {/* 1. Cabecera (Título e Izquierda, Botón Derecha) */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-white">Cotizaciones</h1>
-                    <p className="text-gray-400 text-sm">Gestiona y genera tus presupuestos</p>
+                    <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-ink">Cotizaciones</h1>
+                    <p className="text-ink-muted text-sm">Gestiona y genera tus presupuestos</p>
                 </div>
                 <Link
                     to="/app/quotations/new"
@@ -109,7 +109,7 @@ export default function Quotations() {
             {/* 2. Barra de Búsqueda (Ancho Completo como en Clientes) */}
             <div className="card p-4 mb-6">
                 <div className="relative">
-                    <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+                    <Search className="absolute left-3 top-3 text-ink-muted w-5 h-5" />
                     <input
                         type="text"
                         placeholder="Buscar por cliente, correlativo o referencia de proyecto..."
@@ -122,9 +122,9 @@ export default function Quotations() {
 
             {/* 3. Empresas agrupadas (acordeón) */}
             {loading ? (
-                <div className="card text-center py-10 text-gray-400">Cargando cotizaciones...</div>
+                <div className="card text-center py-10 text-ink-muted">Cargando cotizaciones...</div>
             ) : groups.length === 0 ? (
-                <div className="card text-center py-10 text-gray-400">No hay cotizaciones que coincidan con la búsqueda.</div>
+                <div className="card text-center py-10 text-ink-muted">No hay cotizaciones que coincidan con la búsqueda.</div>
             ) : (
                 <div className="space-y-3">
                     {groups.map(({ client, items }) => {
@@ -137,24 +137,24 @@ export default function Quotations() {
                                     className="w-full flex items-center justify-between gap-3 px-6 py-4 hover:bg-surface-hover transition-colors text-left"
                                 >
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <div className="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white shrink-0">
+                                        <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0">
                                             <Building2 size={16} />
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="font-semibold text-white truncate">{client?.name || "Cliente no disponible"}</p>
-                                            <p className="text-xs text-gray-400">{items.length} cotización{items.length === 1 ? '' : 'es'}</p>
+                                            <p className="font-semibold text-ink truncate">{client?.name || "Cliente no disponible"}</p>
+                                            <p className="text-xs text-ink-muted">{items.length} cotización{items.length === 1 ? '' : 'es'}</p>
                                         </div>
                                     </div>
                                     <ChevronDown
                                         size={20}
-                                        className={`text-gray-400 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                                        className={`text-ink-muted shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                                     />
                                 </button>
 
                                 {isOpen && (
                                     <div className="overflow-x-auto border-t border-surface-border">
                                         <table className="w-full text-left min-w-[820px]">
-                                            <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
+                                            <thead className="bg-surface-base text-ink-muted text-xs uppercase font-semibold">
                                                 <tr>
                                                     <th className="px-6 py-3">Correlativo</th>
                                                     <th className="px-6 py-3">Referencia</th>
@@ -167,40 +167,40 @@ export default function Quotations() {
                                             <tbody className="divide-y divide-surface-border">
                                                 {items.map((q) => (
                                                     <tr key={q.id} className="hover:bg-surface-hover transition-colors group">
-                                                        <td className="px-6 py-4 text-blue-400 font-mono font-bold">
+                                                        <td className="px-6 py-4 text-info font-mono font-bold">
                                                             {formatQuotationId(q.correlativo)}
                                                         </td>
-                                                        <td className="px-6 py-4 text-gray-400 text-sm">
+                                                        <td className="px-6 py-4 text-ink-muted text-sm">
                                                             {q.projectReference || "—"}
                                                         </td>
-                                                        <td className="px-6 py-4 text-gray-400">
+                                                        <td className="px-6 py-4 text-ink-muted">
                                                             {formatDate(q.createdAt)}
                                                         </td>
                                                         <td className="px-6 py-4">
                                                             <ValidityPill validUntil={q.validUntil} />
                                                         </td>
-                                                        <td className="px-6 py-4 font-bold text-white">
+                                                        <td className="px-6 py-4 font-bold text-ink">
                                                             {formatCurrency(q.total)}
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
                                                             <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 transition-opacity duration-small">
                                                                 <Link
                                                                     to={`/app/quotations/${q.id}`}
-                                                                    className="p-2 text-gray-400 hover:bg-surface-hover hover:text-blue-300 rounded-lg shadow-sm border border-transparent hover:border-surface-border transition-all"
+                                                                    className="p-2 text-ink-muted hover:bg-surface-hover hover:text-info rounded-lg shadow-sm border border-transparent hover:border-surface-border transition-all"
                                                                     title="Ver Detalles y PDF"
                                                                 >
                                                                     <Eye size={18} />
                                                                 </Link>
                                                                 <Link
                                                                     to={`/app/quotations/edit/${q.id}`}
-                                                                    className="p-2 text-gray-400 hover:bg-surface-hover hover:text-blue-300 rounded-lg shadow-sm border border-transparent hover:border-surface-border transition-all"
+                                                                    className="p-2 text-ink-muted hover:bg-surface-hover hover:text-info rounded-lg shadow-sm border border-transparent hover:border-surface-border transition-all"
                                                                     title="Editar"
                                                                 >
                                                                     <Pencil size={18} />
                                                                 </Link>
                                                                 <button
                                                                     onClick={() => handleDelete(q)}
-                                                                    className="p-2 text-gray-400 hover:bg-surface-hover hover:text-red-300 rounded-lg shadow-sm border border-transparent hover:border-surface-border transition-all"
+                                                                    className="p-2 text-ink-muted hover:bg-surface-hover hover:text-bad rounded-lg shadow-sm border border-transparent hover:border-surface-border transition-all"
                                                                     title="Eliminar"
                                                                 >
                                                                     <Trash2 size={18} />

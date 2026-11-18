@@ -179,10 +179,10 @@ export default function QuotationForm() {
         <div className="max-w-5xl mx-auto pb-10">
             {/* Botón Volver */}
             <div className="flex items-center gap-4 mb-6">
-                <button onClick={() => navigate(-1)} className="p-2 hover:bg-surface-hover rounded-full text-gray-400">
+                <button onClick={() => navigate(-1)} className="p-2 hover:bg-surface-hover rounded-full text-ink-muted">
                     <ArrowLeft size={24} />
                 </button>
-                <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-white">
+                <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-ink">
                     {id ? `Editar Cotización` : "Nueva Cotización"}
                 </h1>
             </div>
@@ -196,26 +196,26 @@ export default function QuotationForm() {
                         {/* Izquierda: Datos del Cliente */}
                         <div className="flex-1 space-y-4">
                             <div className="flex items-center gap-2 mb-2">
-                                <label className="font-bold text-gray-200 w-24">Fecha:</label>
-                                <span className="text-gray-300 flex items-center gap-2 bg-surface-base px-3 py-1 rounded">
+                                <label className="font-bold text-ink w-24">Fecha:</label>
+                                <span className="text-ink-2 flex items-center gap-2 bg-surface-base px-3 py-1 rounded">
                                     <Calendar size={16} /> {today}
                                 </span>
                             </div>
 
                             <div className="flex flex-col gap-1">
-                                <label className="font-bold text-gray-200">Cliente:</label>
+                                <label className="font-bold text-ink">Cliente:</label>
                                 <ClientSearch onSelect={setClient} selectedClient={client} />
                             </div>
 
                             {client && (
                                 <>
                                     <div className="flex gap-2">
-                                        <label className="font-bold text-gray-200 w-24">Dirección:</label>
-                                        <span className="text-gray-300 border-b border-surface-border flex-1">{client.address || "---"}</span>
+                                        <label className="font-bold text-ink w-24">Dirección:</label>
+                                        <span className="text-ink-2 border-b border-surface-border flex-1">{client.address || "---"}</span>
                                     </div>
                                     <div className="flex gap-2">
-                                        <label className="font-bold text-gray-200 w-24">NIT:</label>
-                                        <span className="text-gray-300 border-b border-surface-border flex-1">{client.taxId || "---"}</span>
+                                        <label className="font-bold text-ink w-24">NIT:</label>
+                                        <span className="text-ink-2 border-b border-surface-border flex-1">{client.taxId || "---"}</span>
                                     </div>
                                 </>
                             )}
@@ -223,7 +223,7 @@ export default function QuotationForm() {
 
                         {/* Derecha: Referencia interna del proyecto */}
                         <div className="flex-1 flex flex-col justify-start gap-1">
-                            <label className="font-bold text-gray-200">Referencia de proyecto</label>
+                            <label className="font-bold text-ink">Referencia de proyecto</label>
                             <input
                                 type="text"
                                 placeholder="Ej. Bodega Zona 4 -para ubicarla más rápido"
@@ -231,13 +231,13 @@ export default function QuotationForm() {
                                 value={projectReference}
                                 onChange={(e) => setProjectReference(e.target.value)}
                             />
-                            <p className="text-xs text-gray-400">Solo se ve aquí dentro del sistema, no sale en el PDF.</p>
+                            <p className="text-xs text-ink-muted">Solo se ve aquí dentro del sistema, no sale en el PDF.</p>
                         </div>
                     </div>
 
                     {/* Descripción del proyecto -sí sale en el PDF si se llena */}
                     <div className="mt-4 flex flex-col gap-1">
-                        <label className="font-bold text-gray-200">Descripción del proyecto o servicio <span className="font-normal text-gray-400">(opcional)</span></label>
+                        <label className="font-bold text-ink">Descripción del proyecto o servicio <span className="font-normal text-ink-muted">(opcional)</span></label>
                         <textarea
                             rows={4}
                             maxLength={5000}
@@ -246,7 +246,7 @@ export default function QuotationForm() {
                             value={projectDescription}
                             onChange={(e) => setProjectDescription(e.target.value)}
                         />
-                        <p className="text-xs text-gray-400">Sí se imprime en el PDF, antes de la tabla de ítems. Si lo dejas vacío, el PDF no cambia. {projectDescription.length}/5000</p>
+                        <p className="text-xs text-ink-muted">Sí se imprime en el PDF, antes de la tabla de ítems. Si lo dejas vacío, el PDF no cambia. {projectDescription.length}/5000</p>
                     </div>
                 </div>
 
@@ -254,7 +254,7 @@ export default function QuotationForm() {
                 <div className="card overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left min-w-[800px]">
-                            <thead className="bg-orange-600 text-white">
+                            <thead className="bg-orange-700 text-white">
                                 <tr>
                                     <th className="px-4 py-3 w-[10%] text-center font-bold">Cantidad</th>
                                     <th className="px-4 py-3 w-[50%] font-bold text-center">Descripción</th>
@@ -309,19 +309,19 @@ export default function QuotationForm() {
                                             <td className="p-2">
                                                 <input
                                                     type="number" min="0" max="100"
-                                                    className="w-full p-2 border border-surface-border rounded text-center focus:ring-2 focus:ring-orange-500 outline-none bg-orange-500/10 font-bold text-orange-400"
+                                                    className="w-full p-2 border border-surface-border rounded text-center focus:ring-2 focus:ring-orange-500 outline-none bg-accent/10 font-bold text-accent"
                                                     value={item.discount}
                                                     onChange={(e) => handleItemChange(index, 'discount', Number(e.target.value))}
                                                 />
                                             </td>
 
                                             {/* 5. Precio Unitario Oferta (Solo lectura) */}
-                                            <td className="p-2 text-right font-medium text-blue-400 bg-blue-500/10">
+                                            <td className="p-2 text-right font-medium text-info bg-info/10">
                                                 {formatCurrency(discountedUnitPrice)}
                                             </td>
 
                                             {/* 6. Total Calculado de la línea (SubtotalItem) */}
-                                            <td className="p-2 text-right font-bold text-white">
+                                            <td className="p-2 text-right font-bold text-ink">
                                                 {formatCurrency(item.subtotalItem)}
                                             </td>
 
@@ -330,7 +330,7 @@ export default function QuotationForm() {
                                                 <button
                                                     type="button"
                                                     onClick={() => removeItem(index)}
-                                                    className="text-red-400 hover:text-red-300 transition-colors"
+                                                    className="text-bad hover:text-bad transition-colors"
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>
@@ -347,7 +347,7 @@ export default function QuotationForm() {
                         <button
                             type="button"
                             onClick={addItem}
-                            className="flex items-center gap-2 text-orange-400 hover:text-orange-300 font-bold text-sm px-4 py-2"
+                            className="flex items-center gap-2 text-accent hover:text-accent font-bold text-sm px-4 py-2"
                         >
                             <Plus size={16} /> Agregar Fila
                         </button>
@@ -361,27 +361,27 @@ export default function QuotationForm() {
                     <div className="card flex-1 p-6 space-y-3 text-sm">
 
                         <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                            <label className="font-bold text-white">Garantía:</label>
+                            <label className="font-bold text-ink">Garantía:</label>
                             <input
-                                className="bg-transparent placeholder:text-gray-500 w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-gray-300"
+                                className="bg-transparent placeholder:text-ink-soft w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-ink-2"
                                 value={terms.warranty}
                                 onChange={(e) => setTerms({ ...terms, warranty: e.target.value })}
                             />
                         </div>
 
                         <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                            <label className="font-bold text-white">Entrega:</label>
+                            <label className="font-bold text-ink">Entrega:</label>
                             <input
-                                className="bg-transparent placeholder:text-gray-500 w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-gray-300"
+                                className="bg-transparent placeholder:text-ink-soft w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-ink-2"
                                 value={terms.deliveryTime}
                                 onChange={(e) => setTerms({ ...terms, deliveryTime: e.target.value })}
                             />
                         </div>
 
                         <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                            <label className="font-bold text-white">Forma de pago:</label>
+                            <label className="font-bold text-ink">Forma de pago:</label>
                             <input
-                                className="bg-transparent placeholder:text-gray-500 w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-gray-300 italic"
+                                className="bg-transparent placeholder:text-ink-soft w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-ink-2 italic"
                                 value={terms.paymentMethod}
                                 onChange={(e) => setTerms({ ...terms, paymentMethod: e.target.value })}
                             />
@@ -389,28 +389,28 @@ export default function QuotationForm() {
 
                         {/* Campo de Validez en la Interfaz */}
                         <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                            <label className="font-bold text-white">Validez:</label>
+                            <label className="font-bold text-ink">Validez:</label>
                             <input
-                                className="bg-transparent placeholder:text-gray-500 w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-gray-300"
+                                className="bg-transparent placeholder:text-ink-soft w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-ink-2"
                                 value={terms.validity}
                                 onChange={(e) => setTerms({ ...terms, validity: e.target.value })}
                             />
                         </div>
 
                         <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                            <label className="font-bold text-white">Elaborado por:</label>
+                            <label className="font-bold text-ink">Elaborado por:</label>
                             <input
-                                className="bg-transparent placeholder:text-gray-500 w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-blue-400"
+                                className="bg-transparent placeholder:text-ink-soft w-full p-1 border-b border-surface-border focus:border-orange-500 outline-none text-info"
                                 value={terms.elaboratedBy}
                                 onChange={(e) => setTerms({ ...terms, elaboratedBy: e.target.value })}
                             />
                         </div>
 
                         <div className="pt-2">
-                            <label className="font-bold text-white block mb-1">Observaciones:</label>
+                            <label className="font-bold text-ink block mb-1">Observaciones:</label>
                             <textarea
                                 rows="3"
-                                className="bg-surface-base placeholder:text-gray-500 w-full p-2 border border-surface-border rounded focus:border-orange-500 outline-none text-gray-300 text-xs resize-none"
+                                className="bg-surface-base placeholder:text-ink-soft w-full p-2 border border-surface-border rounded focus:border-orange-500 outline-none text-ink-2 text-xs resize-none"
                                 value={terms.observations}
                                 onChange={(e) => setTerms({ ...terms, observations: e.target.value })}
                             />
@@ -420,16 +420,16 @@ export default function QuotationForm() {
                     {/* Derecha: Totales y Botón Guardar */}
                     <div className="flex flex-col gap-3">
                         <div className="card p-4">
-                            <div className="flex justify-between py-2 text-gray-300">
+                            <div className="flex justify-between py-2 text-ink-2">
                                 <span>Subtotal:</span>
                                 <span>{formatCurrency(totals.subtotal)}</span>
                             </div>
-                            <div className="flex justify-between py-2 text-gray-300 border-b border-surface-border">
+                            <div className="flex justify-between py-2 text-ink-2 border-b border-surface-border">
                                 <span>IVA (12%):</span>
                                 <span>{formatCurrency(totals.tax)}</span>
                             </div>
 
-                            <div className="flex justify-between items-center bg-orange-600 text-white p-3 rounded mt-2">
+                            <div className="flex justify-between items-center bg-orange-700 text-white p-3 rounded mt-2">
                                 <span className="font-bold text-lg">TOTAL</span>
                                 <span className="font-bold text-xl">{formatCurrency(totals.total)}</span>
                             </div>
@@ -449,7 +449,7 @@ export default function QuotationForm() {
                                 type="button"
                                 disabled={loading}
                                 onClick={(e) => handleSubmit(e, true)}
-                                className="w-full mt-3 bg-surface-card hover:bg-surface-hover border border-surface-border text-gray-200 font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all"
+                                className="w-full mt-3 bg-surface-card hover:bg-surface-hover border border-surface-border text-ink font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all"
                             >
                                 <Save size={18} />
                                 Solo actualizar esta (mismo número)

@@ -48,9 +48,9 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
   return createPortal(
     <div className="modal-overlay animate-overlay-in fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
       <div className="card w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in">
-        <div className="bg-brand-gradient px-6 py-4 flex justify-between items-center">
-          <h2 className="text-white font-bold text-lg">Nueva solicitud</h2>
-          <button type="button" onClick={onClose} className="text-blue-100 hover:text-white">
+        <div className="px-6 py-4 border-b border-line flex justify-between items-center">
+          <h2 className="text-ink font-bold text-lg">Nueva solicitud</h2>
+          <button type="button" onClick={onClose} className="text-ink-muted hover:text-ink">
             <X size={24} />
           </button>
         </div>
@@ -58,7 +58,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {forStaff && (
             <div>
-              <label className="block text-sm font-medium text-gray-300">Empresa cliente *</label>
+              <label className="block text-sm font-medium text-ink-2">Empresa cliente *</label>
               <select
                 required
                 className="field mt-1 w-full"
@@ -74,7 +74,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-300">Título *</label>
+            <label className="block text-sm font-medium text-ink-2">Título *</label>
             <input
               type="text"
               required
@@ -86,7 +86,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300">Descripción *</label>
+            <label className="block text-sm font-medium text-ink-2">Descripción *</label>
             <textarea
               required
               rows={4}
@@ -98,7 +98,7 @@ export default function RequestModal({ isOpen, onClose, onSuccess, forStaff = fa
           </div>
 
           <div className="pt-4 flex justify-end gap-3">
-            <button type="button" onClick={onClose} className="px-4 py-2 text-gray-200 bg-surface-hover rounded-md hover:bg-surface-border">
+            <button type="button" onClick={onClose} className="px-4 py-2 text-ink bg-surface-hover rounded-md hover:bg-surface-border">
               Cancelar
             </button>
             <button

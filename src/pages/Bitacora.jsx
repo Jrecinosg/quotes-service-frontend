@@ -30,7 +30,7 @@ function ProjectCard({ project }) {
       className="card card-hover block p-5 min-h-[112px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00c2ff]"
     >
       <div className="flex items-start justify-between gap-3">
-        <h3 className="text-white font-semibold text-base line-clamp-2">{project.name}</h3>
+        <h3 className="text-ink font-semibold text-base line-clamp-2">{project.name}</h3>
         <StatusChip status={displayStatus(project)} />
       </div>
       <div className="flex flex-wrap items-center gap-2 mt-3">
@@ -43,7 +43,7 @@ function ProjectCard({ project }) {
         <span className="text-[13px] text-[#9FB0C4] tabular-nums">{isSupport(project) ? `Desde ${formatShortDate(project.startDate)}` : formatRange(project.startDate, project.endDate)}</span>
       </div>
       {counts.known && (
-        <p className="mt-3 pt-3 border-t border-white/[0.07] text-xs text-[#9FB0C4] tabular-nums">
+        <p className="mt-3 pt-3 border-t border-line text-xs text-[#9FB0C4] tabular-nums">
           {plural(counts.photos, "foto", "fotos")} · {plural(counts.openPendings, "pendiente abierto", "pendientes abiertos")}
           {counts.overduePendings > 0 && <span className="text-[#FCA5A5] font-semibold"> · {plural(counts.overduePendings, "vencido", "vencidos")}</span>}
         </p>
@@ -115,8 +115,8 @@ export default function Bitacora() {
     <div className="max-w-6xl mx-auto pb-10">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="font-display text-[28px] leading-tight font-semibold tracking-tight text-white">Bitácora de proyectos</h1>
-          <p className="text-gray-400 text-sm">Proyectos y soportes por cliente: qué se hizo, con qué fotos y qué falta</p>
+          <h1 className="font-display text-[28px] leading-tight font-semibold tracking-tight text-ink">Bitácora de proyectos</h1>
+          <p className="text-ink-muted text-sm">Proyectos y soportes por cliente: qué se hizo, con qué fotos y qué falta</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           <Link to="/app/bitacora/pendientes" className="btn btn-secondary px-4 py-2 flex items-center justify-center gap-2"><ListChecks size={18} /> Pendientes por cliente</Link>
@@ -128,7 +128,7 @@ export default function Bitacora() {
 
       <div className="flex flex-wrap gap-3 mb-8">
         <div className="relative flex-1 min-w-[260px]">
-          <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" aria-hidden="true" />
+          <Search className="absolute left-3 top-3 text-ink-muted w-5 h-5" aria-hidden="true" />
           <input type="search" className="field w-full pl-10 pr-4 h-11" placeholder="Buscar proyecto, cotización o cliente…" aria-label="Buscar proyecto, cotización o cliente" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         <select className="field h-11 w-full sm:w-60" aria-label="Filtrar por cliente" value={clientId} onChange={(e) => setClientId(e.target.value)}>
@@ -153,7 +153,7 @@ export default function Bitacora() {
           <span className="text-sm font-semibold" style={{ color: "#FCD34D" }}>
             {overdueProjects === 1 ? "1 proyecto con pendientes vencidos" : `${overdueProjects} proyectos con pendientes vencidos`}
           </span>
-          <button type="button" className="text-sm text-white underline underline-offset-2 hover:no-underline min-h-[32px] flex items-center gap-1" aria-pressed={overdueOnly} onClick={() => setOverdueOnly((v) => !v)}>
+          <button type="button" className="text-sm text-ink underline underline-offset-2 hover:no-underline min-h-[32px] flex items-center gap-1" aria-pressed={overdueOnly} onClick={() => setOverdueOnly((v) => !v)}>
             {overdueOnly ? <><X size={14} aria-hidden="true" /> Quitar filtro</> : "Ver solo esos"}
           </button>
         </div>
@@ -165,25 +165,25 @@ export default function Bitacora() {
         </div>
       ) : error ? (
         <div className="card p-10 text-center">
-          <AlertCircle className="mx-auto mb-2 text-red-300" size={32} />
-          <p className="text-white font-semibold">No se pudo cargar la bitácora</p>
+          <AlertCircle className="mx-auto mb-2 text-bad" size={32} />
+          <p className="text-ink font-semibold">No se pudo cargar la bitácora</p>
           <button type="button" className="btn btn-primary px-4 py-2 mt-4" onClick={load}>Reintentar</button>
         </div>
       ) : projects.length === 0 ? (
         <div className="card p-12 text-center">
-          <BookOpen className="mx-auto mb-3 text-gray-400" size={36} />
-          <p className="text-white font-medium">Aún no hay proyectos</p>
-          <p className="text-sm text-gray-400 mt-1">Crea el primero cuando regreses de una visita.</p>
+          <BookOpen className="mx-auto mb-3 text-ink-muted" size={36} />
+          <p className="text-ink font-medium">Aún no hay proyectos</p>
+          <p className="text-sm text-ink-muted mt-1">Crea el primero cuando regreses de una visita.</p>
           <button type="button" className="btn btn-primary px-4 py-2 mt-4" onClick={() => setModalOpen(true)}>Nuevo proyecto o soporte</button>
         </div>
       ) : groups.length === 0 ? (
-        <p className="text-center text-gray-400 py-14">Ningún proyecto coincide con ese filtro.</p>
+        <p className="text-center text-ink-muted py-14">Ningún proyecto coincide con ese filtro.</p>
       ) : (
         <div className="space-y-8">
           {groups.map((g) => (
             <section key={g.name} aria-label={g.name}>
               <div className="flex items-baseline gap-3 mb-3">
-                <h2 className="text-white font-semibold text-base">{g.name}</h2>
+                <h2 className="text-ink font-semibold text-base">{g.name}</h2>
                 <span className="text-xs text-[#9FB0C4]">{g.items.length} {g.items.length === 1 ? "registro" : "registros"}</span>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

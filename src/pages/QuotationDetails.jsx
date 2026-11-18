@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 import { formatQuotationId, formatCurrency, formatDate } from "../utils/formatters";
 
 const PAYMENT_TYPE_LABEL = { ANTICIPO: "Anticipo", FINAL: "Pago final" };
-const PAYMENT_TYPE_STYLE = { ANTICIPO: "bg-blue-500/15 text-blue-300", FINAL: "bg-emerald-500/15 text-emerald-300" };
+const PAYMENT_TYPE_STYLE = { ANTICIPO: "bg-info/15 text-info", FINAL: "bg-ok/15 text-ok" };
 
 export default function QuotationDetails() {
     const { id } = useParams();
@@ -82,7 +82,7 @@ export default function QuotationDetails() {
         URL.revokeObjectURL(url);
     };
 
-    if (loading) return <div className="p-8 text-center text-gray-400">Cargando detalles de la cotización...</div>;
+    if (loading) return <div className="p-8 text-center text-ink-muted">Cargando detalles de la cotización...</div>;
     if (!quotation) return null;
 
     return (
@@ -90,21 +90,21 @@ export default function QuotationDetails() {
 
             {/* Cabecera de Navegación */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <button onClick={() => navigate("/app/quotations")} className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors">
+                <button onClick={() => navigate("/app/quotations")} className="flex items-center gap-2 text-ink-muted hover:text-info transition-colors">
                     <ArrowLeft size={20} /> Volver al listado
                 </button>
 
                 <div className="flex gap-3">
                     <Link
                         to={`/app/quotations/edit/${id}`}
-                        className="flex items-center gap-2 px-4 py-2 border border-surface-border rounded-lg text-gray-200 hover:bg-surface-hover transition-all shadow-sm"
+                        className="flex items-center gap-2 px-4 py-2 border border-surface-border rounded-lg text-ink hover:bg-surface-hover transition-all shadow-sm"
                     >
                         <Pencil size={18} /> Editar
                     </Link>
 
                     <button
                         onClick={handleOpenPdf}
-                        className="flex items-center gap-2 px-4 py-2 bg-brand-orangeDeep text-white rounded-xl hover:brightness-110 hover:-translate-y-px active:scale-[0.98] shadow-md transition-all duration-small ease-enter font-semibold"
+                        className="flex items-center gap-2 px-4 py-2 bg-orange-700 text-white rounded-xl hover:brightness-110 hover:-translate-y-px active:scale-[0.98] shadow-md transition-all duration-small ease-enter font-semibold"
                     >
                         <FileText size={18} /> Ver PDF
                     </button>
@@ -118,20 +118,20 @@ export default function QuotationDetails() {
                 <div className="bg-surface-base px-4 md:px-8 py-6 border-b border-surface-border">
                     <div className="flex justify-between items-center">
                         <div>
-                            <h1 className="font-display text-3xl font-extrabold text-white">
+                            <h1 className="font-display text-3xl font-extrabold text-ink">
                                 {formatQuotationId(quotation.correlativo)}
                             </h1>
-                            <p className="text-gray-400 mt-1 font-medium">
+                            <p className="text-ink-muted mt-1 font-medium">
                                 Emitida el {formatDate(quotation.createdAt)}
                             </p>
                             {quotation.projectReference && (
-                                <p className="text-sm text-orange-400 font-semibold mt-1">
+                                <p className="text-sm text-accent font-semibold mt-1">
                                     {quotation.projectReference}
                                 </p>
                             )}
                         </div>
                         <div className="text-right">
-                            <span className="bg-emerald-500/15 text-emerald-300 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            <span className="bg-ok/15 text-ok px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                                 Registrada
                             </span>
                         </div>
@@ -142,22 +142,22 @@ export default function QuotationDetails() {
                     {/* Datos Cliente y Vendedor */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 mb-10">
                         <div>
-                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Información del Cliente</h3>
-                            <p className="font-bold text-xl text-white mb-1">{quotation.client.name}</p>
-                            <p className="text-gray-300 leading-relaxed">{quotation.client.address}</p>
-                            <p className="text-gray-400 mt-2 font-medium">NIT: {quotation.client.taxId || 'C/F'}</p>
+                            <h3 className="text-xs font-bold text-ink-muted uppercase tracking-widest mb-3">Información del Cliente</h3>
+                            <p className="font-bold text-xl text-ink mb-1">{quotation.client.name}</p>
+                            <p className="text-ink-2 leading-relaxed">{quotation.client.address}</p>
+                            <p className="text-ink-muted mt-2 font-medium">NIT: {quotation.client.taxId || 'C/F'}</p>
                         </div>
                         <div className="md:text-right">
-                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Elaborado por</h3>
-                            <p className="text-lg font-semibold text-white">{quotation.elaboratedBy || "No especificado"}</p>
-                            <p className="text-sm text-gray-400 italic mt-1">Representante de Ventas</p>
+                            <h3 className="text-xs font-bold text-ink-muted uppercase tracking-widest mb-3">Elaborado por</h3>
+                            <p className="text-lg font-semibold text-ink">{quotation.elaboratedBy || "No especificado"}</p>
+                            <p className="text-sm text-ink-muted italic mt-1">Representante de Ventas</p>
                         </div>
                     </div>
 
                     {/* --- TABLA DE ÍTEMS ACTUALIZADA --- */}
                     <div className="overflow-x-auto mb-8">
                         <table className="w-full text-left min-w-[700px]">
-                            <thead className="border-b-2 border-surface-border text-gray-400 text-xs uppercase font-bold">
+                            <thead className="border-b-2 border-surface-border text-ink-muted text-xs uppercase font-bold">
                                 <tr>
                                     <th className="px-4 py-3 text-center w-16">Cant.</th>
                                     <th className="px-4 py-3">Descripción</th>
@@ -176,34 +176,34 @@ export default function QuotationDetails() {
 
                                     return (
                                         <tr key={i} className="hover:bg-surface-hover transition-colors">
-                                            <td className="px-4 py-4 text-center font-medium text-gray-300">
+                                            <td className="px-4 py-4 text-center font-medium text-ink-2">
                                                 {item.quantity}
                                             </td>
-                                            <td className="px-4 py-4 text-white">
+                                            <td className="px-4 py-4 text-ink">
                                                 {item.description}
                                             </td>
                                             
                                             {/* P. Lista (Tachado si hay descuento) */}
-                                            <td className={`px-4 py-4 text-right ${discount > 0 ? 'text-gray-400 line-through' : 'text-gray-300'}`}>
+                                            <td className={`px-4 py-4 text-right ${discount > 0 ? 'text-ink-muted line-through' : 'text-ink-2'}`}>
                                                 {discount > 0 ? formatCurrency(listPrice) : '-'}
                                             </td>
                                             
                                             {/* % Descuento (Con un badge resaltado) */}
-                                            <td className="px-4 py-4 text-center text-gray-400">
+                                            <td className="px-4 py-4 text-center text-ink-muted">
                                                 {discount > 0 ? (
-                                                    <span className="bg-orange-500/15 text-orange-300 px-2 py-1 rounded-md text-xs font-bold">
+                                                    <span className="bg-accent/15 text-accent px-2 py-1 rounded-md text-xs font-bold">
                                                         -{discount}%
                                                     </span>
                                                 ) : '-'}
                                             </td>
                                             
                                             {/* P. Oferta (Azul para resaltar) */}
-                                            <td className="px-4 py-4 text-right font-medium text-blue-400">
+                                            <td className="px-4 py-4 text-right font-medium text-info">
                                                 {formatCurrency(discountedUnitPrice)}
                                             </td>
                                             
                                             {/* Total de línea (subtotalItem) */}
-                                            <td className="px-4 py-4 text-right font-bold text-white">
+                                            <td className="px-4 py-4 text-right font-bold text-ink">
                                                 {formatCurrency(item.subtotalItem)}
                                             </td>
                                         </tr>
@@ -216,15 +216,15 @@ export default function QuotationDetails() {
                     {/* Sección de Totales */}
                     <div className="flex justify-end border-t border-surface-border pt-6">
                         <div className="w-72 space-y-3">
-                            <div className="flex justify-between text-gray-400 font-medium">
+                            <div className="flex justify-between text-ink-muted font-medium">
                                 <span>Subtotal:</span>
                                 <span>{formatCurrency(quotation.subtotal)}</span>
                             </div>
-                            <div className="flex justify-between text-gray-400 font-medium">
+                            <div className="flex justify-between text-ink-muted font-medium">
                                 <span>IVA (12%):</span>
                                 <span>{formatCurrency(quotation.tax)}</span>
                             </div>
-                            <div className="flex justify-between text-2xl font-black text-orange-400 border-t-2 border-orange-500/30 pt-3 mt-3">
+                            <div className="flex justify-between text-2xl font-black text-accent border-t-2 border-accent/30 pt-3 mt-3">
                                 <span>TOTAL:</span>
                                 <span>{formatCurrency(quotation.total)}</span>
                             </div>
@@ -233,28 +233,28 @@ export default function QuotationDetails() {
 
                     {/* Condiciones Comerciales */}
                     <div className="mt-12 bg-surface-base rounded-xl p-6 border border-surface-border">
-                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Condiciones y Observaciones</h3>
+                        <h3 className="text-xs font-bold text-ink-muted uppercase tracking-widest mb-4">Condiciones y Observaciones</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                             <div className="space-y-2">
-                                <p><span className="font-bold text-gray-200">Garantía:</span> <span className="text-gray-300">{quotation.warranty}</span></p>
-                                <p><span className="font-bold text-gray-200">Tiempo de Entrega:</span> <span className="text-gray-300">{quotation.deliveryTime}</span></p>
+                                <p><span className="font-bold text-ink">Garantía:</span> <span className="text-ink-2">{quotation.warranty}</span></p>
+                                <p><span className="font-bold text-ink">Tiempo de Entrega:</span> <span className="text-ink-2">{quotation.deliveryTime}</span></p>
                             </div>
                             <div className="space-y-2 md:text-right">
-                                <p><span className="font-bold text-gray-200">Forma de Pago:</span> <span className="text-gray-300">{quotation.paymentMethod}</span></p>
-                                <p><span className="font-bold text-gray-200">Validez:</span> <span className="text-gray-300">{quotation.validity || 'No especificada'}</span></p>
+                                <p><span className="font-bold text-ink">Forma de Pago:</span> <span className="text-ink-2">{quotation.paymentMethod}</span></p>
+                                <p><span className="font-bold text-ink">Validez:</span> <span className="text-ink-2">{quotation.validity || 'No especificada'}</span></p>
                             </div>
                         </div>
                         {quotation.projectDescription && (
                             <div className="mt-4 pt-4 border-t border-surface-border">
-                                <p className="text-gray-300 text-sm whitespace-pre-line">
-                                    <span className="font-bold text-gray-200">Descripción del proyecto:</span> {quotation.projectDescription}
+                                <p className="text-ink-2 text-sm whitespace-pre-line">
+                                    <span className="font-bold text-ink">Descripción del proyecto:</span> {quotation.projectDescription}
                                 </p>
                             </div>
                         )}
                         {quotation.observations && (
                             <div className="mt-4 pt-4 border-t border-surface-border">
-                                <p className="text-gray-300 text-sm italic">
-                                    <span className="font-bold not-italic text-gray-200">Notas:</span> {quotation.observations}
+                                <p className="text-ink-2 text-sm italic">
+                                    <span className="font-bold not-italic text-ink">Notas:</span> {quotation.observations}
                                 </p>
                             </div>
                         )}
@@ -266,12 +266,12 @@ export default function QuotationDetails() {
             <div className="card overflow-hidden mt-6">
                 <div className="px-4 md:px-8 py-5 border-b border-surface-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
-                        <div className="w-9 h-9 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                        <div className="w-9 h-9 rounded-full bg-info/10 text-info flex items-center justify-center">
                             <Wallet size={18} />
                         </div>
                         <div>
-                            <h2 className="font-semibold text-white">Pagos recibidos</h2>
-                            <p className="text-xs text-gray-400">Anticipos y pagos finales, para cuadrar contra el total cotizado</p>
+                            <h2 className="font-semibold text-ink">Pagos recibidos</h2>
+                            <p className="text-xs text-ink-muted">Anticipos y pagos finales, para cuadrar contra el total cotizado</p>
                         </div>
                     </div>
                     <button
@@ -285,33 +285,33 @@ export default function QuotationDetails() {
                 {/* Resumen de cuadre */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-8 py-5 bg-surface-base border-b border-surface-border text-sm">
                     <div>
-                        <p className="text-xs text-gray-400 uppercase tracking-wide">Recibido (bruto)</p>
-                        <p className="font-bold text-white">{formatCurrency(paymentTotals.gross)}</p>
+                        <p className="text-xs text-ink-muted uppercase tracking-wide">Recibido (bruto)</p>
+                        <p className="font-bold text-ink">{formatCurrency(paymentTotals.gross)}</p>
                     </div>
                     <div>
-                        <p className="text-xs text-gray-400 uppercase tracking-wide">Retenido</p>
-                        <p className="font-bold text-white">{formatCurrency(paymentTotals.withheld)}</p>
+                        <p className="text-xs text-ink-muted uppercase tracking-wide">Retenido</p>
+                        <p className="font-bold text-ink">{formatCurrency(paymentTotals.withheld)}</p>
                     </div>
                     <div>
-                        <p className="text-xs text-gray-400 uppercase tracking-wide">Neto recibido</p>
-                        <p className="font-bold text-white">{formatCurrency(paymentTotals.net)}</p>
+                        <p className="text-xs text-ink-muted uppercase tracking-wide">Neto recibido</p>
+                        <p className="font-bold text-ink">{formatCurrency(paymentTotals.net)}</p>
                     </div>
                     <div>
-                        <p className="text-xs text-gray-400 uppercase tracking-wide">Saldo pendiente</p>
-                        <p className={`font-bold ${paymentTotals.pending > 0 ? 'text-orange-400' : 'text-green-400'}`}>
+                        <p className="text-xs text-ink-muted uppercase tracking-wide">Saldo pendiente</p>
+                        <p className={`font-bold ${paymentTotals.pending > 0 ? 'text-accent' : 'text-ok'}`}>
                             {formatCurrency(paymentTotals.pending)}
                         </p>
                     </div>
                 </div>
 
                 {payments.length === 0 ? (
-                    <div className="text-center py-10 text-gray-400 text-sm">
+                    <div className="text-center py-10 text-ink-muted text-sm">
                         Todavía no se ha registrado ningún pago para esta cotización.
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left min-w-[700px]">
-                            <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
+                            <thead className="bg-surface-base text-ink-muted text-xs uppercase font-semibold">
                                 <tr>
                                     <th className="px-4 md:px-8 py-3">Tipo</th>
                                     <th className="px-4 py-3">Fecha</th>
@@ -333,24 +333,24 @@ export default function QuotationDetails() {
                                                     {PAYMENT_TYPE_LABEL[p.type]}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-4 text-gray-300">{formatDate(p.receivedDate)}</td>
-                                            <td className="px-4 py-4 text-right font-medium text-white">{formatCurrency(p.amount)}</td>
-                                            <td className="px-4 py-4 text-right text-gray-400">
+                                            <td className="px-4 py-4 text-ink-2">{formatDate(p.receivedDate)}</td>
+                                            <td className="px-4 py-4 text-right font-medium text-ink">{formatCurrency(p.amount)}</td>
+                                            <td className="px-4 py-4 text-right text-ink-muted">
                                                 {withheld > 0 ? (
                                                     <>
                                                         {formatCurrency(withheld)}
                                                         {p.taxWithholdingPercent && (
-                                                            <span className="text-xs text-gray-400"> ({Number(p.taxWithholdingPercent)}%)</span>
+                                                            <span className="text-xs text-ink-muted"> ({Number(p.taxWithholdingPercent)}%)</span>
                                                         )}
                                                     </>
                                                 ) : "—"}
                                             </td>
-                                            <td className="px-4 py-4 text-right font-bold text-green-400">{formatCurrency(net)}</td>
-                                            <td className="px-4 py-4 text-gray-400 text-sm">{p.createdBy?.name || p.createdBy?.email || "—"}</td>
+                                            <td className="px-4 py-4 text-right font-bold text-ok">{formatCurrency(net)}</td>
+                                            <td className="px-4 py-4 text-ink-muted text-sm">{p.createdBy?.name || p.createdBy?.email || "—"}</td>
                                             <td className="px-4 py-4 text-right">
                                                 <button
                                                     onClick={() => handleDeletePayment(p)}
-                                                    className="p-2 text-gray-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all"
+                                                    className="p-2 text-ink-muted hover:bg-bad/10 hover:text-bad rounded-lg opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all"
                                                     title="Eliminar pago"
                                                 >
                                                     <Trash2 size={16} />

@@ -13,9 +13,9 @@ import appLogo from "../assets/logo.png";
 
 const STATUS_LABEL = { PENDING: 'Pendiente', IN_PROGRESS: 'En proceso', DONE: 'Finalizado' };
 const STATUS_STYLE = {
-  PENDING: 'bg-amber-500/15 text-amber-400',
-  IN_PROGRESS: 'bg-blue-500/15 text-blue-400',
-  DONE: 'bg-green-500/15 text-green-400'
+  PENDING: 'bg-warn/15 text-warn',
+  IN_PROGRESS: 'bg-info/15 text-info',
+  DONE: 'bg-ok/15 text-ok'
 };
 
 function StatTile({ label, value, icon: Icon, colorClass }) {
@@ -25,8 +25,8 @@ function StatTile({ label, value, icon: Icon, colorClass }) {
         <Icon size={20} />
       </div>
       <div>
-        <p className="text-[28px] font-bold tracking-tight text-white leading-none">{value}</p>
-        <p className="text-xs text-gray-400 mt-1">{label}</p>
+        <p className="text-[28px] font-bold tracking-tight text-ink leading-none">{value}</p>
+        <p className="text-xs text-ink-muted mt-1">{label}</p>
       </div>
     </div>
   );
@@ -147,7 +147,7 @@ export default function Requests() {
           key={s || 'ALL'}
           onClick={() => setStatusFilter(s)}
           className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-            statusFilter === s ? "bg-brand-gradient text-white" : "bg-surface-hover text-gray-300 hover:bg-surface-border"
+            statusFilter === s ? "bg-brand-soft text-white" : "bg-surface-hover text-ink-2 hover:bg-surface-border"
           }`}
         >
           {s ? STATUS_LABEL[s] : "Todas"}
@@ -157,8 +157,8 @@ export default function Requests() {
   );
 
   const EmptyState = () => (
-    <div className="card text-center py-14 text-gray-400">
-      <ClipboardList className="mx-auto mb-2 text-gray-300" size={32} />
+    <div className="card text-center py-14 text-ink-muted">
+      <ClipboardList className="mx-auto mb-2 text-ink-2" size={32} />
       {isClient ? "Todavía no tienes solicitudes. Crea la primera con el botón de arriba." : "No hay solicitudes registradas."}
     </div>
   );
@@ -167,41 +167,41 @@ export default function Requests() {
     return (
       <div>
         {/* Banner de bienvenida con marca del cliente */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-blue-500 to-orange-400 p-6 md:p-8 mb-6 text-white shadow-lg">
-          <div className="absolute -right-10 -top-14 w-48 h-48 rounded-full bg-white/10 pointer-events-none" />
-          <div className="absolute right-10 -bottom-16 w-32 h-32 rounded-full bg-white/10 pointer-events-none" />
+        <div className="relative overflow-hidden rounded-2xl tip-card p-6 md:p-8 mb-6 text-white shadow-lg">
+          <div className="absolute -right-10 -top-14 w-48 h-48 rounded-full bg-tint/10 pointer-events-none" />
+          <div className="absolute right-10 -bottom-16 w-32 h-32 rounded-full bg-tint/10 pointer-events-none" />
           <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 shrink-0">
-                <div className="w-14 h-14 rounded-xl bg-white p-2 flex items-center justify-center shadow-md">
+                <div className="w-14 h-14 rounded-xl bg-surface p-2 flex items-center justify-center shadow-md">
                   <img src={appLogo} alt="Grupo AC" className="w-full h-full object-contain" />
                 </div>
                 {user?.client?.logoBase64 && (
                   <>
                     <span className="text-white/50 text-xl font-light">+</span>
-                    <div className="w-14 h-14 rounded-xl bg-white p-2 flex items-center justify-center shadow-md">
+                    <div className="w-14 h-14 rounded-xl bg-surface p-2 flex items-center justify-center shadow-md">
                       <img src={user.client.logoBase64} alt={user.client.name} className="w-full h-full object-contain" />
                     </div>
                   </>
                 )}
               </div>
               <div>
-                <p className="text-blue-100 text-sm font-medium">Bienvenido a tu portal</p>
+                <p className="text-ink-muted text-sm font-medium">Bienvenido a tu portal</p>
                 <h1 className="font-display text-2xl md:text-3xl font-bold">{user?.client?.name || "Tu empresa"}</h1>
-                <p className="text-blue-100 text-sm mt-0.5">{user?.name || user?.email}</p>
+                <p className="text-ink-muted text-sm mt-0.5">{user?.name || user?.email}</p>
               </div>
             </div>
             <div className="flex gap-3 shrink-0">
               <button
                 onClick={handleDownloadPdf}
                 disabled={downloading || requests.length === 0}
-                className="flex items-center gap-2 px-4 py-2 bg-white/15 backdrop-blur border border-white/30 rounded-lg text-white hover:bg-white/25 disabled:opacity-50 transition-all text-sm font-medium"
+                className="flex items-center gap-2 px-4 py-2 bg-tint/15 backdrop-blur border border-line rounded-lg text-ink hover:bg-tint/25 disabled:opacity-50 transition-all text-sm font-medium"
               >
                 <FileDown size={16} /> {downloading ? "Generando..." : "PDF"}
               </button>
               <button
                 onClick={() => openNewRequest()}
-                className="flex items-center gap-2 px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-blue-50 shadow-sm transition-all font-semibold text-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-surface text-info rounded-lg hover:bg-info/10 shadow-sm transition-all font-semibold text-sm"
               >
                 <Plus size={18} /> Nueva solicitud
               </button>
@@ -210,7 +210,7 @@ export default function Requests() {
         </div>
 
         {totalReal > requests.length && (
-          <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
+          <div className="mb-4 rounded-xl border border-warn/30 bg-warn/10 px-4 py-3 text-sm text-warn">
             Se muestran las {requests.length} solicitudes más recientes de {totalReal}. Los conteos
             cubren solo las mostradas.
           </div>
@@ -218,20 +218,20 @@ export default function Requests() {
 
         {/* Tarjetones de conteo */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <StatTile label="Total" value={counts.total} icon={ClipboardList} colorClass="bg-surface-hover text-gray-300" />
-          <StatTile label="Pendiente" value={counts.PENDING} icon={Clock} colorClass="bg-amber-500/15 text-amber-400" />
-          <StatTile label="En proceso" value={counts.IN_PROGRESS} icon={PlayCircle} colorClass="bg-blue-500/15 text-blue-400" />
-          <StatTile label="Finalizado" value={counts.DONE} icon={CheckCircle2} colorClass="bg-green-500/15 text-green-400" />
+          <StatTile label="Total" value={counts.total} icon={ClipboardList} colorClass="bg-surface-hover text-ink-2" />
+          <StatTile label="Pendiente" value={counts.PENDING} icon={Clock} colorClass="bg-warn/15 text-warn" />
+          <StatTile label="En proceso" value={counts.IN_PROGRESS} icon={PlayCircle} colorClass="bg-info/15 text-info" />
+          <StatTile label="Finalizado" value={counts.DONE} icon={CheckCircle2} colorClass="bg-ok/15 text-ok" />
         </div>
 
         <StatusFilterChips />
 
         {loading ? (
-          <div className="card text-center py-10 text-gray-400">Cargando...</div>
+          <div className="card text-center py-10 text-ink-muted">Cargando...</div>
         ) : requests.length === 0 ? (
           <EmptyState />
         ) : visibleRequests.length === 0 ? (
-          <div className="card text-center py-14 text-gray-400">
+          <div className="card text-center py-14 text-ink-muted">
             No hay solicitudes con este estado.
           </div>
         ) : (
@@ -243,15 +243,15 @@ export default function Requests() {
                 className="card group hover:shadow-lg hover:-translate-y-0.5 transition-all p-5 flex flex-col gap-3"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs text-gray-400">{formatRequestId(r.correlativo)}</span>
+                  <span className="font-mono text-xs text-ink-muted">{formatRequestId(r.correlativo)}</span>
                   <span className={`px-2 py-1 rounded-full text-xs font-bold ${STATUS_STYLE[r.status]}`}>
                     {STATUS_LABEL[r.status]}
                   </span>
                 </div>
-                <h3 className="font-semibold text-white group-hover:text-blue-300 transition-colors line-clamp-2">
+                <h3 className="font-semibold text-ink group-hover:text-info transition-colors line-clamp-2">
                   {r.title}
                 </h3>
-                <p className="text-xs text-gray-400 mt-auto pt-2 border-t border-surface-border">
+                <p className="text-xs text-ink-muted mt-auto pt-2 border-t border-surface-border">
                   Actualizado {formatDate(r.updatedAt)}
                 </p>
               </Link>
@@ -274,24 +274,24 @@ export default function Requests() {
     <div>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-white">Solicitudes de clientes</h1>
-          <p className="text-gray-400 text-sm">Da seguimiento a los pendientes de cada cliente</p>
+          <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-ink">Solicitudes de clientes</h1>
+          <p className="text-ink-muted text-sm">Da seguimiento a los pendientes de cada cliente</p>
         </div>
         <div className="flex gap-3 flex-wrap">
           <div className="seg" role="group" aria-label="Vista de solicitudes">
             <button type="button" aria-pressed={view === "list"} onClick={() => changeView("list")}
-              className={`seg-item flex items-center gap-1.5 ${view === "list" ? "bg-white/10" : ""}`}>
+              className={`seg-item flex items-center gap-1.5 ${view === "list" ? "bg-tint/10" : ""}`}>
               <List size={15} /> Lista
             </button>
             <button type="button" aria-pressed={view === "board"} onClick={() => changeView("board")}
-              className={`seg-item flex items-center gap-1.5 ${view === "board" ? "bg-white/10" : ""}`}>
+              className={`seg-item flex items-center gap-1.5 ${view === "board" ? "bg-tint/10" : ""}`}>
               <LayoutGrid size={15} /> Tablero
             </button>
           </div>
           <button
             onClick={handleDownloadPdf}
             disabled={downloading || requests.length === 0}
-            className="flex items-center gap-2 px-4 py-2 border border-surface-border rounded-lg text-gray-200 hover:bg-surface-hover disabled:opacity-50 transition-all"
+            className="flex items-center gap-2 px-4 py-2 border border-surface-border rounded-lg text-ink hover:bg-surface-hover disabled:opacity-50 transition-all"
           >
             <FileDown size={18} /> {downloading ? "Generando..." : "Descargar PDF"}
           </button>
@@ -307,7 +307,7 @@ export default function Requests() {
       {view === "list" && <StatusFilterChips />}
 
       {loading ? (
-        <div className="card text-center py-10 text-gray-400">Cargando...</div>
+        <div className="card text-center py-10 text-ink-muted">Cargando...</div>
       ) : requests.length === 0 ? (
         <EmptyState />
       ) : view === "board" ? (
@@ -318,19 +318,19 @@ export default function Requests() {
             <div key={client?.id} className="card overflow-hidden">
               <div className="px-6 py-4 border-b border-surface-border flex items-center justify-between bg-surface-base">
                 <div>
-                  <h2 className="font-semibold text-white">{client?.name}</h2>
-                  <p className="text-xs text-gray-400">{items.length} solicitud{items.length === 1 ? '' : 'es'}</p>
+                  <h2 className="font-semibold text-ink">{client?.name}</h2>
+                  <p className="text-xs text-ink-muted">{items.length} solicitud{items.length === 1 ? '' : 'es'}</p>
                 </div>
                 <button
                   onClick={() => openNewRequest(client?.id)}
-                  className="flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300 font-medium"
+                  className="flex items-center gap-1 text-sm text-info hover:text-info font-medium"
                 >
                   <Plus size={16} /> Nueva para este cliente
                 </button>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left min-w-[600px]">
-                  <thead className="bg-surface-base text-gray-400 text-xs uppercase font-semibold">
+                  <thead className="bg-surface-base text-ink-muted text-xs uppercase font-semibold">
                     <tr>
                       <th className="px-6 py-3">Folio</th>
                       <th className="px-6 py-3">Título</th>
@@ -343,18 +343,18 @@ export default function Requests() {
                     {items.map((r) => (
                       <tr key={r.id} className="hover:bg-surface-hover transition-colors">
                         <td className="px-6 py-4">
-                          <Link to={`/app/requests/${r.id}`} className="font-bold text-blue-400 hover:underline">
+                          <Link to={`/app/requests/${r.id}`} className="font-bold text-info hover:underline">
                             {formatRequestId(r.correlativo)}
                           </Link>
                         </td>
-                        <td className="px-6 py-4 text-white">{r.title}</td>
-                        <td className="px-6 py-4 text-gray-400 text-sm">{r.createdBy?.name || r.createdBy?.email || '—'}</td>
+                        <td className="px-6 py-4 text-ink">{r.title}</td>
+                        <td className="px-6 py-4 text-ink-muted text-sm">{r.createdBy?.name || r.createdBy?.email || '—'}</td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold ${STATUS_STYLE[r.status]}`}>
                             {STATUS_LABEL[r.status]}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-gray-400">{formatDate(r.updatedAt)}</td>
+                        <td className="px-6 py-4 text-ink-muted">{formatDate(r.updatedAt)}</td>
                       </tr>
                     ))}
                   </tbody>

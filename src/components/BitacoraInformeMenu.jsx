@@ -109,7 +109,7 @@ export default function BitacoraInformeMenu({ project }) {
             title={!hasText(variant) ? "Agrega al menos un reporte con texto" : undefined}>
             <Download size={16} /> {VARIANTS[variant].label}
           </button>
-          <button type="button" className="btn btn-ghost btn-icon w-11 h-11 shrink-0 border border-white/10" onClick={() => copy(variant)} disabled={!hasText(variant)}
+          <button type="button" className="btn btn-ghost btn-icon w-11 h-11 shrink-0 border border-line" onClick={() => copy(variant)} disabled={!hasText(variant)}
             aria-label={`Copiar texto para WhatsApp (${VARIANTS[variant].label})`} title="Copiar texto para WhatsApp">
             <MessageCircle size={17} />
           </button>
@@ -121,11 +121,11 @@ export default function BitacoraInformeMenu({ project }) {
 
   return (
     <section className="card p-4 w-full lg:w-[320px]" aria-label="Descargas">
-      <h2 className="text-white font-semibold text-sm">Informe al cliente (PDF)</h2>
+      <h2 className="text-ink font-semibold text-sm">Informe al cliente (PDF)</h2>
       <p className="text-xs text-[#9FB0C4] mt-0.5 flex items-center gap-1.5"><Lock size={11} aria-hidden="true" /> Solo trabajo realizado y fotos</p>
       <div className="mt-3 space-y-3">
         {row("dia", days.length > 0 && (
-          <label className="flex items-center gap-2 text-xs text-gray-300">
+          <label className="flex items-center gap-2 text-xs text-ink-2">
             Día
             <select className="field h-9 py-1 text-sm flex-1" aria-label="Día del informe" value={chosenDay} onChange={(e) => setDay(e.target.value)} disabled={!!busy}>
               {days.map((d) => <option key={d} value={d}>{formatShortDate(`${d}T12:00:00Z`)}</option>)}
@@ -136,7 +136,7 @@ export default function BitacoraInformeMenu({ project }) {
         {project.status === "TERMINADO" ? row("final") : <p className="text-xs text-[#9FB0C4]">El informe final se habilita al cerrar el proyecto.</p>}
       </div>
       {busy && busy !== "pendientes" && <p className="text-xs text-[#9FB0C4] text-center mt-3" role="status" aria-live="polite">{progress} · no cierres la página</p>}
-      <div className="mt-4 pt-3 border-t border-white/10">
+      <div className="mt-4 pt-3 border-t border-line">
         <button type="button" className="btn btn-ghost px-3 py-2 text-sm w-full flex items-center justify-center gap-2" onClick={pendientes} disabled={open === 0 || !!busy} aria-busy={busy === "pendientes"}
           title={open === 0 ? "No hay pendientes abiertos" : undefined}>
           <FileText size={16} /> Pendientes del personal (PDF)
