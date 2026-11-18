@@ -133,7 +133,7 @@ export default function AdminPage() {
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <header>
-                <h1 className="font-display text-3xl font-bold text-ink">Configuración del Sistema</h1>
+                <h1 className="title-xl">Configuración del <span className="serif-accent">Sistema</span></h1>
                 <p className="text-ink-muted">Gestiona quién tiene acceso al cotizador y sus permisos.</p>
             </header>
 

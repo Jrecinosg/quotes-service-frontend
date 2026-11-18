@@ -89,7 +89,7 @@ export default function RequestDetails() {
       <div className="card overflow-hidden">
         <div className="bg-surface-base px-4 md:px-8 py-6 border-b border-surface-border flex justify-between items-start flex-wrap gap-4">
           <div>
-            <h1 className="font-display text-2xl font-extrabold text-ink">{formatRequestId(request.correlativo)} — {request.title}</h1>
+            <h1 className="title-xl !text-[clamp(1.4rem,1rem+1.2vw,2rem)]">{formatRequestId(request.correlativo)} — {request.title}</h1>
             <p className="text-ink-muted mt-1 font-medium">
               {isStaff && request.client?.name ? `${request.client.name} · ` : ''}
               Creada por {request.createdBy?.name || request.createdBy?.email || 'desconocido'} · {formatDate(request.createdAt)}

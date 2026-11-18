@@ -187,7 +187,7 @@ export default function Requests() {
               </div>
               <div>
                 <p className="text-ink-muted text-sm font-medium">Bienvenido a tu portal</p>
-                <h1 className="font-display text-2xl md:text-3xl font-bold">{user?.client?.name || "Tu empresa"}</h1>
+                <h1 className="title-xl">{user?.client?.name || "Tu empresa"}</h1>
                 <p className="text-ink-muted text-sm mt-0.5">{user?.name || user?.email}</p>
               </div>
             </div>
@@ -274,17 +274,17 @@ export default function Requests() {
     <div>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-ink">Solicitudes de clientes</h1>
+          <h1 className="title-xl">Solicitudes de <span className="serif-accent">clientes</span></h1>
           <p className="text-ink-muted text-sm">Da seguimiento a los pendientes de cada cliente</p>
         </div>
         <div className="flex gap-3 flex-wrap">
           <div className="seg" role="group" aria-label="Vista de solicitudes">
             <button type="button" aria-pressed={view === "list"} onClick={() => changeView("list")}
-              className={`seg-item flex items-center gap-1.5 ${view === "list" ? "bg-tint/10" : ""}`}>
+              className={`seg-item flex items-center gap-1.5`}>
               <List size={15} /> Lista
             </button>
             <button type="button" aria-pressed={view === "board"} onClick={() => changeView("board")}
-              className={`seg-item flex items-center gap-1.5 ${view === "board" ? "bg-tint/10" : ""}`}>
+              className={`seg-item flex items-center gap-1.5`}>
               <LayoutGrid size={15} /> Tablero
             </button>
           </div>

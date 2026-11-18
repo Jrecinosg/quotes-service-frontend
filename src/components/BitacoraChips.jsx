@@ -4,9 +4,9 @@ import { STALE_DAYS } from "../utils/bitacora";
 // Chips de la Bitácora sobre fondo oscuro (colores de la especificación de diseño).
 // Siempre ícono + palabra: nunca solo color.
 const STATUS = {
-  EN_CURSO: { label: "En curso", icon: Clock, bg: "rgba(43,184,255,.16)", fg: "#7DD3FF" },
-  CON_PENDIENTES: { label: "Con pendientes", icon: AlertCircle, bg: "rgba(251,191,36,.16)", fg: "#FCD34D" },
-  TERMINADO: { label: "Terminado", icon: CheckCircle2, bg: "rgba(52,211,153,.16)", fg: "#6EE7B7" },
+  EN_CURSO: { label: "En curso", icon: Clock, bg: "rgb(var(--c-info) / .14)", fg: "rgb(var(--c-info))" },
+  CON_PENDIENTES: { label: "Con pendientes", icon: AlertCircle, bg: "rgb(var(--c-warn) / .16)", fg: "rgb(var(--c-warn))" },
+  TERMINADO: { label: "Terminado", icon: CheckCircle2, bg: "rgb(var(--c-ok) / .14)", fg: "rgb(var(--c-ok))" },
 };
 
 const chip = "inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full text-xs font-semibold whitespace-nowrap";
@@ -26,7 +26,7 @@ export function KindChip({ kind }) {
   const support = kind === "SOPORTE";
   const Icon = support ? LifeBuoy : Hammer;
   return (
-    <span className={chip} style={support ? { background: "rgba(192,132,252,.16)", color: "#D8B4FE" } : { background: "rgba(43,184,255,.10)", color: "#A5DBFF" }}>
+    <span className={chip} style={support ? { background: "rgb(var(--c-violet) / .14)", color: "rgb(var(--c-violet))" } : { background: "rgb(var(--c-info) / .1)", color: "rgb(var(--c-info))" }}>
       <Icon size={12} aria-hidden="true" /> {support ? "Soporte mensual" : "Proyecto"}
     </span>
   );
@@ -36,7 +36,7 @@ export function TypeChip({ type }) {
   const multi = type === "VARIOS_DIAS";
   const Icon = multi ? CalendarRange : Calendar;
   return (
-    <span className={chip} style={{ background: "rgba(255,255,255,.07)", color: "#CBD5E1" }}>
+    <span className={chip} style={{ background: "rgb(var(--c-tint) / .07)", color: "rgb(var(--c-ink-2))" }}>
       <Icon size={12} aria-hidden="true" /> {multi ? "Varios días" : "1 día"}
     </span>
   );
@@ -45,7 +45,7 @@ export function TypeChip({ type }) {
 export function QuotationChip({ number }) {
   if (!number) return null;
   return (
-    <span className={chip} style={{ background: "rgba(255,255,255,.07)", color: "#CBD5E1" }}>
+    <span className={chip} style={{ background: "rgb(var(--c-tint) / .07)", color: "rgb(var(--c-ink-2))" }}>
       <FileText size={12} aria-hidden="true" /> {number}
     </span>
   );
@@ -53,16 +53,16 @@ export function QuotationChip({ number }) {
 
 export function StaleChip() {
   return (
-    <span className={chip} style={{ background: "rgba(251,146,60,.16)", color: "#FDBA74" }} title={`Sin actividad desde hace ${STALE_DAYS} días o más`}>
+    <span className={chip} style={{ background: "rgb(var(--c-accent) / .14)", color: "rgb(var(--c-accent))" }} title={`Sin actividad desde hace ${STALE_DAYS} días o más`}>
       <MoonStar size={12} aria-hidden="true" /> Sin movimiento
     </span>
   );
 }
 
 const ORIGIN = {
-  CLIENTE: { label: "Cliente", icon: UserRound, bg: "rgba(43,184,255,.14)", fg: "#7DD3FF" },
-  INTERNO: { label: "Interno", icon: Wrench, bg: "rgba(255,255,255,.07)", fg: "#CBD5E1" },
-  GARANTIA: { label: "Garantía", icon: ShieldCheck, bg: "rgba(52,211,153,.14)", fg: "#6EE7B7" },
+  CLIENTE: { label: "Cliente", icon: UserRound, bg: "rgb(var(--c-info) / .14)", fg: "rgb(var(--c-info))" },
+  INTERNO: { label: "Interno", icon: Wrench, bg: "rgb(var(--c-tint) / .07)", fg: "rgb(var(--c-ink-2))" },
+  GARANTIA: { label: "Garantía", icon: ShieldCheck, bg: "rgb(var(--c-ok) / .14)", fg: "rgb(var(--c-ok))" },
 };
 
 export function OriginChip({ origin }) {

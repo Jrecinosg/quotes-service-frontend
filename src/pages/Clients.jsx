@@ -135,7 +135,7 @@ export default function Clients() {
             {/* Cabecera */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-ink">Clientes</h1>
+                    <h1 className="title-xl"><span className="serif-accent">Clientes</span></h1>
                     <p className="text-ink-muted text-sm">Gestiona tu cartera de clientes</p>
                 </div>
                 <button

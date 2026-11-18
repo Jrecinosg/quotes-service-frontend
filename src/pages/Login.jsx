@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { Lock, Mail, AlertCircle, Type } from "lucide-react";
 import Swal from "sweetalert2";
 import logo from "../assets/logo.png";
+import Aurora from "../components/Aurora";
 
 export default function Login() {
   const { login, signup, loginWithGoogle, resetPassword, user } = useAuth();
@@ -78,17 +79,18 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#060F1C] bg-[radial-gradient(60%_55%_at_85%_0%,rgba(0,123,255,0.28),transparent_70%),radial-gradient(45%_45%_at_0%_100%,rgba(255,138,0,0.14),transparent_70%)]">
-      <div className="card max-w-md w-full p-8 rounded-2xl shadow-2xl shadow-black/50 border-line">
+    <div className="relative min-h-screen flex items-center justify-center p-4 text-ink font-medium">
+      <Aurora />
+      <div className="card relative z-[1] max-w-md w-full p-8 !rounded-[1.6rem] !shadow-[var(--sh-pop)] animate-[rise_700ms_var(--spring-rise)_backwards]">
 
         <div className="text-center mb-6">
-          <div className="w-16 h-16 rounded-2xl bg-tint/95 shadow-sm border border-line flex items-center justify-center mx-auto mb-3 p-2">
+          <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-line flex items-center justify-center mx-auto mb-3 p-2">
             <img src={logo} alt="Grupo AC" className="w-full h-full object-contain" />
           </div>
-          <h2 className="font-display text-2xl font-bold text-[#E8F0F8]">
-            {isRegistering ? "Crear Cuenta" : "Bienvenido de nuevo"}
+          <p className="eyebrow">Plataforma Grupo AC</p>
+          <h2 className="title-xl !text-[1.9rem] mt-1.5">
+            {isRegistering ? <>Crear <span className="serif-accent">Cuenta</span></> : <>Bienvenido <span className="serif-accent">de nuevo</span></>}
           </h2>
-          <p className="text-sm mt-1 font-semibold text-info">Plataforma Grupo AC</p>
         </div>
 
         {error && (
@@ -101,9 +103,9 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {isRegistering && (
             <div>
-              <label className="block text-sm font-medium text-[#8DA2B8] mb-1">Nombre Completo</label>
+              <label className="block text-sm font-medium text-ink-muted mb-1">Nombre Completo</label>
               <div className="relative">
-                <Type className="absolute left-3 top-3 text-[#6b7d92] w-5 h-5" />
+                <Type className="absolute left-3 top-3 text-ink-soft w-5 h-5" />
                 <input
                   type="text"
                   required={isRegistering}
@@ -117,9 +119,9 @@ export default function Login() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-[#8DA2B8] mb-1">Correo Electrónico</label>
+            <label className="block text-sm font-medium text-ink-muted mb-1">Correo Electrónico</label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 text-[#6b7d92] w-5 h-5" />
+              <Mail className="absolute left-3 top-3 text-ink-soft w-5 h-5" />
               <input
                 type="email"
                 required
@@ -131,13 +133,13 @@ export default function Login() {
               />
             </div>
             {invitedEmail && (
-              <p className="text-xs text-[#8DA2B8] mt-1">Esta invitación es para este correo específico.</p>
+              <p className="text-xs text-ink-muted mt-1">Esta invitación es para este correo específico.</p>
             )}
           </div>
 
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="block text-sm font-medium text-[#8DA2B8]">Contraseña</label>
+              <label className="block text-sm font-medium text-ink-muted">Contraseña</label>
 
               {/* LINK: Olvidé mi contraseña -visible tambien en registro, por si
                   el correo ya tenia cuenta y la contraseña no coincide */}
@@ -150,7 +152,7 @@ export default function Login() {
               </button>
             </div>
             <div className="relative">
-              <Lock className="absolute left-3 top-3 text-[#6b7d92] w-5 h-5" />
+              <Lock className="absolute left-3 top-3 text-ink-soft w-5 h-5" />
               <input
                 type="password"
                 required
@@ -164,7 +166,7 @@ export default function Login() {
 
           <button
             type="submit"
-            className="btn btn-primary w-full py-3 px-4 mt-2"
+            className="btn btn-primary w-full !min-h-[46px] !text-[15px] !font-bold mt-2"
           >
             {isRegistering ? "Registrarse" : "Iniciar Sesión"}
           </button>
@@ -175,20 +177,20 @@ export default function Login() {
             <div className="w-full border-t border-line"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-[#10263F] text-[#8DA2B8]">O continúa con</span>
+            <span className="px-2 bg-surface text-ink-muted">O continúa con</span>
           </div>
         </div>
 
         <button
           onClick={loginWithGoogle}
           type="button"
-          className="btn btn-secondary w-full gap-3 py-2.5 px-4"
+          className="btn btn-secondary w-full gap-3 !min-h-[44px]"
         >
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
           Google
         </button>
 
-        <p className="text-center text-sm text-[#8DA2B8] mt-6">
+        <p className="text-center text-sm text-ink-muted mt-6">
           {isRegistering ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?"}{" "}
           <button
             onClick={() => {

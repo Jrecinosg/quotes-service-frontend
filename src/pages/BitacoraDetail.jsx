@@ -23,7 +23,7 @@ function EntryCard({ entry, number, total, support, born, closed, onEdit, onDele
       <header className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-ink font-semibold text-base">{formatLongDate(entry.date)}</h3>
-          <p className="text-xs text-[#9FB0C4] mt-0.5">{support ? `Visita ${number} de ${total}` : `Día ${number} de ${total}`}</p>
+          <p className="text-xs text-ink-muted mt-0.5">{support ? `Visita ${number} de ${total}` : `Día ${number} de ${total}`}</p>
         </div>
         <div className="flex shrink-0 -mr-2 -mt-2">
           <button type="button" onClick={onEdit} className="btn btn-ghost btn-icon w-11 h-11" aria-label={`Editar ${formatLongDate(entry.date)}`}><Pencil size={16} /></button>
@@ -32,17 +32,17 @@ function EntryCard({ entry, number, total, support, born, closed, onEdit, onDele
       </header>
       <p className="mt-3 text-[15px] leading-relaxed text-ink whitespace-pre-line" style={{ maxWidth: "68ch" }}>{entry.body}</p>
       {people.length > 0 && (
-        <p className="mt-3 text-xs text-[#9FB0C4] flex items-center gap-1.5"><Users size={13} aria-hidden="true" /> {people.join(", ")}</p>
+        <p className="mt-3 text-xs text-ink-muted flex items-center gap-1.5"><Users size={13} aria-hidden="true" /> {people.join(", ")}</p>
       )}
       {(born.length > 0 || closed.length > 0) && (
         <div className="mt-3 pt-3 border-t border-line space-y-1.5 text-xs">
           {born.map((p) => (
-            <p key={`b${p.id}`} className="flex items-start gap-1.5" style={{ color: "#FCD34D" }}><Flag size={12} className="mt-0.5 shrink-0" aria-hidden="true" /> <span className="break-words">Pendiente que nació aquí: <span className="text-ink">{p.text}</span>{isDone(p) ? <span className="text-[#6EE7B7]"> · ya cerrado</span> : null}</span></p>
+            <p key={`b${p.id}`} className="flex items-start gap-1.5" style={{ color: "rgb(var(--c-warn))" }}><Flag size={12} className="mt-0.5 shrink-0" aria-hidden="true" /> <span className="break-words">Pendiente que nació aquí: <span className="text-ink">{p.text}</span>{isDone(p) ? <span className="text-ok"> · ya cerrado</span> : null}</span></p>
           ))}
           {closed.map((p) => (
-            <p key={`c${p.id}`} className="flex items-start gap-1.5 text-[#6EE7B7]"><CheckCircle2 size={12} className="mt-0.5 shrink-0" aria-hidden="true" /> <span className="break-words">Pendiente que se cerró aquí: <span className="text-ink">{p.text}</span>
+            <p key={`c${p.id}`} className="flex items-start gap-1.5 text-ok"><CheckCircle2 size={12} className="mt-0.5 shrink-0" aria-hidden="true" /> <span className="break-words">Pendiente que se cerró aquí: <span className="text-ink">{p.text}</span>
               {p.createdFromEntryId && entriesById.get(p.createdFromEntryId) && (
-                <button type="button" className="ml-2 inline-flex items-center gap-1 text-[#7DD3FF] hover:text-ink underline-offset-2 hover:underline" onClick={() => onGoToEntry(p.createdFromEntryId)}><CornerDownRight size={11} aria-hidden="true" /> nació el {formatShortDate(entriesById.get(p.createdFromEntryId).date, false)}</button>
+                <button type="button" className="ml-2 inline-flex items-center gap-1 text-info hover:text-ink underline-offset-2 hover:underline" onClick={() => onGoToEntry(p.createdFromEntryId)}><CornerDownRight size={11} aria-hidden="true" /> nació el {formatShortDate(entriesById.get(p.createdFromEntryId).date, false)}</button>
               )}</span></p>
           ))}
         </div>
@@ -52,8 +52,8 @@ function EntryCard({ entry, number, total, support, born, closed, onEdit, onDele
           {photos.map((ph, i) => (
             <li key={ph.id} className="min-w-0">
               <BitacoraPhoto photoId={ph.id} alt={ph.caption || `Foto ${i + 1}`} onClick={() => onOpenPhoto(i)} className="w-full aspect-[4/3] rounded-lg" />
-              <p className="text-xs text-[#9FB0C4] mt-1 truncate" title={ph.caption || ""}>{ph.stage && STAGES[ph.stage] ? `${STAGES[ph.stage]} · ` : ""}{ph.caption || "Sin pie de foto"}</p>
-              {ph.includeInReport === false && <p className="text-[11px] mt-0.5" style={{ color: "#FDBA74" }}>No va en el informe</p>}
+              <p className="text-xs text-ink-muted mt-1 truncate" title={ph.caption || ""}>{ph.stage && STAGES[ph.stage] ? `${STAGES[ph.stage]} · ` : ""}{ph.caption || "Sin pie de foto"}</p>
+              {ph.includeInReport === false && <p className="text-[11px] mt-0.5" style={{ color: "rgb(var(--c-accent))" }}>No va en el informe</p>}
             </li>
           ))}
         </ul>
@@ -138,14 +138,14 @@ export default function BitacoraDetail() {
   return (
     <div className="max-w-6xl mx-auto pb-10">
       {/* Cabecera */}
-      <nav aria-label="Migas" className="flex items-center gap-1 text-sm text-[#9FB0C4] mb-3">
+      <nav aria-label="Migas" className="flex items-center gap-1 text-sm text-ink-muted mb-3">
         <Link to="/app/bitacora" className="hover:text-ink">Bitácora</Link>
         <ChevronRight size={14} aria-hidden="true" />
         <span className="text-ink-2">{project.client?.name}</span>
       </nav>
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 mb-6">
         <div className="min-w-0">
-          <h1 className="font-display text-[28px] leading-tight font-semibold tracking-tight text-ink break-words">{project.name}</h1>
+          <h1 className="title-xl break-words">{project.name}</h1>
           <div className="flex flex-wrap items-center gap-2 mt-3">
             <StatusChip status={status} />
             <KindChip kind={project.kind} />
@@ -153,9 +153,9 @@ export default function BitacoraDetail() {
             <QuotationChip number={quotationNumber(project)} />
             {isStale(project) && <StaleChip />}
             {/* Bitacora interna: aqui si se ven las fechas. En el informe al cliente no salen. */}
-            <span className="text-[13px] text-[#9FB0C4]">{support ? `Desde ${formatShortDate(project.startDate)}` : formatRange(project.startDate, project.endDate)}</span>
+            <span className="text-[13px] text-ink-muted">{support ? `Desde ${formatShortDate(project.startDate)}` : formatRange(project.startDate, project.endDate)}</span>
           </div>
-          {project.technicianName && <p className="text-[13px] text-[#9FB0C4] mt-2">Responsable técnico: <span className="text-ink">{project.technicianName}</span></p>}
+          {project.technicianName && <p className="text-[13px] text-ink-muted mt-2">Responsable técnico: <span className="text-ink">{project.technicianName}</span></p>}
           <div className="flex flex-wrap gap-2 mt-3">
             <button type="button" className="btn btn-ghost px-3 py-1.5 text-sm flex items-center gap-2" onClick={() => setProjectModal(true)}><Pencil size={16} /> Editar proyecto</button>
             {project.status === "EN_CURSO" ? (
@@ -173,7 +173,7 @@ export default function BitacoraDetail() {
 
       {project.finalSummary && (
         <section className="card p-5 mb-6" aria-label="Resumen del informe">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-[#9FB0C4] mb-2">Resumen del informe</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-ink-muted mb-2">Resumen del informe</h2>
           <p className="text-[15px] leading-relaxed text-ink whitespace-pre-line" style={{ maxWidth: "68ch" }}>{project.finalSummary}</p>
         </section>
       )}
@@ -194,12 +194,12 @@ export default function BitacoraDetail() {
             </div>
           ) : (
             <ol className="relative space-y-4 pl-8">
-              <span className="absolute left-3 top-2 bottom-2 w-0.5 -translate-x-1/2" style={{ background: "rgba(255,255,255,.14)" }} aria-hidden="true" />
+              <span className="absolute left-3 top-2 bottom-2 w-0.5 -translate-x-1/2" style={{ background: "rgb(var(--c-line-strong))" }} aria-hidden="true" />
               {entriesDesc.map((entry) => {
                 const number = entriesAsc.findIndex((e) => e.id === entry.id) + 1;
                 return (
                   <li key={entry.id} className="relative">
-                    <span className="absolute top-6 w-3 h-3 rounded-full" style={{ left: "-20px", background: "#2bb8ff", boxShadow: "0 0 0 4px rgba(43,184,255,.25)", transform: "translateX(-50%)" }} aria-hidden="true" />
+                    <span className="absolute top-6 w-3 h-3 rounded-full" style={{ left: "-20px", background: "#0A62FF", boxShadow: "0 0 0 4px rgba(10,98,255,.2)", transform: "translateX(-50%)" }} aria-hidden="true" />
                     <EntryCard
                       entry={entry}
                       number={number}

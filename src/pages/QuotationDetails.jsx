@@ -118,7 +118,7 @@ export default function QuotationDetails() {
                 <div className="bg-surface-base px-4 md:px-8 py-6 border-b border-surface-border">
                     <div className="flex justify-between items-center">
                         <div>
-                            <h1 className="font-display text-3xl font-extrabold text-ink">
+                            <h1 className="title-xl font-mono !font-semibold !tracking-tight">
                                 {formatQuotationId(quotation.correlativo)}
                             </h1>
                             <p className="text-ink-muted mt-1 font-medium">

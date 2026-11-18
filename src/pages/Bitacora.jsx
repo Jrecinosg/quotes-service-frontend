@@ -40,12 +40,12 @@ function ProjectCard({ project }) {
         {isStale(project) && <StaleChip />}
       </div>
       <div className="mt-2">
-        <span className="text-[13px] text-[#9FB0C4] tabular-nums">{isSupport(project) ? `Desde ${formatShortDate(project.startDate)}` : formatRange(project.startDate, project.endDate)}</span>
+        <span className="text-[13px] text-ink-muted tabular-nums">{isSupport(project) ? `Desde ${formatShortDate(project.startDate)}` : formatRange(project.startDate, project.endDate)}</span>
       </div>
       {counts.known && (
-        <p className="mt-3 pt-3 border-t border-line text-xs text-[#9FB0C4] tabular-nums">
+        <p className="mt-3 pt-3 border-t border-line text-xs text-ink-muted tabular-nums">
           {plural(counts.photos, "foto", "fotos")} · {plural(counts.openPendings, "pendiente abierto", "pendientes abiertos")}
-          {counts.overduePendings > 0 && <span className="text-[#FCA5A5] font-semibold"> · {plural(counts.overduePendings, "vencido", "vencidos")}</span>}
+          {counts.overduePendings > 0 && <span className="text-bad font-semibold"> · {plural(counts.overduePendings, "vencido", "vencidos")}</span>}
         </p>
       )}
     </Link>
@@ -115,7 +115,7 @@ export default function Bitacora() {
     <div className="max-w-6xl mx-auto pb-10">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="font-display text-[28px] leading-tight font-semibold tracking-tight text-ink">Bitácora de proyectos</h1>
+          <h1 className="title-xl">Bitácora de <span className="serif-accent">proyectos</span></h1>
           <p className="text-ink-muted text-sm">Proyectos y soportes por cliente: qué se hizo, con qué fotos y qué falta</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
@@ -148,9 +148,9 @@ export default function Bitacora() {
       </div>
 
       {!loading && !error && overdueProjects > 0 && (
-        <div className="flex flex-wrap items-center gap-3 mb-6 rounded-2xl px-4 py-3" style={{ background: "rgba(251,191,36,.10)" }} role="status">
-          <AlertTriangle size={16} aria-hidden="true" style={{ color: "#FCD34D" }} />
-          <span className="text-sm font-semibold" style={{ color: "#FCD34D" }}>
+        <div className="flex flex-wrap items-center gap-3 mb-6 rounded-2xl px-4 py-3" style={{ background: "rgb(var(--c-warn) / .12)" }} role="status">
+          <AlertTriangle size={16} aria-hidden="true" style={{ color: "rgb(var(--c-warn))" }} />
+          <span className="text-sm font-semibold" style={{ color: "rgb(var(--c-warn))" }}>
             {overdueProjects === 1 ? "1 proyecto con pendientes vencidos" : `${overdueProjects} proyectos con pendientes vencidos`}
           </span>
           <button type="button" className="text-sm text-ink underline underline-offset-2 hover:no-underline min-h-[32px] flex items-center gap-1" aria-pressed={overdueOnly} onClick={() => setOverdueOnly((v) => !v)}>
@@ -184,7 +184,7 @@ export default function Bitacora() {
             <section key={g.name} aria-label={g.name}>
               <div className="flex items-baseline gap-3 mb-3">
                 <h2 className="text-ink font-semibold text-base">{g.name}</h2>
-                <span className="text-xs text-[#9FB0C4]">{g.items.length} {g.items.length === 1 ? "registro" : "registros"}</span>
+                <span className="text-xs text-ink-muted">{g.items.length} {g.items.length === 1 ? "registro" : "registros"}</span>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {g.items.map((p) => <ProjectCard key={p.id} project={p} />)}

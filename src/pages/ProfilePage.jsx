@@ -40,7 +40,7 @@ export default function ProfilePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <header>
-        <h1 className="font-display text-3xl font-bold text-ink">Mi Perfil</h1>
+        <h1 className="title-xl">Mi <span className="serif-accent">Perfil</span></h1>
         <p className="text-ink-muted">Gestiona tu información personal en el sistema.</p>
       </header>
 

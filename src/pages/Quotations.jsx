@@ -94,7 +94,7 @@ export default function Quotations() {
             {/* 1. Cabecera (Título e Izquierda, Botón Derecha) */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-ink">Cotizaciones</h1>
+                    <h1 className="title-xl"><span className="serif-accent">Cotizaciones</span></h1>
                     <p className="text-ink-muted text-sm">Gestiona y genera tus presupuestos</p>
                 </div>
                 <Link

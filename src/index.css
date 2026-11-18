@@ -141,7 +141,9 @@
   }
   h1, h2, h3 { letter-spacing: -0.02em; text-wrap: balance; }
   table, .tabular { font-variant-numeric: tabular-nums; }
-  th { font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  th { font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+  /* montos y cifras alineadas a la derecha: nunca se parten en dos líneas */
+  td.text-right { white-space: nowrap; }
   :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
   input:focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
   ::selection { background: rgba(10, 98, 255, 0.28); }
@@ -250,6 +252,12 @@
   }
   .seg-item { position: relative; z-index: 1; padding: 0.4rem 0.9rem; border-radius: 0.6rem; font-size: 0.8125rem; font-weight: 700; color: rgb(var(--c-ink-muted)); transition: color 180ms; }
   .seg-item[aria-pressed="true"], .seg-item.is-on { color: #fff; }
+  /* sin indicador deslizante: la opción activa se pinta en azul de marca */
+  .seg:not(:has(.seg-thumb)) .seg-item { transition: color 180ms, background-color 180ms, box-shadow 200ms, transform 400ms var(--spring-bounce); }
+  .seg:not(:has(.seg-thumb)) .seg-item[aria-pressed="true"], .seg:not(:has(.seg-thumb)) .seg-item.is-on {
+    background: linear-gradient(100deg, #0A55E6, #0A62FF); box-shadow: 0 6px 14px -8px rgba(10, 98, 255, 0.8);
+  }
+  .seg-item:active { transform: scale(0.95); }
   .seg-item:hover:not([aria-pressed="true"]):not(.is-on) { color: rgb(var(--c-ink)); }
 
   /* ===== Selector de ambiente (Cielo / Claro / Noche) ===== */

@@ -22,7 +22,7 @@ export default function BitacoraPhotoFlags({ stage, includeInReport, onChange, d
         <input
           id={`${idPrefix}-excl`}
           type="checkbox"
-          className="w-4 h-4 accent-[#2bb8ff]"
+          className="w-4 h-4 accent-[#0A62FF]"
           checked={includeInReport === false}
           disabled={disabled}
           onChange={(e) => onChange({ includeInReport: !e.target.checked })}

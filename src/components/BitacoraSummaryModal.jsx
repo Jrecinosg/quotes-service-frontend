@@ -79,11 +79,11 @@ export default function BitacoraSummaryModal({ project, mode, onClose, onSaved }
           )}
 
           {closing && open.length > 0 && (
-            <fieldset className="rounded-xl p-4" style={{ background: "rgba(251,191,36,.08)", border: "1px solid rgba(251,191,36,.25)" }}>
-              <legend className="px-1 text-sm font-semibold flex items-center gap-1.5" style={{ color: "#FCD34D" }}>
+            <fieldset className="rounded-xl p-4" style={{ background: "rgb(var(--c-warn) / .1)", border: "1px solid rgb(var(--c-warn) / .3)" }}>
+              <legend className="px-1 text-sm font-semibold flex items-center gap-1.5" style={{ color: "rgb(var(--c-warn))" }}>
                 <AlertTriangle size={14} aria-hidden="true" /> Quedan {open.length} {open.length === 1 ? "pendiente abierto" : "pendientes abiertos"}
               </legend>
-              <p className="text-xs text-[#CBD5E1]">Elige qué pasa con cada uno. «Pendiente del cliente» lo deja suelto, sin proyecto, para atenderlo después.</p>
+              <p className="text-xs text-ink-2">Elige qué pasa con cada uno. «Pendiente del cliente» lo deja suelto, sin proyecto, para atenderlo después.</p>
               <div className="flex gap-3 mt-2 text-xs">
                 <button type="button" className="underline text-ink" onClick={() => setAll("SUELTO")}>Todos al cliente</button>
                 <button type="button" className="underline text-ink" onClick={() => setAll("RESOLVER")}>Todos resueltos</button>

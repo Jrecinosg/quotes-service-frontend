@@ -157,8 +157,8 @@ export default function WarrantyProjectForm() {
           <ArrowLeft size={22} />
         </button>
         <div>
-          <h1 className="font-display text-[28px] leading-tight font-bold tracking-tight text-ink">
-            {isEditing ? "Editar proyecto de garantía" : "Nuevo proyecto de garantía"}
+          <h1 className="title-xl">
+            {isEditing ? "Editar proyecto de" : "Nuevo proyecto de"} <span className="serif-accent">garantía</span>
           </h1>
           <p className="text-ink-muted text-sm">
             Registra a quién se le facturó y de qué proveedor salió cada equipo

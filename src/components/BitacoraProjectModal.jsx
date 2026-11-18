@@ -115,7 +115,7 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
               <button type="button" className="seg-item" aria-pressed={form.kind === "PROYECTO"} onClick={() => set({ kind: "PROYECTO" })}>Proyecto</button>
               <button type="button" className="seg-item" aria-pressed={support} onClick={() => set({ kind: "SOPORTE", endDate: "" })}>Soporte mensual</button>
             </div>
-            {support && <p className="text-xs text-[#9FB0C4] mt-1">Visitas y pendientes del mes; no se cierra solo y no lleva tiempos.</p>}
+            {support && <p className="text-xs text-ink-muted mt-1">Visitas y pendientes del mes; no se cierra solo y no lleva tiempos.</p>}
           </div>
           <div>
             <label htmlFor="bit-client" className="block text-sm font-medium text-ink-2">Cliente *</label>
@@ -170,11 +170,11 @@ export default function BitacoraProjectModal({ isOpen, onClose, onCreated, proje
               </div>
             )}
           </div>
-          <p className="text-xs text-[#9FB0C4] -mt-2">Las fechas son de uso interno: no salen en el informe al cliente.</p>
+          <p className="text-xs text-ink-muted -mt-2">Las fechas son de uso interno: no salen en el informe al cliente.</p>
           <div>
             <label htmlFor="bit-tech" className="block text-sm font-medium text-ink-2">Responsable técnico (opcional)</label>
             <input id="bit-tech" className="field mt-1 w-full" maxLength={120} placeholder="Ej. Carlos Pérez" value={form.technicianName} onChange={(e) => set({ technicianName: e.target.value })} aria-describedby="bit-tech-help" />
-            <p id="bit-tech-help" className="text-xs text-[#9FB0C4] mt-1">Aparece en la portada y como firma del informe al cliente.</p>
+            <p id="bit-tech-help" className="text-xs text-ink-muted mt-1">Aparece en la portada y como firma del informe al cliente.</p>
           </div>
           {serverError && <p className="text-sm text-bad" role="alert">{serverError}</p>}
           <div className="flex justify-end gap-3 pt-2">

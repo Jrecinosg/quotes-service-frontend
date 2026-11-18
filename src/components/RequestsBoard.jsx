@@ -194,7 +194,7 @@ export default function RequestsBoard({ requests, onMove }) {
 
       {drag && (
         <div ref={ghostRef} className="fixed left-0 top-0 z-[60] pointer-events-none" style={{ width: drag.w }}>
-          <div className="board-ghost rounded-xl border border-info/70 bg-[#10243d] p-3 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.7)]">
+          <div className="board-ghost rounded-xl border border-info/70 bg-surface p-3 shadow-[var(--sh-pop)]">
             <CardBody r={drag.r} showMove={false} />
             <p className="sr-only">Moviendo a {over ? LABEL[over] : "…"}</p>
           </div>

@@ -199,7 +199,7 @@ export default function BitacoraEntryModal({ project, entry, onClose, onSaved })
               onDragLeave={() => setDragging(false)}
               onDrop={(e) => { e.preventDefault(); setDragging(false); if (!busy) addFiles(e.dataTransfer.files); }}
               className="flex items-center justify-center gap-2 h-[72px] rounded-lg text-sm text-ink-2 transition-colors"
-              style={{ border: `1.5px dashed ${dragging ? "#2bb8ff" : "rgba(255,255,255,.2)"}` }}
+              style={{ border: `1.5px dashed ${dragging ? "#0A62FF" : "rgb(var(--c-line-strong))"}` }}
             >
               <ImagePlus size={18} aria-hidden="true" />
               <span>Arrastra fotos aquí o</span>
@@ -226,14 +226,14 @@ export default function BitacoraEntryModal({ project, entry, onClose, onSaved })
           {/* Pendientes: lo que faltó y lo que este reporte resolvió */}
           <div className="border-t border-line pt-4">
             <h3 className="text-sm font-semibold text-ink flex items-center gap-2"><ListPlus size={16} aria-hidden="true" /> ¿Faltó algo? Agregar pendientes</h3>
-            <p className="text-xs text-[#9FB0C4] mt-1">Quedan ligados a este reporte y solo los ve el equipo.</p>
+            <p className="text-xs text-ink-muted mt-1">Quedan ligados a este reporte y solo los ve el equipo.</p>
             {newPendings.length > 0 && (
               <ul className="mt-3 space-y-2">
                 {newPendings.map((np) => (
                   <li key={np.id} className="flex items-start gap-2 text-sm text-ink">
                     <span className="flex-1 min-w-0 break-words">{np.text}
                       <span className="ml-2 inline-flex align-middle"><OriginChip origin={np.origin} /></span>
-                      {(np.assignee || np.dueDate) && <span className="block text-xs text-[#9FB0C4]">{[np.assignee, np.dueDate && formatShortDate(`${np.dueDate}T12:00:00Z`, false)].filter(Boolean).join(" · ")}</span>}
+                      {(np.assignee || np.dueDate) && <span className="block text-xs text-ink-muted">{[np.assignee, np.dueDate && formatShortDate(`${np.dueDate}T12:00:00Z`, false)].filter(Boolean).join(" · ")}</span>}
                     </span>
                     <button type="button" className="btn btn-ghost btn-icon shrink-0" disabled={busy} onClick={() => setNewPendings((prev) => prev.filter((x) => x.id !== np.id))} aria-label={`Quitar «${np.text}»`}><Trash2 size={15} /></button>
                   </li>
@@ -259,7 +259,7 @@ export default function BitacoraEntryModal({ project, entry, onClose, onSaved })
                   {openList.map((p) => (
                     <li key={p.id}>
                       <label className="flex items-start gap-2 text-sm text-ink min-h-[32px] cursor-pointer">
-                        <input type="checkbox" className="w-4 h-4 mt-1 accent-[#2bb8ff]" checked={resolveIds.includes(p.id)} disabled={busy}
+                        <input type="checkbox" className="w-4 h-4 mt-1 accent-[#0A62FF]" checked={resolveIds.includes(p.id)} disabled={busy}
                           onChange={(e) => setResolveIds((prev) => (e.target.checked ? [...prev, p.id] : prev.filter((x) => x !== p.id)))} />
                         <span className="break-words">{p.text}</span>
                       </label>
@@ -276,7 +276,7 @@ export default function BitacoraEntryModal({ project, entry, onClose, onSaved })
                 <span>{progress.step ? `${progress.step} ${progress.current}` : "Terminando…"}</span>
                 <span className="tabular-nums">{progress.done} de {progress.total}</span>
               </div>
-              <div className="h-2 rounded-full bg-tint/10 overflow-hidden"><div className="h-full bg-[#2bb8ff] transition-all duration-300" style={{ width: `${pct}%` }} /></div>
+              <div className="h-2 rounded-full bg-tint/10 overflow-hidden"><div className="h-full bg-[#0A62FF] transition-all duration-300" style={{ width: `${pct}%` }} /></div>
               <p className="text-xs text-ink-muted mt-1">No cierres esta ventana hasta que termine.</p>
             </div>
           )}

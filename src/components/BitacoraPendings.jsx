@@ -59,7 +59,7 @@ export default function BitacoraPendings({ project, entries = [], onChanged, onG
     const entry = entryById.get(id);
     if (!entry) return null;
     return (
-      <button type="button" className="inline-flex items-center gap-1 text-[#7DD3FF] hover:text-ink underline-offset-2 hover:underline min-h-[24px]" onClick={() => onGoToEntry?.(id)}>
+      <button type="button" className="inline-flex items-center gap-1 text-info hover:text-ink underline-offset-2 hover:underline min-h-[24px]" onClick={() => onGoToEntry?.(id)}>
         <CornerDownRight size={11} aria-hidden="true" /> {prefix} {formatShortDate(entry.date, false)}
       </button>
     );
@@ -69,11 +69,11 @@ export default function BitacoraPendings({ project, entries = [], onChanged, onG
     <section className="card p-5" aria-labelledby="bit-pend-title">
       <div className="flex items-center justify-between gap-2">
         <h2 id="bit-pend-title" className="text-ink font-semibold text-base">Pendientes</h2>
-        <span className="inline-flex items-center h-6 px-2.5 rounded-full text-xs font-semibold" style={{ background: "rgba(255,255,255,.07)", color: "#CBD5E1" }}>
+        <span className="inline-flex items-center h-6 px-2.5 rounded-full text-xs font-semibold" style={{ background: "rgb(var(--c-tint) / .07)", color: "rgb(var(--c-ink-2))" }}>
           {open} {open === 1 ? "abierto" : "abiertos"}
         </span>
       </div>
-      <p className="text-xs text-[#9FB0C4] mt-1 flex items-center gap-1.5"><Lock size={12} aria-hidden="true" /> Solo equipo · no sale en el informe del cliente</p>
+      <p className="text-xs text-ink-muted mt-1 flex items-center gap-1.5"><Lock size={12} aria-hidden="true" /> Solo equipo · no sale en el informe del cliente</p>
 
       {pendings.length === 0 ? (
         <p className="text-sm text-ink-muted py-6 text-center">No hay pendientes. Agrega el primero abajo.</p>
@@ -85,23 +85,23 @@ export default function BitacoraPendings({ project, entries = [], onChanged, onG
             return (
               <li key={p.id} className="flex items-start gap-1 py-2 min-h-[52px]">
                 <button type="button" onClick={() => toggle(p)} disabled={busy} role="checkbox" aria-checked={done} aria-label={`Marcar «${p.text}» como ${done ? "abierto" : "hecho"}`} className="w-11 h-11 -ml-2 shrink-0 flex items-center justify-center">
-                  <span className="w-5 h-5 rounded-md flex items-center justify-center border-2 transition-colors" style={{ borderColor: done ? "#2bb8ff" : "#6b7d92", background: done ? "#2bb8ff" : "transparent" }}>
-                    {done && <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5 5 9.5 10 3" stroke="#06101e" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                  <span className="w-5 h-5 rounded-md flex items-center justify-center border-2 transition-colors" style={{ borderColor: done ? "#0A62FF" : "rgb(var(--c-ink-soft))", background: done ? "#0A62FF" : "transparent" }}>
+                    {done && <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5 5 9.5 10 3" stroke="#fff" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>}
                   </span>
                 </button>
                 <div className="flex-1 min-w-0 pt-2.5">
                   <p className={`text-sm break-words ${done ? "line-through text-ink-soft" : "text-ink"}`}>{p.text}</p>
                   <div className="flex flex-wrap items-center gap-2 mt-1 text-xs">
                     <OriginChip origin={p.origin} />
-                    {p.assignee && <span className="px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,.07)", color: "#CBD5E1" }}>{p.assignee}</span>}
+                    {p.assignee && <span className="px-2 py-0.5 rounded-full" style={{ background: "rgb(var(--c-tint) / .07)", color: "rgb(var(--c-ink-2))" }}>{p.assignee}</span>}
                     {p.dueDate && !done && (
-                      <span style={{ color: over ? "#FCA5A5" : "#9FB0C4" }} className="tabular-nums">
+                      <span style={{ color: over ? "rgb(var(--c-bad))" : "rgb(var(--c-ink-muted))" }} className="tabular-nums">
                         {formatShortDate(p.dueDate, false)}{over ? " · Vencido" : ""}
                       </span>
                     )}
                   </div>
                   {(p.createdFromEntryId || p.resolvedInEntryId || (done && !p.resolvedInEntryId)) && (
-                    <div className="flex flex-col gap-0.5 mt-1 text-xs text-[#9FB0C4]">
+                    <div className="flex flex-col gap-0.5 mt-1 text-xs text-ink-muted">
                       {p.createdFromEntryId && <EntryLink id={p.createdFromEntryId} prefix="Nació en el reporte del" />}
                       {p.resolvedInEntryId
                         ? <EntryLink id={p.resolvedInEntryId} prefix="Se cerró en el reporte del" />

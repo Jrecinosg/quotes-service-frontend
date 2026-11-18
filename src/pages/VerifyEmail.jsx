@@ -4,6 +4,7 @@ import { applyActionCode } from "firebase/auth";
 import { auth } from "../firebase";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import logo from "../assets/logo.png";
+import Aurora from "../components/Aurora";
 
 // Pantalla a la que llega el enlace del correo "Verifica tu correo". El código del enlace
 // se usa una sola vez, por eso se guarda en una referencia para no aplicarlo dos veces
@@ -34,14 +35,15 @@ export default function VerifyEmail() {
   }, [oobCode]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-orange-50 p-4">
-      <div className="max-w-md w-full bg-surface p-8 rounded-xl shadow-lg border border-info/25">
+    <div className="relative min-h-screen flex items-center justify-center p-4 text-ink font-medium">
+      <Aurora />
+      <div className="card relative z-[1] max-w-md w-full p-8 !rounded-[1.6rem] !shadow-[var(--sh-pop)] animate-[rise_700ms_var(--spring-rise)_backwards]">
         <div className="text-center mb-6">
-          <div className="w-16 h-16 rounded-2xl bg-surface shadow-sm border border-line flex items-center justify-center mx-auto mb-3 p-2">
+          <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-line flex items-center justify-center mx-auto mb-3 p-2">
             <img src={logo} alt="Grupo AC" className="w-full h-full object-contain" />
           </div>
-          <h2 className="font-display text-2xl font-bold text-ink">Verificar correo</h2>
-          <p className="text-sm mt-1 font-semibold text-transparent bg-clip-text bg-brand-gradient">Plataforma Grupo AC</p>
+          <h2 className="title-xl !text-[1.9rem]">Verificar <span className="serif-accent">correo</span></h2>
+          <p className="eyebrow mt-2">Plataforma Grupo AC</p>
         </div>
 
         {estado === "verificando" && (
