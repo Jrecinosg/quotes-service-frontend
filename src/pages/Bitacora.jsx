@@ -148,7 +148,7 @@ export default function Bitacora() {
       </div>
 
       {!loading && !error && overdueProjects > 0 && (
-        <div className="flex flex-wrap items-center gap-3 mb-6 rounded-2xl px-4 py-3" style={{ background: "rgb(var(--c-warn) / .12)" }} role="status">
+        <div className="flex flex-wrap items-center gap-3 mb-6 rounded-2xl px-4 py-3" style={{ background: "linear-gradient(rgb(var(--c-warn) / .12), rgb(var(--c-warn) / .12)), rgb(var(--c-surface))" }} role="status">
           <AlertTriangle size={16} aria-hidden="true" style={{ color: "rgb(var(--c-warn))" }} />
           <span className="text-sm font-semibold" style={{ color: "rgb(var(--c-warn))" }}>
             {overdueProjects === 1 ? "1 proyecto con pendientes vencidos" : `${overdueProjects} proyectos con pendientes vencidos`}

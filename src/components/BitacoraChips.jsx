@@ -10,12 +10,14 @@ const STATUS = {
 };
 
 const chip = "inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full text-xs font-semibold whitespace-nowrap";
+// Pastel sobre base sólida: se lee igual aunque el chip quede sobre el fondo vivo (aurora)
+const tone = (bg, fg) => ({ background: `linear-gradient(${bg}, ${bg}), rgb(var(--c-surface))`, color: fg });
 
 export function StatusChip({ status }) {
   const s = STATUS[status] || STATUS.EN_CURSO;
   const Icon = s.icon;
   return (
-    <span className={chip} style={{ background: s.bg, color: s.fg }}>
+    <span className={chip} style={tone(s.bg, s.fg)}>
       <Icon size={12} aria-hidden="true" /> {s.label}
     </span>
   );
@@ -26,7 +28,7 @@ export function KindChip({ kind }) {
   const support = kind === "SOPORTE";
   const Icon = support ? LifeBuoy : Hammer;
   return (
-    <span className={chip} style={support ? { background: "rgb(var(--c-violet) / .14)", color: "rgb(var(--c-violet))" } : { background: "rgb(var(--c-info) / .1)", color: "rgb(var(--c-info))" }}>
+    <span className={chip} style={support ? tone("rgb(var(--c-violet) / .14)", "rgb(var(--c-violet))") : tone("rgb(var(--c-info) / .1)", "rgb(var(--c-info))")}>
       <Icon size={12} aria-hidden="true" /> {support ? "Soporte mensual" : "Proyecto"}
     </span>
   );
@@ -36,7 +38,7 @@ export function TypeChip({ type }) {
   const multi = type === "VARIOS_DIAS";
   const Icon = multi ? CalendarRange : Calendar;
   return (
-    <span className={chip} style={{ background: "rgb(var(--c-tint) / .07)", color: "rgb(var(--c-ink-2))" }}>
+    <span className={chip} style={tone("rgb(var(--c-tint) / .07)", "rgb(var(--c-ink-2))")}>
       <Icon size={12} aria-hidden="true" /> {multi ? "Varios días" : "1 día"}
     </span>
   );
@@ -45,7 +47,7 @@ export function TypeChip({ type }) {
 export function QuotationChip({ number }) {
   if (!number) return null;
   return (
-    <span className={chip} style={{ background: "rgb(var(--c-tint) / .07)", color: "rgb(var(--c-ink-2))" }}>
+    <span className={chip} style={tone("rgb(var(--c-tint) / .07)", "rgb(var(--c-ink-2))")}>
       <FileText size={12} aria-hidden="true" /> {number}
     </span>
   );
@@ -53,7 +55,7 @@ export function QuotationChip({ number }) {
 
 export function StaleChip() {
   return (
-    <span className={chip} style={{ background: "rgb(var(--c-accent) / .14)", color: "rgb(var(--c-accent))" }} title={`Sin actividad desde hace ${STALE_DAYS} días o más`}>
+    <span className={chip} style={tone("rgb(var(--c-accent) / .14)", "rgb(var(--c-accent))")} title={`Sin actividad desde hace ${STALE_DAYS} días o más`}>
       <MoonStar size={12} aria-hidden="true" /> Sin movimiento
     </span>
   );
@@ -70,7 +72,7 @@ export function OriginChip({ origin }) {
   if (!o) return null;
   const Icon = o.icon;
   return (
-    <span className="inline-flex items-center gap-1 h-5 px-2 rounded-full text-[11px] font-semibold whitespace-nowrap" style={{ background: o.bg, color: o.fg }}>
+    <span className="inline-flex items-center gap-1 h-5 px-2 rounded-full text-[11px] font-semibold whitespace-nowrap" style={tone(o.bg, o.fg)}>
       <Icon size={11} aria-hidden="true" /> {o.label}
     </span>
   );
