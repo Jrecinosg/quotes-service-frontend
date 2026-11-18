@@ -402,3 +402,6 @@ html:has(.gac-landing) * { scrollbar-color: rgba(255, 255, 255, 0.14) transparen
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset;
 }
 .gac-landing .btn-secondary:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.24); color: var(--ink); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset; }
+
+/* Anillo de foco con contraste >=3:1 sobre fondos claros (Cielo/Claro); en Noche se mantiene el cian */
+[data-theme="cielo"], [data-theme="claro"] { --ring: #0A4FD6; }

@@ -141,7 +141,7 @@ export default function WarrantyProjectForm() {
 
   if (loading) return <div className="p-8 text-center text-ink-muted">Cargando proyecto...</div>;
 
-  const inputClass = "w-full border border-surface-border rounded-lg p-2 text-sm text-ink placeholder:text-ink-soft [color-scheme:dark] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none";
+  const inputClass = "w-full border border-surface-border rounded-lg p-2 text-sm text-ink placeholder:text-ink-soft focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none";
   const labelClass = "block text-xs font-semibold text-ink-2 uppercase tracking-wide mb-1";
 
   return (

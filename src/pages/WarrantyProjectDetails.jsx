@@ -51,9 +51,9 @@ export default function WarrantyProjectDetails() {
         <div className="bg-brand-soft px-5 md:px-8 py-6 text-white">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="min-w-0">
-              <p className="font-mono text-sm text-white/80">{formatWarrantyId(project.correlativo)}</p>
+              <p className="font-mono text-sm text-white">{formatWarrantyId(project.correlativo)}</p>
               <h1 className="font-display text-2xl font-extrabold break-words">{project.title}</h1>
-              <p className="text-white/90 text-sm mt-1">{project.client?.name}</p>
+              <p className="text-white text-sm mt-1">{project.client?.name}</p>
             </div>
             <Link
               to={`/app/warranties/edit/${project.id}`}

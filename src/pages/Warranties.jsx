@@ -168,7 +168,7 @@ export default function Warranties() {
           >
             <Icon size={16} />
             {label}
-            <span className={`text-xs ${tab === key ? "text-white/80" : "text-ink-muted"}`}>
+            <span className={`text-xs ${tab === key ? "text-white" : "text-ink-muted"}`}>
               {key === "projects" ? projects.length : suppliers.length}
             </span>
           </button>
