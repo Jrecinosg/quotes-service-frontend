@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { HashRouter } from 'react-router-dom'
+import { ThemeProvider } from './context/ThemeContext.jsx'
+import InteractionFx from './components/InteractionFx.jsx'
 
 // Enlaces directos a secciones de la portada (p. ej. https://grupo-ac.com.gt/#nosotros):
 // con HashRouter el router los tomaría como la ruta "/nosotros" y terminaría en el login.
@@ -16,8 +18,11 @@ if (SECCIONES_PORTADA.includes(hashInicial)) {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <HashRouter>
-      <App />
-    </HashRouter>
+    <ThemeProvider>
+      <InteractionFx />
+      <HashRouter>
+        <App />
+      </HashRouter>
+    </ThemeProvider>
   </React.StrictMode>,
 )
